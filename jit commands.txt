@@ -1,0 +1,72 @@
+http://www.gitready.com/
+http://spheredev.org/wiki/Git_for_the_lazy
+http://www.kernel.org/pub/software/scm/git/docs/everyday.html
+
+git로그인해서 project생성되었는지
+
+
+1. git
+
+
+1.1 Start my project
+mkdir myproject; cd myproject
+git init
+git add .	#add everything under the current dir
+git commit
+Initial commit. #reminder
+
+1.2 work in bits
+1) work on my project
+2) check which files you've changed
+git status
+3) check what the actual changes were
+git diff
+4) add any files/folders mentioned in step 2
+git add file1 newfile2 newfolder3
+5) commit my work
+git commit
+
+1.3 Browse
+git log
+git log -n3
+git log --stat --summary
+
+1.4 view changes
+git diff
+git log --pretty=online	#to know commit ID
+git 8fef..c6e7
+giff HEAD^..HEAD	#to view the last changes you made
+
+1.5 How to fix mistakes
+git reset --hard
+git checkout myfile.txt
+git commit --amend
+git reset --soft HEAD^
+git add forgot.txt these.txt
+git commit
+
+1.4 make changes
+git diff rev path
+git status
+git add file
+git rm file
+git mv file
+
+1.3 download
+git clone url
+
+
+git commit -a && git push
+git pull
+
+untracked files
+git clean
+git add files
+$EDITOR .gitignore
+
+git blame file
+git show
+
+
+
+
