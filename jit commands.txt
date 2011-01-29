@@ -1,19 +1,14 @@
---- deleted 2011 01 29 jslim
+--- modifed 2011 01 29 jslim
 
 http://www.merchantos.com/makebeta/facebook/facebook-php-tutorial/
-
 
 http://www.gitready.com/
 http://spheredev.org/wiki/Git_for_the_lazy
 http://www.kernel.org/pub/software/scm/git/docs/everyday.html
 http://www.lostechies.com/blogs/jason_meridth/archive/2009/06/01/git-for-windows-developers-git-series-part-1.aspx
 
-git로그인해서 project생성되었는지
 
-OpenSSH for windows설치
 1. git
-
-
 1.1 Start my project
 mkdir myproject; cd myproject
 git init
@@ -60,7 +55,6 @@ git mv file
 
 1.3 download
 git clone url
-
 
 git commit -a && git push
 git pull
