@@ -1,15 +1,6 @@
 ﻿# Chapter 3. 블록체인 개발을 위한 네트워크 구성
 
-## 학습 내용
 네트워크는 얼마나 개방이 되었는지에 따라 구분될 수 있다. 누구나 사용할 수 있는 공중망, 사용이 제한된 허가형 또는 자신만이 사용하는 사설망으로 나누어 볼 수 있고, 네트워크 고유번호가 주어지게 된다. 자신이 사용하게 될 이더리움 개인네트워크 망을 직접 개설해보게 된다. 계정을 발급하고, 네트워크 망에 접속하여 클라이언트를 개설하고, 마이닝을 해서 충전을 해본다.
-
-목차는 다음과 같다.
-* 1. 네트워크
-* 2. 공중망
-    * 2.1 네트워크 버전 및 ID
-    * 2.2 메인 네트워크
-    * 2.3 테스트 네트워크
-* 3. 사설망
 
 # 1. 네트워크
 
@@ -191,7 +182,7 @@ $ geth --ropsten --syncmode snap --cache=1024 console```
 위 명령어를 실행하여 testnet에 접속할 수 있다. 맨 뒤 console 명령어는 콘솔 프롬트프 ```> ```를 출력하게 된다. 그 프롬프트에 아래와 같이 ```admin.nodeinfo```를 입력해서 그 출력을 확인해보자. chainId, network 모두 3번, 그러니까 ```Ropsten```으로 올바르게 설정이 되어있다.
 
 ```python
-> admin.nodeInfo
+geth> admin.nodeInfo
 {
   enode: "enode://3166b...생략...2b85d@127.0.0.1:30303",
   enr: "0xf896b...생략...2765f",
@@ -356,7 +347,7 @@ JSON 파일에는 주석문을 붙일 수 없지만, 여기서는 편의상 설�
 다음과 같이 ```--datadir```을 프로젝트 디렉토리 아래 ```eth```에 설정하기로 하자. 디렉토리는 꼭 이 명칭으로 하지 않고 임의로 정해도 된다. 그리고 명령어 뒤에서 볼 수 있듯이 ```init``` 명령으로 ```genesis.json```을 읽어서 사설망을 초기화하여 생성하게 된다.
 
 ```python
-geth --datadir .\eth init _genesis.json
+pjt_dir> geth --datadir .\eth init _genesis.json
 ```
 
 <그림 삭제> ![alt text](figures/1_gethInitGenesis.png "geth init genesis.json")
@@ -390,7 +381,7 @@ INFO [09-16|23:52:23.754] Successfully wrote genesis state         database=ligh
 비밀 번호까지 입력하면, 통장의 계좌번호 역할을 하는 계좌가 생성이 되는데 상당히 복잡하여 외워서 사용하기 힘들 정도로 암호화되어 있다.
 
 ```python
-C:\Code>geth --datadir .\eth account new
+pjt_dir> geth --datadir .\eth account new
 INFO [09-17|17:17:46.486] Maximum peer count                       ETH=50 LES=0 total=50
 Your new account is locked with a password. Please give a password. Do not forget this password.
 Passphrase:
@@ -404,7 +395,7 @@ C:\Users\jsl\Code\201711111>
 
 또는 다음과 같이 geth에 접속한 후, 콘솔 프롬프트에서 명령어를 입력하여 계정을 발급해도 된다. 
 ```python
-> personal.newAccount("비밀번호")
+geth> personal.newAccount("비밀번호")
 ```
 
 ### 단계 4: geth 사설망 접속
@@ -414,7 +405,7 @@ C:\Users\jsl\Code\201711111>
 매우 단순하게 다른 설정없이 ```--datadir```에 앞서 정한 디렉토리만 적어서 접속해보자.
 
 ```python
-geth --datadir .\eth
+pjt_dir> geth --datadir .\eth
 ```
 
 여기서 마치려면 <ctrl-c> 키를 눌러주어서 분명하게 끝내주어야 한다.
@@ -422,8 +413,8 @@ geth --datadir .\eth
 콘솔 프롬프트를 원하면 맨 뒤에 console이라고 붙여준다.
 
 ```python
-geth --datadir .\eth console
-> geth 프롬프트가 이렇게 출력된다. 그러나 여기에 로그가 지속적으로 출력되면서 방해가 되기 쉽다.
+pjt_dir> geth --datadir .\eth console
+> 좌측의 geth 프롬프트가 이렇게 출력된다. 그러나 여기에 로그가 지속적으로 출력되면서 방해가 되기 쉽다.
 ```
 
 #### geth의 설정
@@ -510,7 +501,7 @@ console 2>>$_log 명령창에 콘솔을 생성하고, 오류를 로그로 재지
 리눅스는 쉘로 만들어서 다음과 같이 실행한다. 파일의 확장자가 ```.sh```로 끝나고 있고, 이런 쉘 파일을 실행하기 위해서는 sh라고 앞에 적어준다.
 
 ```python
-sh _gethNow.sh
+pjt_dir> sh _gethNow.sh
 ```
 
 윈도우에서 하려면 약간만 수정하면 된다. 거의 유사하다. 디렉토리 명칭은 알맞게 수정하자.
@@ -531,6 +522,9 @@ geth --identity "jslNode" ^
 ```
 
 윈도우에서는 배치프로그램으로 실행하기 때문에 ```.bat```로 저장해서 실행하도록 한다. 리눅스와 달리 명령어 프롬프트에서 그냥 파일명 ```_gethNow.bat```을 적고 <Enter>하면 된다.
+```
+pjt_dir> _gethNow.bat
+```
 
 몇 가지 주의할 것이 있다.
 ```--unlock 0 ```는 자신이 가지고 있는 첫번째 계정을 잠금 해제하는 설정이다. 송금이나 지급이나 어떤 거래에는 수수료가 따라 붙는다. 계정을 해제해 놓지 않으면, 수수료를 포함하여 출금이 허락되지 않는다. 매 거래마다 계정을 풀어놓을 수 있지만, 아예 풀어 놓으면 위험하기는 하겠지만 (사설망에서는 가치를 가지고 있지 않으니 굳이 위험하지도 않겠다), 간편하므로 이렇게 해제해 놓으면 편리하다. 이런 계정해제 스위치는 rpc 또는 ws를 활성화하면 사용할 수 없다. unlock을 시도하면 "Fatal: Account unlock with HTTP access is forbidden!" 오류 메시지가 발생한다. 대신에 ```--allow-insecure-unlock```를 사용하자.
@@ -568,7 +562,7 @@ geth attach ws://localhost:8446
 geth console에서는 다음에 보인 것처럼 실행해도 된다.
 
 ```python
-> admin.startRPC("ip.address",8445,"*","web3,db,net,eth")
+geth> admin.startRPC("ip.address",8445,"*","web3,db,net,eth")
 ```
 
 ![alt text](figures/1_gethIPC.png "geth IPC")
@@ -576,7 +570,7 @@ geth console에서는 다음에 보인 것처럼 실행해도 된다.
 
 접속이 올바르게 되었는지 geth 콘솔 프롬프트에서 확인할 수 있다.
 ```python
- > admin.nodeInfo.protocols
+ geth> admin.nodeInfo.protocols
 {
   eth: {
     config: {
@@ -598,7 +592,7 @@ geth console에서는 다음에 보인 것처럼 실행해도 된다.
 
 리눅스의 경우, eth/geth 디렉토리 아래는 다음 파일이나 디렉토리가 생성되어 있다. 윈도우도 비슷할 것이다.
 ```
-ls -l ./eth/geth
+pjt_dir> ls -l ./eth/geth 또는 윈도우 dir
     total 28
     drwxr-xr-x 2 jsl jsl 4096  3월 11 22:30 chaindata 블록체인 데이타
     drwxr-xr-x 2 jsl jsl 4096  1월  3 16:57 lightchaindata
@@ -610,7 +604,7 @@ ls -l ./eth/geth
 
 eth/keystore 디렉토리에는 사적키가 저장되어 있다.
 ```python
-ls -l ./eth/keystore/
+pjt_dir> ls -l ./eth/keystore/
     total 8
     -rw------- 1 jsl jsl 491  1월  4 06:57 UTC--2019-01-03T21-57-03.966937024Z--21c704354d07f804bab01894e8b4eb4e0eba7451
     -rw------- 1 jsl jsl 491  1월  4 10:40 UTC--2019-01-04T01-40-01.674920065Z--778ea91cb0d0879c22ca20c5aea6fbf8cbeed480
@@ -631,7 +625,7 @@ ls -l ./eth/keystore/
 geth console에서 다음 명령을 실행시켜 마이닝을 시작한다. 
 
 ```python
-> miner.start()
+geth> miner.start()
 ```
 
 적당한 시간이 지나면 마이닝을 종료 ```miner.stop()```할 수 있다. 5분 정도만 충전을 해도 실제화폐 가치로는 상당한 금액이 계좌에 입금되어 있을 것이다.
@@ -639,7 +633,7 @@ geth console에서 다음 명령을 실행시켜 마이닝을 시작한다.
 geth console에서 eth.getBalance(인자는 coinbase를 적음)를 입력하면 생성된 Ether를 출력한다.
 
 ```
-eth.getBalance(eth.accounts[0])
+geth> eth.getBalance(eth.accounts[0])
 ```
 
 ![alt text](figures/2_gethNewAccountMiningToPutEther.png "geth new account and mine to get Ether")
@@ -655,7 +649,7 @@ geth를 올바르게 종료하지 않으면, 지난 세션의 동기화를 잃�
 
 * 단말이 열려 있는 경우 geth 프롬프트 ```> ```에서 마치려면 ```exit```을 입력한다.
 ```
-C:\Users\jsl\Code\201711111>geth --datadir .\eth console
+pjt_dir> geth --datadir .\eth console
 ...생략...
 INFO [09-24|17:10:03.651] Allocated cache and file handles         database=C:\\Users\\jsl\\Code\\201711111\\eth\\geth\\chaindata cache=512 handles=8192
 ...생략...
@@ -752,7 +746,7 @@ sudo ntpdate -s time.nist.gov
 enode는 이더리움 네트워크 상에서 컴퓨터를 찾기 위해 필요한 URL과 유사한 역할을 한다. enode에는 네트워크 연결에 필요한 IP 주소, 포트번호를 포함하고 있다. 추가하는 노드B의 geth console에서 명령을 실행시켜 enode를 찾는다.
 
 ```python
-> admin.nodeInfo.enode
+geth> admin.nodeInfo.enode
 "enode://e0a396df0b5f68d20...5e8f0c@[::]:30446"
 ```
 
@@ -766,7 +760,7 @@ enode는 이더리움 네트워크 상에서 컴퓨터를 찾기 위해 필요�
 
 우선 필요시 추가하기 위해서는 addPeer() 함수를 이용한다. 노드A의 geth 프롬프트에 아래와 같이 함수 인자에 노드B의 enode를 적어주면 된다.
 ```python
-> admin.addPeer("enode://719b29cc599ee5964...11155676a3cb@117.16.xxx.xxx:30446?discport=0")
+geth> admin.addPeer("enode://719b29cc599ee5964...11155676a3cb@117.16.xxx.xxx:30446?discport=0")
 true
 ```
 
@@ -782,7 +776,7 @@ true
 그 디렉토리 밑에는 ```keystore``` 디렉토리가 있고, 그와 같은 수준에 저장하면 된다.
 
 ```python
-C:\Users\jsl\Code\201711111\eth
+pjt_dir\eth
          |
          -- keystore\
          |
@@ -802,7 +796,7 @@ geth --identity "nameNode" \
 
 멀티노드를 성공적으로 구성하면, peer접속 정보를 볼 수 있다.
 ```
-> admin.peers
+geth> admin.peers
 [{
     caps: ["eth/62", "eth/63"],
     id: "e0a396df0b...생략...9e415e8f0c",  추가한 enode와 동일한 값을 가지고 있다.

@@ -1,45 +1,19 @@
-# Chapter 13 웹3 디앱
+﻿# Chapter 14 웹3 디앱
 
-Last Updated 202203011730_20190111_20170205
+지금까지 배운 블록체인을 웹3 디앱으로 구현하게 된다. 먼저 블록체인의 기초적인 기능, 계정 주소와 잔고를 읽고, 이벤트를 통해 잔고의 변화를 관찰하는 작업을 웹에서 한다. 웹지갑을 연결하여, 주소를 읽고 그 주소에서 원격에서 블록체인과 통신할 수 있게 한다. 블록체인에서 투표를 구현하고, 웹에서 투표하는 사례를 구현하게 된다.
 
-
-## 학습목표
-
-이 챕터를 마치게 되면, Web3 DApp을 구현할 수 있게 됩니다.
-우선 블록체인의 기초적인 기능, 계정 주소와 잔고를 읽고, 이벤트를 통해 잔고의 변화를 관찰하는 작업을 웹에서 합니다.
-웹지갑을 연결하여, 주소를 읽고 그 주소에서 원격에서 블록체인과 통신할 수 있게 합니다.
-블록체인에서 투표를 구현하고, 웹에서 투표하는 사례를 실행합니다.
-
-## 목차
-
-
+목차는 다음과 같다.
 * 1. 웹에서 블록체인 연결하기
-* 1.1 웹 개발에 앞선 환경의 준비
-* 1.2 웹서버
-* 1.3 index.html
-* 1.4 웹에서 coinbase 출력
-* 1.5 웹에서 잔고 출력
 * 2. MetaMask
-* 2.1 MetaMask 설치
-* 2.2 네트워크 생성
-* 2.3 window.onload로 해도 된다
 * 3. 웹에서 계정 주소 출력
-* 3.1 provider를 인식
-* 3.2 provider에 따른 계정주소
 * 4. 웹에서 계정잔고 변경 이벤트
-* 4.1 웹소켓
-* 4.2 이벤트
 * 5. 투표 웹디앱
-* 문제: 온라인경매
 
 # 1. 웹에서 블록체인 연결하기
 
-웹디앱 (Web DApp)은 웹에서 작동하는 분산형 애플리케이션이다. 먼저 웹에 연결이 되어야겠다.
-웹은 요청이 있으면, 중앙에서 처리하는 방식을 따른다. 데이터도 중앙에서 제공되고, 처리도 중앙에서 이루어진다.
-이러한 중앙 중심적인 웹에 변화가 있다. 분산이 그것이다.
-이른바 'Web 3.0' 또는 Web3으로 명명되고, 기존의 웹과는 달리 데이터, 처리능력을 어느 한 중앙에 두지 않고 분산하는 것이다.
+웹디앱 (Web DApp)은 웹에서 작동하는 분산형 애플리케이션이다. 먼저 웹에 연결이 되어야겠다. 웹은 요청이 있으면, 중앙에서 처리하는 방식을 따른다. 데이터도 중앙에서 제공되고, 처리도 중앙에서 이루어진다. 이러한 중앙 중심적인 웹에 변화가 있다. 분산이 그것이다. 이른바 'Web 3.0' 또는 Web3으로 명명되고, 기존의 웹과는 달리 데이터, 처리능력을 어느 한 중앙에 두지 않고 분산하는 것이다.
 
-> **Web3**
+> 더 알아보기: **Web3**
 
 > Web 3.0은 블록체인에 기반을 둔 월드와이드웹 World Wide Web을 말한다. 
 Web 3.0이 아직 명확히 정의된 것은 물론 아니다. 웹을 처음 소개한 팀 버너스리는 시맨틱웹을 제안하기도 한다.
@@ -51,39 +25,31 @@ Web3은 반대의 모델을 따르고 있다. 중앙에서 처리하는, 그래�
 
 ## 1.1 웹 개발에 앞선 환경의 준비
 
-지금까지 차근차근 배워왔다면 웹개발의 환경준비는 이미 되어 있을 것이다.
-그래도 provider와 web3.js는 준비되었는지 확인하자.
+지금까지 차근차근 배워왔다면 웹개발의 환경준비는 이미 되어 있을 것이다. 그래도 provider와 web3.js는 준비되었는지 확인하자.
 
 ### Web3 provider를 준비
 
-앞서 설명하였듯이 Web3에서 사용할 수 있는 provider는 (1) HTTP provder, (2) Websocket Provider, (3) IPC Provider가 있다.
-로컬에서 사용하려면 IPC, 원격의 다른 컴퓨터에서 사용하려면 Websocket이나 HTTP provider를 적용하도록 한다.
-이벤트를 사용하는 경우에는 HTTP provider를 사용할 수 없으므로 Websocket을 우선해서 사용하자.
+앞서 설명하였듯이, 원격의 다른 컴퓨터에서 사용하려면 Websocket이나 HTTP provider를 적용하도록 한다. 이벤트를 사용하는 경우에는 HTTP provider를 사용할 수 없으므로 Websocket을 우선해서 사용한다.
+
 이런 provider를 사용할 수 있는 방법은 다음과 같다.
 - 첫째로 자신이 준비한 provider를 사용하는 방식이다. 이를 위해서는 geth network를 실행하고, HTTP 또는 Websocket provider 설정해야 한다.
-- 두번째는 Infura provider과 같은 제3자 네트워크를 사용한다. Infura는 테스트망, 공중망에 대해 블록체인 네트워크 기능을 제공하고 있다. 이 경우, 자신이 Geth를 설치하고, HTTP provider를 사용하지 않아도 된다는 장점이 있다.
+- 두번째는 Infura provider과 같은 제3자 네트워크를 사용할 수 있다. Infura는 테스트망, 공중망에 대해 블록체인 네트워크 기능을 제공하고 있다. 이 경우, 자신이 Geth를 설치하고, HTTP provider를 사용하지 않아도 된다.
 
 물론 자신이 사용하게 될 provider를 제공하는 노드를 띄워놓아야 한다. 앞서 배웠듯이 여기서는 ganache로 실습하기로 한다.
-
-
-```python
-# %load _ganacheNow.bat
-node_modules\.bin\ganache-cli --unlock 0 --host "127.0.0.1" --port "8345" -q
-```
 
 ### Web3.js 라이브러리를 준비
 
 웹 DApp의 화면은 HTML, 자바스크립트로 작성된다. 이를 위해 nodejs와 블록체인에 접근하기 위한 라이브러리가 준비되었는지 확인한다.
-이더리움 블록체인에 접근할 수 있는 대표적인 라이브러리로는 Web3.js, Ethers.js가 많이 사용된다.
-여기서는 먼저 개발되어 오랫 동안 제공된 Web3.js를 사용하기로 하자.
+
+이더리움 블록체인에 접근할 수 있는 대표적인 라이브러리로는 Web3.js, Ethers.js가 많이 사용된다. 여기서는 먼저 개발되어 오랫 동안 제공된 Web3.js를 사용하기로 하자.
 
 ## 1.2 웹서버
  
-웹에서 블록체인을 사용하기 위해서는 웹서버가 필요하다.
-웹디엡도 웹서버가 필요하다는 점이 의아하게 들릴 수 있다.
+웹에서 블록체인을 사용하기 위해서는 웹서버가 필요하다. 웹디엡도 웹서버가 필요하다는 점이 의아하게 들릴 수 있다.
 분명하게 알아두자. 웹페이지를 띄우기 위해 웹서버가 필요한 것이고, 웹페이지에서 버튼을 클릭하는 등의 블록체인과의 통신은 분명 분산처리된다.
-웹서버는 보통 80번 포트에서, 서비스의 요청 http requests을 받고, 이를 처리한 후 요청한 측에 responses를 돌려주는 기능을 한다.
-여기서는 가벼운 Python의 웹서버를 띄워서 사용하기로 한다.
+
+웹서버는 보통 80번 포트에서, 서비스의 요청 http requests을 받고, 이를 처리한 후 요청한 측에 responses를 돌려주는 기능을 한다. 여기서는 가벼운 Python의 웹서버를 띄워서 사용하기로 한다.
+
 웹서버를 띄우기 위해서는:
 - Python 3.x 버전에서는 ```python3 -m http.server```
 - 하위 버전인 Python 2.x에서는 ```python -m SimpleHTTPServer```
@@ -92,26 +58,26 @@ node_modules\.bin\ganache-cli --unlock 0 --host "127.0.0.1" --port "8345" -q
 * 기본 포트는 8000번을 사용하지만, 보안이 걱정되면 다른 포트를 사용해도 된다. 이더리움에서 사용하는 포트는 45로 끝나고 있으니 맞추어 8045를 사용해도 좋다.
 * IP 주소는 127.0.0.1 또는 고정 IP를 쓴다.
 
+명령창의 프로젝트 디렉토리로 이동해서 (```pjt_dir> ``` 로 적고 있다), 다음과 같이 적어서 웹서버를 띄운다.
+
 ```python
-윈도우에서 하는 경우
-C:\Users\jsl\Code\201711111> python -m http.server
+pjt_dir> python -m http.server
 Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/)
 
 또는 포트와 IP를 지정한 경우
-jsl@jsl-smu:~/Code/git/bb/jsl/bitcoin$ python3 -m http.server 8045 --bind 117.16.xx.xx
+pjt_dir> python3 -m http.server 8045 --bind 117.16.xx.xx
 Serving HTTP on 117.16.xx.xx port 8045 (http://117.16.xx.xx:8045/) ...
 ```
 
 그리고 웹브라우저를 열고, http://127.0.0.1:8000/ 또는 http://localhost:8000으로 접속하면 된다.
 <그림 1-1>
 
-> **localhost**
+> 더 알아보기: **localhost**
 
 > localhost는 로컬 컴퓨터의 IP를 대신해 붙여진 명칭으로서 표준적으로 쓰이고 있다.
 localhost는 외부와의 통신이 없이 로컬컴퓨터 자신과 통신할 때, 루프백 loopback 주소로 사용한다.
 IP 주소 127.0.0.0 ~ 127.255.255.255이 할당되어 있다.
 localhost는 127.0.0.1으로 사용해도 된다.
-
 
 <그림 1-1: 웹서버 연결 화면>
 ![alt text](figures/13_pythonWebServerWeb3js.png "geth download page")
@@ -119,11 +85,11 @@ localhost는 127.0.0.1으로 사용해도 된다.
 ## 1.3 index.html
 
 웹 서버가 작동되는지 확인하기 위해 ```index.html``` 파일을 프로젝트 디렉토리 아래에 저장한다.
-
+주의하자. 웹서버를 띄운 디렉토리에 저장되어야, ```index.html``` 파일이 인식된다.
 
 ```python
-%%writefile /mnt/c/Users/jsl/Code/201711111/index.html
-HELLO from Jupyter Notebook
+[파일명 index.html]
+Hello Blockchain!
 ```
 
 어떤 웹 브라우저라도, 선택하여 다음과 같이 URL을 입력한다. ```index.html``` 파일명은 생략되었지만 해당 URL에서는 그 파일을 찾기 때문에 우리가 방금 만든 그 파일을 열게 된다.
@@ -132,29 +98,28 @@ HELLO from Jupyter Notebook
 
 ## 1.4 웹에서 coinbase 출력
 
-버튼을 누르면, 계정 주소를 읽어오도록 웹페이지를 제작해보자.
-HTML, javascript 코드에서 이해가 필요한 필요한 부분을 골라서 설명을 해보자.
+버튼을 누르면, 계정 주소를 읽어오도록 웹페이지를 제작해보자. HTML, Javascript 코드에서 이해가 필요한 필요한 부분을 골라서 설명을 해보자.
 
 ### DOCTYPE
-모든 HTML 문서는 ```<!DOCTYPE>```으로 어떤 페이지인지 선언을 한다.
-DOCTYPE은 문서 형식 선언 (Document Type Declaration)이다.
-```<!DOCTYPE html>```이라고 적어주면, html문서라고 말하는 것이다.
-이 선언은 HTML 태그는 아니다. 느낌표가 앞에 붙어 있고 끝나는 태그 ```</DOCTYPE>```이 없다.
-어떤 문서인지를 나타내, 브라우저가 페이지를 띄울 때 그에 맞추도록 한다.
-HTML5부터는 ```<!DOCTYPE html>```이라고 선언하며, 대소문자 무관하다.
+
+모든 HTML 문서는 ```<!DOCTYPE>```으로 어떤 페이지인지 선언을 한다. DOCTYPE은 문서 형식 선언 (Document Type Declaration)이다.
+
+이 선언은 HTML 태그는 아니다. 느낌표가 앞에 붙어 있고 끝나는 태그 ```</DOCTYPE>```이 없다. 어떤 문서인지를 나타내, 브라우저가 페이지를 띄울 때 그에 맞추도록 한다.
+
+HTML5부터는 html문서는 ```<!DOCTYPE html>```이라고 선언하며, 대소문자 무관하다.
 
 > 잠깐 ```<!DOCTYPE>```이라고만 해주면, window.ethereum 객체가 생성이 되지 않는다! 이 간단한 오류를 바로 잡기 위해 많은 시간이 필요했다고 고백하오니 주의!
 
 ### web3js 라이브러리
 
 우리가 만드는 웹페이지는 블록체인과 인터페이스하기 위해 ```web3.js``` 라이브러리를 사용한다.
-웹서버에서 띄우는 페이지에 ```require(Web3)```라고 적으면 오류가 발생한다.
-웹페이지에는 ```require```명령어를 사용하지 않도록 한다.
-```require```는 node.js에서 라이브러리를 호출할 때 사용하는 명령어이다.
-브라우저에서는 ```<script src"..."></script>```이렇게 하면 된다.
-이 때, web3.js가 설치된 상대경로를 적어주거나, 직접 cdn을 적어주어도 된다.
+
+웹서버에서 띄우는 페이지에 ```require```명령어를 사용하지 않도록 한다. ```require(Web3)```라고 적으면 오류가 발생한다. ```require```는 node.js에서 라이브러리를 호출할 때 사용하는 명령어이다.
+
+웹브라우저에서 라이브러리를 사용할 경우, ```<script src"..."></script>```이렇게 하면 된다. 이 때, web3.js가 설치된 상대경로를 적어주거나, 직접 cdn을 적어주어도 된다.
 
 (1) web3.js의 상대경로를 적어주는 방법
+
 웹페이지에서 javascript 라이브러리를 사용할 경우, 경로에 주의해서 포함해야 한다.
 web3.js 라이브러리는 **현재 HTML파일을 기준으로 상대경로**를 적어준다.
 예를 들어, contract.html을 기준으로 상대경로 src="../node_modules/web3/dist/web3.js"를 적어준다.
@@ -166,9 +131,7 @@ web3.js 라이브러리는 **현재 HTML파일을 기준으로 상대경로**를
 아래 경로에서 보면 contract.html의 상위로 올라가고 거기서부터 web3.js가 있는 경로를 따라가 보자.
 그 경로를 적어주면 되는 것이다.
 ```python
-C:\Users\jsl\Code\myProject\ 리눅스는 '/home/user/Code/myProject
-         |
-         ---> ipynb 파일들
+프로젝트 디렉토리 pjt_dir\
          |
          ---> _gethNow.sh
          |
@@ -185,7 +148,7 @@ C:\Users\jsl\Code\myProject\ 리눅스는 '/home/user/Code/myProject
 
 (2) cdn을 적어주어도 된다.
 
-web3.js를 직접 저장하지 않고, 외부 사이트로부터 가져와 사용할 수 있다. 몇 개의 CDN Content Delivery Network에서 제공하고 있는데 jsdelvr를 사용할 수 있는데, 버전은 정해서 적어주면 된다.
+web3.js를 직접 저장하지 않고, 외부 사이트로부터 가져와 사용할 수 있다. 몇 개의 CDN Content Delivery Network에서 제공하고 있고, jsdelvr를 사용할 수 있는데, 버전은 정해서 적어주면 된다.
 (참조 https://github.com/ChainSafe/web3.js)
 
 ```python
@@ -199,9 +162,10 @@ https://cdnjs.cloudflare.com/ajax/libs/web3/1.2.7/web3.min.js
 
 ### HttpProvider
 
-HttpProvider("http://127.0.0.1:8345")를 사용한다.
-이를 위해 ganche를 8345 포트에 미리 띄워놓아야 한다.
+HttpProvider("http://127.0.0.1:8345")를 사용한다. 이를 위해 ganche를 8345 포트에 미리 띄워놓아야 한다.
+
 또는 제3자 provider를 사용해도 되는데, ConsenSys에서 제공하는 Infura, MetaMask의 web3.currentProvider, Moralis API가 있다.
+
 HTTP header의 설정을 아래와 같이 따로 해둘 수 있지만, 보통 생략하고 기본을 적용한다.
 ```
 var options = {
@@ -232,13 +196,13 @@ Web3.providers.HttpProvider("http://127.0.0.1:8345", options)
 ### web3.js 1.0 이전 버전을 사용
 
 자 그러면 웹페이지를 제작해보자.
-web3.js는 1.0 이전과 그 이후로 API가 많이 변화했다.
-우선 옛 버전인 0.20으로 해보자.
+
+web3.js는 1.0 이전과 그 이후로 API가 많이 변화했다. 우선 옛 버전인 0.20으로 해보자.
 ```<script src="https://cdn.jsdelivr.net/npm/web3@0.20.5/dist/web3.min.js"></script>``` 에서 버전을 확인한다.
 
 
 ```python
-%%writefile scripts/testAccount_0_20.html
+[파일명: scripts/testAccount_0_20.html]
 <!doctype>
 <html>
 
@@ -261,24 +225,18 @@ function myFunction() {
 
 </body>
 </html>
-
 ```
 
-    Overwriting scripts/testAccount_0_20.html
-
-
-페이지를 만들고 나서는, 웹브라우저에 url을 입력하여 올바르게 뜨는지 확인해야 한다.
-앞서 웹서버를 띄우면서 설명했던 url을 기억해내자.
-입력할 url은 ```http://localhost:8045/scripts/testAccount_0_20.html``` 이다.
+페이지를 만들고 나서는, 웹브라우저에 url을 입력하여 올바르게 뜨는지 확인해야 한다. 앞서 웹서버를 띄우면서 설명했던 url을 기억해내자. 입력할 url은 ```http://localhost:8045/scripts/testAccount_0_20.html``` 이다.
 
 ### web3.js 1.x 버전을 사용한다.
 
 버전을 교체하려면, 간단히 버전만 변경하면 된다.
+```
 <script src="https://cdn.jsdelivr.net/npm/web3@1.2.5/dist/web3.min.js"></script>
-이렇게 사용하려는 버전을 적어준다.
-web3.js 버전이 올라가면서, 명령어에 변화가 있다.
-전과 달리, 명령어를 비동기적으로 처리해야 한다.
-지난 버전에서는 계정을 단순하게 호출하면 되었다.
+```
+
+이렇게 사용하려는 버전을 적어준다. web3.js 버전이 올라가면서, 명령어에 변화가 있다. 전과 달리, 명령어를 비동기적으로 처리해야 한다. 지난 버전에서는 계정을 단순하게 호출하면 되었다.
 ```
 const coinbase = web3.eth.accounts[0];
 ```
@@ -288,10 +246,8 @@ const coinbase = web3.eth.accounts[0];
 const account = await web3.eth.getAccounts();
 ```
 
-
-
 ```python
-%%writefile scripts/testAccount.html
+[파일명: scripts/testAccount.html]
 <!doctype html>
 <html>
 
@@ -317,45 +273,46 @@ async function myFunction() {
 </html>
 ```
 
-    Overwriting scripts/testAccount.html
-
-
-웹브라우저에 입력할 url은 ```http://localhost:8045/scripts/testAccount.html``` 이다.
-참고로 geth 단말에서는 await하지 않아도 아래와 같이 계정의 잔고를 출력할 수 있다.
-
+웹브라우저에 입력할 url은 ```http://localhost:8045/scripts/testAccount.html``` 이다. 참고로 geth 단말에서는 await하지 않아도 아래와 같이 계정의 잔고를 출력할 수 있다.
 
 ```python
-!geth --exec "web3.eth.getBalance(web3.eth.coinbase);" attach http://localhost:8345
+geth> "web3.eth.getBalance(web3.eth.coinbase);" attach http://localhost:8345
+
+100000000000000000000
 ```
-
-    100000000000000000000
-
 
 ### 자바스크립트 콘솔에서 디버깅
 
-개발하면서 앞의 testAccount.html을 웹브라우저에서 열어보면, 항상 정상적으로 작동하지는 않기 마련이다.
-그러면 디버깅을 하기 위해 자바스크립트 개발자콘솔을 열어볼 필요가 있다.
+개발하면서 앞의 testAccount.html을 웹브라우저에서 열어보면, 항상 정상적으로 작동하지는 않기 마련이다. 그러면 디버깅을 하기 위해 자바스크립트 개발자콘솔을 열어볼 필요가 있다.
+
 브라우저별로 개발자콘솔을 여는 방식이 다르다.
-* 구글 크롬: 메뉴에서 More Tools > Developer Tool 또는 단축키 "Shift+Ctrl+J"를 누르면 된다.
+* 구글 크롬: 메뉴에서 'More Tools' > 'Developer Tools' 또는 단축키 "Shift+Ctrl+J"를 누르면 된다.
 * 인터넷 익스플로러: 구글과 동일하게 More Tools > Developer Tool
 * Safari:  환경설정 > 메뉴막대에서 개발자용 메뉴 보기
 
-열면 HTML페이지에서 오류가 발생했는지, 그 이유가 무엇인지 알아볼 수 있다.
-자바스크립트콘솔을 열어서, 변수의 값을 확인하거나 디버깅할 수 있다.
-또한 콘솔에서 web3를 사용할 수 있다.
+열면 HTML페이지에서 오류가 발생했는지, 그 이유가 무엇인지 알아볼 수 있다. 상단의 탭 가운데 하나인 콘솔을 클릭하고 열면, ```> ``` 프롬프트가 뜬다. 프롬프트에서 스크립트를 입력하면서 변수의 값을 확인하거나 디버깅할 수 있다.
+```
+javascript> console.log("hello");
+> document.body.style.backgroundColor = "lightblue"; 페이지 배경색을 변경한다
+```
+
+또한 콘솔에서 web3의 API를 테스트할 수 있다.
 웹페이지가 열리면서, web3가 심어져 있기 때문에 자바스크립트 콘솔에서 이 명령어를 사용할 수 있게 된다.
 <TAB>키를 누르면서 web3에서 제공되는 함수들이 어떤 것이 있는지 알아 볼 수 있으며,
 관련 명령어를 연습하기도 편리하다.
 
 간단한 명령어 몇가지를 연습해보자.
 ```
-> window.web3 (또는 web3라고 입력해도 동일한 기능을 한다)
-{_requestManager: t, givenProvider: null, providers: {…}, _provider: s, …}
+javascript> window.web3 (또는 web3라고 입력해도 동일한 기능을 한다)
+{_requestManager: t, givenProvider: null, providers: {…}, …}
 
 > web3.version (버전을 확인한다)
 1.2.5
+```
 
-> window.web3.eth.getAccounts() (web3.eth.getAccounts()로 해도 된다. Promise를 반환하고, 삼각형을 클릭하면 계정배열을 조회할 수 있다)
+계속해서, web3 함수를 연습해보자.
+```
+javascript> window.web3.eth.getAccounts() (web3.eth.getAccounts()로 해도 된다. Promise를 반환하고, 삼각형을 클릭하면 계정배열을 조회할 수 있다)
 [[PromiseResult]]: Array(5)
 0: "0xC8Ea4C4e655F8152aDC075a649AA7ec35564C7C0"
 1: "0x4fa2C7caac80A8518264d263BDB5ed74f1A6F398"
@@ -365,38 +322,36 @@ async function myFunction() {
 length: 5
 
 > web3.eth.getCoinbase().then(console.log)
-> Promise {<pending>}
+> Promise {<pending>}
 0x8078e6bc8e02e5853d3191f9b921c5aea8d7f631
 ```
 
-> window object
-window object는 어느 브라우저에서나 지원하는 객체이고, 브라우저의 윈도우를 의미한다.
-모든 자바 객체, 함수, 변수 모두 window객체의 멤버가 된다.
-예를 들어, console은 window에서 열린 console을 말하며, 'window.console' 또는 그냥 'console'이라고 해도 된다.
-로그를 쓰려면
-```window.console.log()``` 또는 ```console.log()``이라고 한다.
+> 더 알아보기: **window object**
 
+> window object는 어느 브라우저에서나 지원하는 객체이고, 브라우저의 윈도우를 의미한다.모든 자바 객체, 함수, 변수 모두 window객체의 멤버가 된다.예를 들어, console은 window에서 열린 console을 말하며, 'window.console' 또는 그냥 'console'이라고 해도 된다.
+로그를 쓰려면```window.console.log()``` 또는 ```console.log()``이라고 한다.
 HTML문서가 브라우저에서 열리면 document 객체가 되는데, 이도 마찬가지이다.
 window.document 또는 그냥 document 같은 의미이다.
-window.document.getElementById("header")는
-document.getElementById("header")와 같은 의미이다.
+window.document.getElementById("header")는 document.getElementById("header")와 같은 의미이다.
 
 ## 1.5 웹에서 잔고 출력
 
-WEI는 10^-18 ETH이다. 자바스크립트에서 WEI를 표현하면서 문제가 발생할 수 있다.
-toWei(), fromWei() 함수는 String 또는 BN을 변환하지만, Number를 넘겨주면
-```pass numbers as strings or BN objects to avoid precision errors.``` 이런 오류를 만나게 된다.
+wei는 $10^{-18}$ ether이다. 자바스크립트에서 wei를 표현하면서 문제가 발생할 수 있다. toWei(), fromWei() 함수는 String 또는 BN을 인자로 받지만, 숫자를 넘겨주면 ```pass numbers as strings or BN objects to avoid precision errors.``` 이런 오류를 만나게 된다.
 
-web3.eth.getBalance(coinbase)는 wei를 (eth가 아니다), 문자열로 출력한다.
-BigNumber로 출력하려면 toBN() 함수를 사용한다.
-큰 숫자로 연산을 해보자.
-100 ETH를 Wei로 변환하면 100 x 10^18이므로 1e+20이다.
-또한 10^100을 더 곱해주면 1e+120이 된다.
+```
+> web3.utils.toWei(10, 'ether')
+Error: Please pass numbers as strings or BN objects to avoid precision errors.
+    at Object.toWei
+> web3.utils.toWei(String(10), 'ether') 문자열로 넘겨준다.
+'10000000000000000000' 문자열로 출력한다
+```
 
+web3.eth.getBalance(coinbase)는 wei를 (eth가 아니다), 문자열로 출력한다. BigNumber로 출력하려면 toBN() 함수를 사용한다. 큰 숫자로 연산을 해보자. 100 ETH를 Wei로 변환하면 $100 x 10^{18}$ 이므로 1e+20이다. 또한 10^100을 더 곱해주면 1e+120, 자릿수가 큰 숫자가 된다.
 
+아래 프로그램을 웹에서 로딩해 출력을 확인해보자.
 
 ```python
-%%writefile scripts/testBigNumber.html
+[파일명: scripts/testBigNumber.html]
 <!doctype html>
 <html>
 
@@ -440,19 +395,18 @@ async function getWEI() {
 </html>
 ```
 
-    Overwriting scripts/testBigNumber.html
-
-
 # 2. MetaMask
 
 많이 사용되는 지갑으로는 MetaMask Wallet, Trust Wallet을 꼽을 수 있다.
-Trust Wallet은 iOS, Android에서 사용하는 반면 MetaMask는 모바일과 웹브라우저 확장으로 제공된다.
-MetaMask는 웹브라우저에 설치하는 지갑으로 블록체인에 연결하기 위해 필요하다.
-웹브라우저에서 주소를 읽어 오기때문에, **웹서버가 떠 있어야 기능**할 수 있다.
-주소를 가지고 블록체인 거래를 사인하고, 사적키를 노출하는 것을 막을 수있다.
-경우에 따라서는 http provider는 자신의 IP를 사용하지만, metamask에 연결된 타인의 주소를 가지고 거래할 수도 있다.
-사적 주소 private key는 보안이 엄중하게 지켜져야 하므로, 다른 사람의 키를 알아내거나 이를 다른 웹페이지에서 오용하도록 하면 곤란하다.
-Metamask RPC 방법을 이용하여 안전하게 사인을 하거나 암호화를 할 수 있게 된다.
+
+Trust Wallet은 iOS, Android에서 사용하는 반면 MetaMask는 모바일과 웹브라우저 확장으로 제공된다. MetaMask는 웹브라우저에 설치하는 지갑으로 블록체인에 연결하기 위해 필요하다.
+
+이들 웹지갑을 사용하면, 웹브라우저에서 키를 읽어 오기때문에, **웹서버가 떠 있어야 기능**할 수 있다.
+이 키를 가지고 블록체인 거래를 사인하고, 사적키를 안전하게 관리해서, 쉽게 노출되는 것을 막을 수있다.
+
+잠깐 생각해보자. http provider를 통하면 자신의 키로 사인해야 하는 경우가 발생하기 마련이다 (http provider는 로컬이든 고정 IP이든 거기 내장된 키를 가지고 있다는 것을 기억하자). 이 경우 Metamask에 연결하면, 지갑에 저장된 키를 가져와 사인할 수도 있다.
+
+사적키는 덜 하지만 공적키는 보안이 엄중하게 지켜져야 하므로, 다른 사람의 키를 알아내거나 이를 다른 웹페이지에서 오용하도록 하면 곤란하다. Metamask RPC 방법을 이용하여 안전하게 사인을 하거나 암호화를 할 수 있게 된다.
 
 > 암호화폐 지갑
 
@@ -467,53 +421,71 @@ MyEtherWallet이나 우리가 사용하는 MetaMask는 웹에서 사용될 수 �
 
 자신의 이더리움 노드가 필요없다. 즉 로컬에 이더리움을 설치하고, 블록체인을 동기화할 필요가 없다.
 크롬 또는 인터넷 익스플로러 확장 팩으로 설치한다.
-이 때 12 단어를 입력해야 한다. 이 구문은 시드 seed로 이를 암호화하여 키를 생성하게 된다.
-이 구문은 키복구구문 Secret Recovery Phrase으로, MetaMask를 삭제했거나 문제가 있어서 키를 복구할 때 사용될 수 있다.
 
-## 2.2 네트워크 생성
+이 때 12 단어를 입력해야 한다. 이 구문은 시드 seed로 이를 암호화하여 키를 생성하게 된다. 이 구문은 키복구구문 Secret Recovery Phrase으로, MetaMask를 삭제했거나 문제가 있어서 키를 복구할 때 사용될 수 있다.
 
-MetaMask에 Ganache 네트워크를 추가해보자.
-<그림 1-2>에서 보듯이 네트워크 이름은 자신이 인식할 수 있는 명을 입력하고, URL은 앞서 배운대로 localhost에 포트번호를 추가해서 적어준다.
+## 2.2 MetaMask 연결
+
+### 단계 1: 네트워크 추가
+MetaMask에 자신의 Ganache 네트워크를 추가해보자. <그림 1-2>에서 보듯이 네트워크 이름은 자신이 인식할 수 있는 명을 입력하고, URL은 앞서 배운대로 localhost에 포트번호를 추가해서 적어준다.
+
 ganache 기본 Chain ID는 1337이다.
 
 <그림 1-2: Ganache 네트워크 추가>
 ![alt text](figures/13_metamaskAddGanache.png "metamask creating ganache network")
 
-자신의 Ganache 네트워크에 있는 키를 import할 수 있다.
-account키가 아니라, private key를 복사해서 붙여넣기 해야 한다.
-계정주소가 아니라 private key를 0x를 제외하고 입력해야 한다.
+### 단계 2: 네트워크의 키에 등록, 연결하기
+앞서 네트워크가 생성되었다고 하더라도, 상호작용할 계정이 아직 없다. 현재 잔고가 있고 사용가능한 실제 키가 필요하다.
 
-또는 반대로 MetaMask의 키를 자신의 geth로 가져올 수 있다.
-MetaMask에서 키를 선택 > 계정세부정보 > 비공개키 내보내기를 한 후, 그 키를 geth에서 가져오기를 하면  된다.
+앞서 생성한 네트워크 명칭 옆의 원판 아이콘을 클릭하고, '계정 가져오기'를 선택하면 '여기에 비공개 키 문자열을 붙여넣으세요'를 볼 수 있다.
+
+그 밑에 키를 붙여 넣으면 된다. 이때 account키가 아니라, private key를 복사해서 붙여넣기 해야 한다. 계정주소가 아니라 private key를 0x를 제외하고 입력해야 한다. ganache는 다시 생성되면 키가 재설정되기 때문에 가져오기를 새로 해야 한다.
+
+또는 반대로 MetaMask의 키를 자신의 geth로 가져올 수 있다. MetaMask에서 키를 선택 > 계정세부정보 > 비공개키 내보내기를 한 후, 그 키를 geth에서 가져오기를 하면  된다.
 ```
-geth account import metakey.prv (exported from MetaMask)
+pjt_dir> geth account import metakey.prv (MetaMask에서 내보낸 키)
 ```
 
 <그림 1-3: 키 가져오기>
 ![alt text](figures/13_metamaskImportPrivateKey.png "metamask importing private key")
 
 
-REMIX에서 Injected Web을 선택하여 MetaMask를 통해 배포를 할 수 있다.
-이 때 반드시 REMIX는 http:// 연결을 해서 열어야 한다 (https:// 가 아니다!)
+### 단계 3: MetaMask 연결 요청
+
+#### REMIX의 'Injected Web'
+
+앞서 MetaMask와 로컬의 네트워크가 연결되었다.
+
+또한 REMIX에 연결할 수도 있다. REMIX 배포창의 메뉴에서 ```Injected Web```을 선택하여 (현재는 Javascript VM) 연결하면, MetaMask를 통해 배포를 할 수 있다.
+
+MetaMask와 REMIX를 연결하려면:
+* (1) 앞서 로그인해서 MetaMask가 활성화되어 있어야 하겠다. 현재는 여우아이콘 아래에 '연결되지 않음'이라고 표시되어 있다. 앞 단계에서 가져온 키를 선택한다. 
+* (2) 다음 REMIX를 ```http://``` 주소로 열어야 한다 (```https://``` 가 아니다!).
+* (3) REMIX의 배포창에서 ```Injected Web```을 선택한다. 반응이 없으면 REMIX를 새로 열어야 할 수도 있다.
+성공적으로 연결이 되면, 바로 밑의 주소가 앞서 선택한 네트워크의 계정으로 변경되는 것을 확인할 수 있다.
+또한 MetaMask에서도 계정주소 좌측에 '연결되지 않음' -> '연결'로 녹색 아이콘이 활성화된다. 
 
 <그림 1-4: REMIX를 ```http://```로 열어서 MetaMask에 연결>
 ![alt text](figures/13_metamaskConnectRemix.png "metamask connect from REMIX")
+
+#### 웹브라우저에서 MetaMask연결: ethereum 객체
+
+웹브라우저에서 연결되면, ethereum 객체를 생성하게 된다. 실제 연결을 하면서 다음 장에서 이해하기로 하자.
 
 ## 2.3 MetaMask 설치 확인
 
 ### MetaMask는 ethereum 객체를 만들어 준다
 
 MetaMask가 설치되었으면, 웹페이지가 뜨면서, ethereum 객체를 생성해서 'window' 객체에 하위로 밀어 넣어주어 'window.ethereum'을 생성하게 된다.
+
 코드에서 보듯이 설치 여부는 ```if (ethereum)``` 또는 ```if (typeof window.ethereum !== 'undefined')```, 즉 ethereum 객체가 이미 있으면이라고 확인하며, 이는 MetaMask가 설치되어 있다는 의미인 것이다.
 
-ethereum.isMetaMask는 메타마스크가 떠 있는지 여부를 알려준다.
-혹시 연결이 안되면 MetaMask 여우아이콘에 마우스 오른쪽 버튼을 눌러 "This can read and change site data" > "On all sites"를 선택하여 권한을 해제한다.
+ethereum.isMetaMask는 메타마스크가 떠 있는지 여부를 알려준다. 혹시 연결이 안되면 MetaMask 여우아이콘에 마우스 오른쪽 버튼을 눌러 "This can read and change site data" > "On all sites"를 선택하여 권한을 해제한다.
 
-주의: <p id="metamaskInstall">가 먼저 위치해야, 다음에 따라오는 script가 실행될 때 그 id명을 인식한다.
-
+주의: ```<p id="metamaskInstall">```가 먼저 위치해야, 다음에 따라오는 script가 실행될 때 그 id명을 인식한다.
 
 ```python
-%%writefile scripts/metamaskEthereum.html
+[파일명: scripts/metamaskEthereum.html]
 <!DOCTYPE html>
 <html>
 <head>
@@ -535,20 +507,21 @@ ethereum.isMetaMask는 메타마스크가 떠 있는지 여부를 알려준다.
 </html>
 ```
 
-    Overwriting scripts/metamaskEthereum.html
+웹브라우저에 http://localhost:8000/scripts/metamaskEthereum.html을 입력하자. 출력에 "metamask is installed" 문장이 출력되면 설치가 되었다는 의미이다.
 
+console 창을 보면 연결을 확인할 수 있다. ```You are accessing the MetaMask``` 출력을 볼 수 있고, ethereum이라는 명령어를 입력하면 객체의 내용이 출력된다.
 
-웹브라우저에 http://localhost:8000/scripts/metamaskEthereum.html을 입력하자.
-출력에 "metamask is installed" 문장이 출력되면 설치가 되었다는 의미이다.
+```
+javascript> ethereum
+Proxy {_events: {…}, _eventsCount: 1, _maxListeners: 100, _log: u, _state: {…}, …}
+```
 
 ### window.onload로 해도 된다
 
-이번에는 이벤트를 잡아서 해보자.
-```window.onload``` 윈도우가 뜨는 시점에 설치여부를 판단하는 것이다.
-
+이번에는 이벤트를 잡아서 해보자. ```window.onload``` 윈도우가 뜨는 시점에 설치여부를 판단하는 것이다.
 
 ```python
-%%writefile scripts/metamaskEthereumOnLoad.html
+[파일명: scripts/metamaskEthereumOnLoad.html]
 <!DOCTYPE html>
 <html>
 <head>
@@ -573,8 +546,8 @@ ethereum.isMetaMask는 메타마스크가 떠 있는지 여부를 알려준다.
 
 # 3. 웹에서 계정 주소 출력
 
-거래가 완성되려면 디지털사인이 필요하고, 키가 있어야 하겠다.
-특히 웹은 원격의 사용자가 거래를 요청하고 되고, 이 경우 어느 키를 사용할지 선택이 필요하다.
+거래가 완성되려면 디지털사인이 필요하고, 키가 있어야 하겠다. 특히 웹은 원격의 사용자가 거래를 요청하고 되고, 이 경우 어느 키를 사용할지 선택이 필요하다.
+
 웹에서 사용할 수 있는 키는 다음의 경우이다.
 - 자신의 로컬 pc에 설치된 이더리움 네트워크로부터 provider에서의 계정주소,
 - MetaMask provider에서의 계정주소
@@ -598,8 +571,7 @@ if (typeof window.web3 !== 'undefined') {
 
 ### MetaMask provider
 
-이전 방식은 ```if(window.web3)``` 명령어로 ```window.web3```가 만들어졌는지에 따라 설치여부를 확인한다.
-설치되었으면, 만들어진 window.web3를 새롭게 new Web3(window.web3.currentProvider)로 재설정한다.
+이전 방식은 ```if(window.web3)``` 명령어로 ```window.web3```가 만들어졌는지에 따라 설치여부를 확인한다. 설치되었으면, 만들어진 window.web3를 새롭게 new Web3(window.web3.currentProvider)로 재설정한다.
 
 ```
 const Web3 = require("web3");
@@ -609,9 +581,8 @@ if (window.web3) { // window.web3가 자동으로 inject되었는지
 }
 ```
 
-앞으로는 이렇게 한다. 
-EIP-1102, EIP-1193에 따라 MetaMask, Status 또는 Ethereum 호환 브라우저와 같은 Ethereum providers가 공통적으로 따라야 하는 표준을 정하였다. 모두 window.ethereum를 inject해주어야 하고, window.ethereum이 provider가 된다.
-따라서 더 이상 currentProvider를 확인할 필요가 없다.
+앞으로는 이렇게 한다.  EIP-1102, EIP-1193에 따라 MetaMask, Status 또는 Ethereum 호환 브라우저와 같은 Ethereum providers가 공통적으로 따라야 하는 표준을 정하였다. 모두 window.ethereum를 inject해주어야 하고, window.ethereum이 provider가 된다. 따라서 더 이상 currentProvider를 확인할 필요가 없다.
+
 웹페이지가 열리면서 MetaMask는 window.ethereum 객체를 생성하게 되고 이를 통해 web3를 생성하면 된다.
 ethereum.enable()도 더 이상 지원되지 않는다.
 
@@ -622,7 +593,7 @@ if (window.ethereum) { // window.ethereum이 provider이므로 currentProvider�
 }
 ```
 
-> window.web3 vs web3
+> 더 알아보기: window.web3 vs web3
 
 > 앞서 window를 간단히 설명하였다. window.web3는 전역변수이고, web3를 "web3 = new Web3(web3.currentProvider)" 이렇게 함수 내에서 정의했다면 함수내 지역변수 이다.
 
@@ -630,14 +601,20 @@ if (window.ethereum) { // window.ethereum이 provider이므로 currentProvider�
 ### 13.3.2 provider에 따른 계정주소
 
 다음 코드는 provider를 경우의 수에 따라 설정하고 있다.
-- window.ethereum이 생성되어 있는 경우, 즉 MetaMask가 설치되어 ethereum이 만들어져 있는 경우이다. ```window.ethereum```에서 web3를 생성한다.
-- window.web3이 생성되어 있어 있는 경우는 web3가 생성되어 밀어 넣어져 있는 상태로서 currentProvider가 이미 생성되어 있고 여기로부터 web3를 생성한다.
+- ```if(window.ethereum)``` window.ethereum이 생성되어 있는 경우: 즉 MetaMask가 설치되어 ethereum이 만들어져 있는 경우이다. ```window.ethereum```에서 web3를 생성한다.
+- ```else if(typeof window.web3 !== 'undefined')``` window.web3이 생성되어 있어 있는 경우: web3가 생성되어 밀어 넣어져 있는 상태로서 currentProvider가 이미 생성되어 있고 여기로부터 web3를 생성한다.
 - 마지막으로 로컬 provider에서 web3를 생성한다.
 
 
+myFunction이 실행되면, 계정의 주소를 출력한다.
+* MetaMask에 연결되어도, 앞서 Ganache 네트워크를 만들어 놓지 않으면, 다른 네트워크에 연결을 시도하게 된다.
+* MetaMask에 연결해서도 일관되게 web3를 사용하면 좋겠지만 그렇지 못하다.
+ethereum에서는 ```ethereum.request(({ method: 'eth_requestAccounts' })```라고 한다.
+* 입력은 Private Keys를 붙여넣기 했었지만, 출력은 계정주소를 하고 있으니 확인해보자.
+
 
 ```python
-%%writefile scripts/testProvider.html
+[파일명: scripts/testProvider.html]
 <!doctype html>
 <html>
 
@@ -654,7 +631,7 @@ if (window.ethereum) { // window.ethereum이 provider이므로 currentProvider�
 <script>
     if (window.ethereum) {
         window.web3 = new Web3(window.ethereum); //window.ethereum is a provider itself
-        document.getElementById("conn").innerHTML = "connected to MetaMask";
+        document.getElementById("conn").innerHTML = "connected to MetaMask!";
     } else if (typeof window.web3 !== 'undefined') {
         window.web3 = new Web3(web3.currentProvider);
         document.getElementById("conn").innerHTML = "connected to currentProvider";
@@ -663,10 +640,10 @@ if (window.ethereum) { // window.ethereum이 provider이므로 currentProvider�
         document.getElementById("conn").innerHTML = "connected to Local Host";
     }
     
-    async function myFunction() {
-        const account = await web3.eth.getAccounts();
-        document.getElementById("coin").innerHTML = "coinbase: " + account[0];
-    }
+    //async function myFunction() { //not working when ethereum is connected
+    //    const account = await web3.eth.getAccounts();
+    //    document.getElementById("coin").innerHTML = "coinbase: " + account[0];
+    //}
     async function myFunction() { // no need to be this way with ethereum.request
         if(window.ethereum) {
             accounts = await ethereum.request({ method: 'eth_requestAccounts' });
@@ -682,11 +659,7 @@ if (window.ethereum) { // window.ethereum이 provider이므로 currentProvider�
 </html>
 ```
 
-    Overwriting scripts/testProvider.html
-
-
-연결하고 metamask에서 키를 읽어서 출력해 보자.
-키는 함부러 노출해서는 안된다는 점에 유의하자.
+연결하고 metamask에서 키를 읽어서 출력해 보자. 키는 함부러 노출해서는 안된다는 점에 유의하자.
 
 if문으로 분기하는 경우를 하나씩 주석으로 가리면서 (comment out), 어느 경우에 어떻게 연결되는지와 연결된 계정주소를 web3에서 읽어낼 수 있는지 시간을 들여서 연습해보면 많은 도움이 될 것이다.
 ethereum에서 생성된 web3를 통해 web3.eth.getAccounts()로 계정을 읽어올 수 있다.
@@ -700,15 +673,13 @@ const account = accounts[0];
 
 # 4. 웹에서 계정잔고 변경 이벤트
 
-계정의 잔고에 변화가 있는지 관찰해보자.
-그렇다면 뭔가 이벤트 프로그래밍을 해야 가능할 것이라고 판단된다.
+계정의 잔고에 변화가 있는지 관찰해보자. 그렇다면 뭔가 이벤트 프로그래밍을 해야 가능할 것이라고 판단된다.
 
 ## 4.1 웹소켓
 
-웹소켓은 프로세스를 열어놓고, 양방향 통신을 가능하게 한다.
-http와 달리 request, response 메시지를 주고받지 않는다.
-일단 통신이 연결되면 원하는대로 요청메시지를 주고 받을 수 있다.
-```WebsocketProvider("ws://localhost:8345"))``` 코드와 같이 http:// 가 아니라 ws:// 로 적어주어야 한다.
+웹소켓은 프로세스를 열어놓고, 양방향 통신을 가능하게 한다. http와 달리 request, response 메시지를 주고받지 않는다.
+
+일단 통신이 연결되면 원하는대로 요청메시지를 주고 받을 수 있다. ```WebsocketProvider("ws://localhost:8345"))``` 코드와 같이 http:// 가 아니라 ws:// 로 적어주어야 한다.
 
 ```
 const options = {
@@ -738,25 +709,28 @@ const ws = new Web3.providers.WebsocketProvider('ws://localhost:8546', options);
 
 ## 4.2 이벤트
 
-### subscribe
-logs에서 이벤트를 읽을 때
-web3 버전 0.20에서는 ```web3.eth.filter```를 사용했으나, 버전 1.x에서는 ```web3.eth.subscribe```를 대신 사용한다.
-web3 0.20는 polling 방식을 사용한다. 이벤트가 발생했는지 계속 확인하는 방식이다.
-반면에 Web3 1.x에서는 push방식으로 작동하고, 이벤트가 발생하는지 계속 확인하는 것이 아니라, 발생하면 구독한 채널에 알려주면 그만이다.
+### 이벤트를 리스닝: web3.eth.subscribe
 
-### newBlockHeaders
+logs에서 이벤트를 읽을 때 web3 버전 0.20에서는 ```web3.eth.filter```를 사용했으나, 버전 1.x에서는 ```web3.eth.subscribe```를 대신 사용한다.
+
+web3 0.20는 polling 방식을 사용한다. 이벤트가 발생했는지 계속 확인하는 방식이다. 반면에 Web3 1.x에서는 push방식으로 작동하고, 이벤트가 발생하는지 계속 확인하는 것이 아니라, 발생하면 구독한 채널에 알려주면 그만이다.
+
+### newBlockHeaders를 리스닝
 현재는 계정에 대해 발생하는 이벤트는 logs에서 구독하지 못한다. 따라서 'newBlockHeaders'에 대해 이벤트를 구독한다.
+
 "newBlockHeaders"는 block header가 추가되는지 구독할 경우. 블록이 추가될 때 시간을 읽어낼 수도 있다.
 
 ### 이벤트 발생
-계정에서 출금을 해야 웹페이지 출력에 변화가 있게 된다.
-balanceSubscription.html이 열려 있는 상태에서 나란히 MetaMask를 열어 출금해야 변화를 관찰하기 용이할 것이다.
-간단하게 MetaMask에서 해도 되고, 앞서 배운것과 같이 geth 명령어로 해도 된다.
+
+계정의 잔고에 변화가 있으면 출력 역시 수정된다.
+* 'send 111' 버튼을 클릭해서 출금한다.
+* 웹페이지에서 출금 후 잔고의 변화를 출력하는지 관찰한다.
+balanceSubscription.html이 열려 있는 상태에서 나란히 MetaMask를 열어 출금의 변화를 관찰하자.
+* MetaMask에서도 출금해도 그 변화를 출력하는지 관찰해보자.
 MetaMask에서 출금계좌를 선택하고 (웹페이지에 출력된 계좌와 동일), 소액이라도 좋으니 다른 계좌로 출금을 해보면, 잔고의 변화를 출력하게 된다.
 
-
 ```python
-%%writefile scripts/balanceSubscription.html
+[파일명: scripts/balanceSubscription.html]
 <!doctype html>
 <!-- @author: jsl @since: 20200428-->
 <html>
@@ -766,10 +740,12 @@ MetaMask에서 출금계좌를 선택하고 (웹페이지에 출력된 계좌와
 <script type="text/javascript">
     //var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8345"));
     var web3=new Web3(new Web3.providers.WebsocketProvider("ws://localhost:8345"));
-
+    var coinbase;
     async function watchBalance() {
         //var coinbase = web3.eth.coinbase; // old web3 0.2x
-        const coinbase = await web3.eth.getCoinbase();
+        //const coinbase = await web3.eth.getCoinbase();
+        const accounts = await web3.eth.getAccounts();
+        coinbase = accounts[0];
         console.log("Coinbase: " + coinbase);
 
         var originalBalance = await web3.eth.getBalance(coinbase);
@@ -807,6 +783,15 @@ MetaMask에서 출금계좌를 선택하고 (웹페이지에 출력된 계좌와
             document.getElementById("conn").innerText = 'connected: ' + id;
         });
     }
+                                                
+    async function send() {
+        await web3.eth.sendTransaction({
+            from: coinbase,
+            to: '0x11f4d0A3c12e86B4b5F39B213F7E19D048276DAe',
+            value: '111'
+        })
+        document.getElementById("send").innerHTML = "sent from: " + coinbase + "111";
+    }
 
 </script>
 </head>
@@ -819,23 +804,23 @@ MetaMask에서 출금계좌를 선택하고 (웹페이지에 출력된 계좌와
     <div id="current"></div>
     <div id="diff"></div>
     <div id="conn"></div>
+    <button onclick="send()">send 111.</button>
+    <div id="send"></div>
+</script>
 </body>
 </html>
 ```
 
-    Overwriting scripts/balanceSubscription.html
-
-
 
 웹서버 단말로 가서 balanceSubscription.html이 200 코드로 성공적으로 실행되었는지 확인한다.
 ```python
-jsl@jsl-smu:~/Code/git/bb/jsl/bitcoin$ python -m http.server 8000
+pjt_dir> python -m http.server 8000
 Serving HTTP on 0.0.0.0 port 8000 ...
-58.232.2.179 - - [03/Feb/2019 14:51:03] code 404, message File not found
-58.232.2.179 - - [03/Feb/2019 14:51:03] "GET /balance.html HTTP/1.1" 404 -
-58.232.2.179 - - [03/Feb/2019 14:51:09] code 404, message File not found
-58.232.2.179 - - [03/Feb/2019 14:51:09] "GET /balance.html HTTP/1.1" 404 -
-58.232.2.179 - - [03/Feb/2019 14:51:21] "GET /scripts/balanceSubscription.html HTTP/1.1" 200 -
+58.232.2.179 - - [03/Feb/2022 14:51:03] code 404, message File not found
+58.232.2.179 - - [03/Feb/2022 14:51:03] "GET /balance.html HTTP/1.1" 404 -
+58.232.2.179 - - [03/Feb/2022 14:51:09] code 404, message File not found
+58.232.2.179 - - [03/Feb/2022 14:51:09] "GET /balance.html HTTP/1.1" 404 -
+58.232.2.179 - - [03/Feb/2022 14:51:21] "GET /scripts/balanceSubscription.html HTTP/1.1" 200 -
 ```
 
 그리고 웹브라우저에서 balanceSubscription.html을 호출한다.
@@ -861,20 +846,21 @@ connected: 0x1
 # 5. 투표 웹디앱
 
 투표와 관련한 표준은 EIP 1202에 제안되었으나, 아직 확정된 상태는 아니다.
-블록체인을 사용한 투표가 시행된 사례가 이미 여러 차례 보고되고 있다.
-(Forbes, 2016년 8월 30일 "Block The Vote: Could Blockchain Technology Cybersecure Elections?")
-혁신적인 방법이면서, 투표결과를 위변조할 수 없기 때문에 좋은 대안이 될 수 있다.
-그럼에도 불구하고, 실물투표가 아닌 온라인 투표라는 점에서 아직 '심리적 신뢰'를 완전하게 얻은 대안이 되려면
-많은 실제가 선행되어야 할 것이다.
+
+아직 표준이 준비되지 못한 상황이지만, 블록체인을 사용한 투표가 시행된 사례가 이미 여러 차례 보고되고 있다 (Forbes, 2016년 8월 30일 "Block The Vote: Could Blockchain Technology Cybersecure Elections?")
+
+실제 투표지에 표기하거나 온라인 투표에 비해서도, 혁신적인 방법이면서, 투표결과를 위변조할 수 없기 때문에 좋은 대안이 될 수 있다.
+
+그럼에도 불구하고, 실물투표가 아닌 온라인 투표라는 점에서 아직 '심리적 신뢰'를 완전하게 얻은 대안이 되려면 많은 실제가 선행되어야 할 것이다.
 
 블록체인을 이용한 웹 투표를 하면서 몇 가지 문제를 생각해 볼 필요가 있다.
 * 선관위측에서는:
-    * 투표에 소요되는 gas비용을 누가 부담할 것인가?
-    * 온라인 투표의 가능 시간은 제한할 수 있지만 여기서는 구현하지 않는다.
-    * 투표 자격의 제한은 특히 문제가 될 수 있다.
+    * 투표의 gas비용: 투표자 또는 선관위, 어느 측의 부담으로 할지 정책적 기준이 필요.
+    * 투표의 유효시간: 오프라인의 투표 시간은 오전 7~오후6시 이렇게 정하기 마련이다. 여기서는 구현하지 않는다.
+    * 투표 자격의 제한,
     * 온라인으로 진행되는 투표 과정을 사진으로 찍거나, 투표결과를 공유할 수 있지만, 오프라인 투표도 공통적으로 가지는 문제이다.
 * 유권자에게는 1인 1표의 원칙과 유권자 자신임을 증명하는 것이 사전에 필요하다.
-    * 유권자 1인 1표 원칙에 따라, 1인이 복수 계정을 발급하고 투표하는 것을 금지해야 한다. 투표는 계정마다 1회만 허용되어야 한다. 투표자의 허용된 키를 사전등록하는 것이 필요한가?
+    * 유권자 1인 1표 원칙에 따라, 1인이 복수 계정을 발급하고 투표하는 것을 금지해야 한다. 투표는 계정마다 1회만 허용되어야 한다. 투표자의 허용된 키를 사전등록하는 문제,
     * 유권자 검증은 어떻게 할 것인지? 검증을 위해, 시간 및 위치정보 등 개인정보 저장이 필요할 수 있다.
 
 ## 5.1 환경
@@ -955,7 +941,7 @@ for (uint p = 0; p < proposals.length; p++) {
 
 
 ```python
-%%writefile src/Ballot.sol
+[파일명: src/Ballot.sol]
 // SPDX-License-Identifier: GPL-3.0
 // modified version of Ethereum Ballot.sol
 pragma solidity >=0.7.0 <0.9.0;
@@ -1022,22 +1008,15 @@ contract Ballot {
 
 "--combined-json abi,bin"이라고 적어야 한다. 사이에 공백을 띄워서 "abi, bin"라고 입력하면 오류가 발생한다.
 
-
 ```python
-!solc-windows.exe --optimize --combined-json abi,bin src/Ballot.sol > src/Ballot.json
+pjt_dir> solc-windows.exe --optimize --combined-json abi,bin src/Ballot.sol > src/Ballot.json
 ```
 
-생성된 Ballot.json의 내용을 살펴보자.
+더 진행되기 전, 생성된 Ballot.json을 열어서, abi와 bytecode가 저장되었는지 확인하자.
+```
+pjt_dir> type src\\Ballot.json
+```
 type 명령어로 출력을 해보는데, 그 명령어를 입력할 때 디렉토리 구분자에 주의한다. 운영체제에 따라 디렉토리 구분자가 서로 상이하고 여기서는 '\\'로 적었다.
-예상한 바와 같이, abi와 bytecode를 볼 수 있다.
-
-
-```python
-!type src\\Ballot.json
-```
-
-    {"contracts":{"src/Ballot.sol:Ballot":{"abi":[{"inputs":[{"internalType":"bytes3[]","name":"proposalNames","type":"bytes3[]"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"_address","type":"address"},{"indexed":false,"internalType":"uint256","name":"_proposal","type":"uint256"}],"name":"Voted","type":"event"},{"inputs":[],"name":"chairperson","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getNVoted","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"proposals","outputs":[{"internalType":"bytes3","name":"name","type":"bytes3"},{"internalType":"uint256","name":"voteCount","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_address","type":"address"},{"internalType":"uint256","name":"proposal","type":"uint256"}],"name":"vote","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"voters","outputs":[{"internalType":"bool","name":"voted","type":"bool"},{"internalType":"uint256","name":"vote","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"winnerName","outputs":[{"internalType":"bytes3","name":"winnerName_","type":"bytes3"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"winningProposal","outputs":[{"internalType":"uint256","name":"winningProposal_","type":"uint256"}],"stateMutability":"view","type":"function"}],"bin":"608060405234801561001057600080fd5b5060405161071338038061071383398101604081905261002f91610107565b6000600381905580546001600160a01b031916331781555b81518110156100e3576002604051806040016040528084848151811061007d57634e487b7160e01b600052603260045260246000fd5b6020908102919091018101516001600160e81b03191682526000918101829052835460018082018655948352918190208351600290930201805462ffffff191660e89390931c9290921782559190910151910155806100db816101cc565b915050610047565b5050610209565b80516001600160e81b03198116811461010257600080fd5b919050565b60006020808385031215610119578182fd5b82516001600160401b038082111561012f578384fd5b818501915085601f830112610142578384fd5b815181811115610154576101546101f3565b838102604051601f19603f83011681018181108582111715610178576101786101f3565b604052828152858101935084860182860187018a1015610196578788fd5b8795505b838610156101bf576101ab816100ea565b85526001959095019493860193860161019a565b5098975050505050505050565b60006000198214156101ec57634e487b7160e01b81526011600452602481fd5b5060010190565b634e487b7160e01b600052604160045260246000fd5b6104fb806102186000396000f3fe608060405234801561001057600080fd5b506004361061007d5760003560e01c80635f74bbde1161005b5780635f74bbde146100d6578063609ff1bd146100eb578063a3ec138d146100f3578063e2ba53f0146101145761007d565b8063013cf08b146100825780631a2879f3146100ac5780632e4176cf146100c1575b600080fd5b6100956100903660046103c8565b610129565b6040516100a3929190610432565b60405180910390f35b6100b461015c565b6040516100a39190610473565b6100c9610162565b6040516100a391906103e0565b6100e96100e436600461039f565b610171565b005b6100b4610267565b61010661010136600461037e565b610300565b6040516100a392919061040d565b61011c61031f565b6040516100a3919061041d565b6002818154811061013957600080fd5b60009182526020909120600290910201805460019091015460e89190911b915082565b60035490565b6000546001600160a01b031681565b6001600160a01b0382166000908152600160205260409020805460ff16156101b45760405162461bcd60e51b81526004016101ab9061044c565b60405180910390fd5b805460ff19166001908117825581810183905560028054849081106101e957634e487b7160e01b600052603260045260246000fd5b90600052602060002090600202016001016000828254610209919061047c565b92505081905550600160036000828254610223919061047c565b90915550506040517f4d99b957a2bc29a30ebd96a7be8e68fe50a3c701db28a91436490b7d53870ca49061025a90859085906103f4565b60405180910390a1505050565b600080805b6002548110156102fb57816002828154811061029857634e487b7160e01b600052603260045260246000fd5b90600052602060002090600202016001015411156102e957600281815481106102d157634e487b7160e01b600052603260045260246000fd5b90600052602060002090600202016001015491508092505b806102f381610494565b91505061026c565b505090565b6001602081905260009182526040909120805491015460ff9091169082565b6000600261032b610267565b8154811061034957634e487b7160e01b600052603260045260246000fd5b600091825260209091206002909102015460e81b919050565b80356001600160a01b038116811461037957600080fd5b919050565b60006020828403121561038f578081fd5b61039882610362565b9392505050565b600080604083850312156103b1578081fd5b6103ba83610362565b946020939093013593505050565b6000602082840312156103d9578081fd5b5035919050565b6001600160a01b0391909116815260200190565b6001600160a01b03929092168252602082015260400190565b9115158252602082015260400190565b6001600160e81b031991909116815260200190565b6001600160e81b0319929092168252602082015260400190565b6020808252600d908201526c105b1c9958591e481d9bdd1959609a1b604082015260600190565b90815260200190565b6000821982111561048f5761048f6104af565b500190565b60006000198214156104a8576104a86104af565b5060010190565b634e487b7160e01b600052601160045260246000fdfea2646970667358221220071a8e25cd7f56b5d5457d96a9b46fb7234d755227cb7e23422892ad990d9f4564736f6c63430008010033"}},"version":"0.8.1+commit.df193b15.Windows.msvc"}
-
 
 ## 5.4 컨트랙 배포
 
@@ -1049,7 +1028,7 @@ type 명령어로 출력을 해보는데, 그 명령어를 입력할 때 디렉�
 
 
 ```python
-%%writefile src/Ballot.js
+[파일명: src/Ballot.js]
 var _abiJson = require('./Ballot.json');
 contractName=Object.keys(_abiJson.contracts); // reading ['src/Ballot.sol:Ballot']
 console.log("- contract name: ", contractName); //or console.log(contractName);
@@ -1060,63 +1039,12 @@ console.log("- ABI: ", _abi);
 console.log("- Bytecode: ", _bin);
 ```
 
-    Overwriting src/Ballot.js
-
 
 abi, bin 정보를 잘 읽었는지 확인해보자.
 abi 출력을 잘 살펴보면, ```[Object]```가 많이 보인다. 자바스크립트 Object을 말한다.
 위 ```solc```에서 생성된 abi와 다른다는 것을 눈치채야 한다.
 
-
-```python
-!node src/Ballot.js
-```
-
-    - contract name:  [ 'src/Ballot.sol:Ballot' ]
-    - ABI:  [ { inputs: [ [Object] ],
-        stateMutability: 'nonpayable',
-        type: 'constructor' },
-      { anonymous: false,
-        inputs: [ [Object], [Object] ],
-        name: 'Voted',
-        type: 'event' },
-      { inputs: [],
-        name: 'chairperson',
-        outputs: [ [Object] ],
-        stateMutability: 'view',
-        type: 'function' },
-      { inputs: [],
-        name: 'getNVoted',
-        outputs: [ [Object] ],
-        stateMutability: 'view',
-        type: 'function' },
-      { inputs: [ [Object] ],
-        name: 'proposals',
-        outputs: [ [Object], [Object] ],
-        stateMutability: 'view',
-        type: 'function' },
-      { inputs: [ [Object], [Object] ],
-        name: 'vote',
-        outputs: [],
-        stateMutability: 'nonpayable',
-        type: 'function' },
-      { inputs: [ [Object] ],
-        name: 'voters',
-        outputs: [ [Object], [Object] ],
-        stateMutability: 'view',
-        type: 'function' },
-      { inputs: [],
-        name: 'winnerName',
-        outputs: [ [Object] ],
-        stateMutability: 'view',
-        type: 'function' },
-      { inputs: [],
-        name: 'winningProposal',
-        outputs: [ [Object] ],
-        stateMutability: 'view',
-        type: 'function' } ]
-    - Bytecode:  608060405234801561001057600080fd5b5060405161071338038061071383398101604081905261002f91610107565b6000600381905580546001600160a01b031916331781555b81518110156100e3576002604051806040016040528084848151811061007d57634e487b7160e01b600052603260045260246000fd5b6020908102919091018101516001600160e81b03191682526000918101829052835460018082018655948352918190208351600290930201805462ffffff191660e89390931c9290921782559190910151910155806100db816101cc565b915050610047565b5050610209565b80516001600160e81b03198116811461010257600080fd5b919050565b60006020808385031215610119578182fd5b82516001600160401b038082111561012f578384fd5b818501915085601f830112610142578384fd5b815181811115610154576101546101f3565b838102604051601f19603f83011681018181108582111715610178576101786101f3565b604052828152858101935084860182860187018a1015610196578788fd5b8795505b838610156101bf576101ab816100ea565b85526001959095019493860193860161019a565b5098975050505050505050565b60006000198214156101ec57634e487b7160e01b81526011600452602481fd5b5060010190565b634e487b7160e01b600052604160045260246000fd5b6104fb806102186000396000f3fe608060405234801561001057600080fd5b506004361061007d5760003560e01c80635f74bbde1161005b5780635f74bbde146100d6578063609ff1bd146100eb578063a3ec138d146100f3578063e2ba53f0146101145761007d565b8063013cf08b146100825780631a2879f3146100ac5780632e4176cf146100c1575b600080fd5b6100956100903660046103c8565b610129565b6040516100a3929190610432565b60405180910390f35b6100b461015c565b6040516100a39190610473565b6100c9610162565b6040516100a391906103e0565b6100e96100e436600461039f565b610171565b005b6100b4610267565b61010661010136600461037e565b610300565b6040516100a392919061040d565b61011c61031f565b6040516100a3919061041d565b6002818154811061013957600080fd5b60009182526020909120600290910201805460019091015460e89190911b915082565b60035490565b6000546001600160a01b031681565b6001600160a01b0382166000908152600160205260409020805460ff16156101b45760405162461bcd60e51b81526004016101ab9061044c565b60405180910390fd5b805460ff19166001908117825581810183905560028054849081106101e957634e487b7160e01b600052603260045260246000fd5b90600052602060002090600202016001016000828254610209919061047c565b92505081905550600160036000828254610223919061047c565b90915550506040517f4d99b957a2bc29a30ebd96a7be8e68fe50a3c701db28a91436490b7d53870ca49061025a90859085906103f4565b60405180910390a1505050565b600080805b6002548110156102fb57816002828154811061029857634e487b7160e01b600052603260045260246000fd5b90600052602060002090600202016001015411156102e957600281815481106102d157634e487b7160e01b600052603260045260246000fd5b90600052602060002090600202016001015491508092505b806102f381610494565b91505061026c565b505090565b6001602081905260009182526040909120805491015460ff9091169082565b6000600261032b610267565b8154811061034957634e487b7160e01b600052603260045260246000fd5b600091825260209091206002909102015460e81b919050565b80356001600160a01b038116811461037957600080fd5b919050565b60006020828403121561038f578081fd5b61039882610362565b9392505050565b600080604083850312156103b1578081fd5b6103ba83610362565b946020939093013593505050565b6000602082840312156103d9578081fd5b5035919050565b6001600160a01b0391909116815260200190565b6001600160a01b03929092168252602082015260400190565b9115158252602082015260400190565b6001600160e81b031991909116815260200190565b6001600160e81b0319929092168252602082015260400190565b6020808252600d908201526c105b1c9958591e481d9bdd1959609a1b604082015260600190565b90815260200190565b6000821982111561048f5761048f6104af565b500190565b60006000198214156104a8576104a86104af565b5060010190565b634e487b7160e01b600052601160045260246000fdfea2646970667358221220071a8e25cd7f56b5d5457d96a9b46fb7234d755227cb7e23422892ad990d9f4564736f6c63430008010033
-
+pjt_dir> node src/Ballot.js
 
 ### 배포
 
@@ -1137,7 +1065,7 @@ deploy() 함수를 호출할 때 생성자 인자를 넘겨주어야 한다.
 
 
 ```python
-%%writefile src/BallotDeployAbiBinFromFile.js
+[파일명: src/BallotDeployAbiBinFromFile.js]
 var Web3=require('web3');
 var _abiBinJson = require('./Ballot.json');
 
@@ -1147,7 +1075,7 @@ contractName=Object.keys(_abiBinJson.contracts); // reading ['src/Ballot.sol:Bal
 console.log("- contract name: ", contractName); //or console.log(contractName);
 
 _abiArray=JSON.parse(JSON.stringify(_abiBinJson.contracts[contractName].abi));    //JSON parsing needed!!
-_bin=_abiBinJson.contracts[contractName].bin;
+_bin="0x"+_abiBinJson.contracts[contractName].bin;
 //console.log("- ABI: " + JSON.stringify(_abiArray));
 //console.log("- Bytecode: " + _bin);
 
@@ -1169,14 +1097,13 @@ deploy()
 
 
 ```python
-!node src/BallotDeployAbiBinFromFile.js
+pjt_dir> node src/BallotDeployAbiBinFromFile.js
+
+- contract name:  [ 'src/Ballot.sol:Ballot' ]
+Deploying the contract from 0x24f6A17559eC4c8c5aF91c8803ee0f9c048655eC
+hash: 0x0c1f073b4357d8f7c5bb3ef24228d837047a2b4adea3316926d81a8b52c81450
+---> The contract deployed to: 0x88f94583066fca67f0B9b46C1d89ef69288cbd22
 ```
-
-    - contract name:  [ 'src/Ballot.sol:Ballot' ]
-    Deploying the contract from 0x0dF1De1d4C0b9eDCed552594335c804c3Af74E98
-    hash: 0x4a98d44ee9edf2085beedecd3a3244da5ef05fd8c6b9e4a0fc64a9860c55b156
-    ---> The contract deployed to: 0x25D08748478ddD317386A1FD412767D25b1d6aB0
-
 
 ## 5.5 컨트랙 사용
 
@@ -1205,9 +1132,8 @@ event가 발생하는 페이지 이므로, websocket provider를 사용해야 �
 
 같은 계정에서 2회 투표를 하면 hash는 생성되지만, 거래는 완료되지 못한다. gas는 사용되는지 확인해보자.
 
-
 ```python
-%%writefile src/BallotUse1.js
+[파일명: src/BallotUse1.js]
 var Web3=require('web3');
 //var web3=new Web3(new Web3.providers.HttpProvider("http://localhost:8345"));
 var web3=new Web3(new Web3.providers.WebsocketProvider("ws://localhost:8345"));
@@ -1215,7 +1141,7 @@ var _abiBinJson = require('./Ballot.json');
 contractName=Object.keys(_abiBinJson.contracts); // reading ['src/Ballot.sol:Ballot']
 console.log("- contract name: ", contractName); //or console.log(contractName);
 _abiArray=JSON.parse(JSON.stringify(_abiBinJson.contracts[contractName].abi));    //JSON parsing needed!!
-var ballot = new web3.eth.Contract(_abiArray, '0x829E9bF20F12677A80d31CD37b0e9A1366D0C930');
+var ballot = new web3.eth.Contract(_abiArray, '0x88f94583066fca67f0B9b46C1d89ef69288cbd22');
 var event = ballot.events.Voted({fromBlock: 0}, function (error, result) {
     if (!error) {
         console.log("Event fired: " + JSON.stringify(result.returnValues));
@@ -1228,15 +1154,15 @@ async function doIt() {
     const accounts = await web3.eth.getAccounts();
     console.log("Account0: " + accounts[0]);
     const balance0Before = await web3.eth.getBalance(accounts[0]);
-    console.log("Balance0 before: " + balance0Before);
+    console.log("(1) Balance0 before: " + balance0Before);
     const balance1Before = await web3.eth.getBalance(accounts[1]);
-    console.log("Balance1 before: " + balance1Before);
+    console.log("(2) Balance1 before: " + balance1Before);
 
     ballot.methods.winningProposal().call().then(function(p) {
-        console.log("wining proposal before: " + p);
+        console.log("(3) wining proposal before: " + p);
     });
     ballot.methods.winnerName().call().then(function(n) {
-        console.log("winner before: " + n);
+        console.log("(4) winner before: " + n);
     });    
     //await ballot.methods.vote(accounts[3], 0).send({from: accounts[0],gas:800000});
     //await ballot.methods.vote(accounts[4], 1).send({from: accounts[1],gas:800000});
@@ -1245,36 +1171,34 @@ async function doIt() {
     //    console.log("tranHash: " + tranHash);
     //});
     //ballot.methods.vote("0x18",1).send({from: accounts[0], gas:800000},function (error, tranHash) {
-    ballot.methods.vote("0x241A076eE90E5703952C70c7cCe43d4388C8De4f",1).send({from: accounts[0], gas:800000},function (error, tranHash) {
+    ballot.methods.vote("0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2",1).send({from: accounts[0], gas:800000},function (error, tranHash) {
         if (!error) {
-            console.log("voted. transaction hash ===> ",tranHash);
+            console.log("(5) voted. transaction hash ===> ",tranHash);
         }
     });
     ballot.methods.getNVoted().call().then(function(n) {
-        console.log("how many voted: " + n);
+        console.log("(6) how many voted: " + n);
     });
     ballot.methods.winningProposal().call().then(function(p) {
-        console.log("wining proposal after: " + p);
+        console.log("(7) wining proposal after: " + p);
     });
     ballot.methods.winnerName().call().then(function(n) {
-        console.log("winner after: " + n);
+        console.log("(8) winner after: " + n);
     });
     ballot.methods.getNVoted().call().then(function(n) {
-        console.log("how many voted: " + n);
+        console.log("(9) how many voted: " + n);
     });
     const balance0After = await web3.eth.getBalance(accounts[0]);
-    console.log("Balance0 after: " + balance0After);
-    console.log("Balance0 diff: " + (balance0After - balance0Before));
+    console.log("(10) Balance0 after: " + balance0After);
+    console.log("(11) Balance0 diff: " + (balance0After - balance0Before));
     const balance1After = await web3.eth.getBalance(accounts[1]);
-    console.log("Balance1 after: " + balance1After);
-    console.log("Balance1 diff: " + (balance1After - balance1Before));
+    console.log("(12) Balance1 after: " + balance1After);
+    console.log("(13) Balance1 diff: " + (balance1After - balance1Before));
+    //process.exit(1);
 }
 doIt()
 
 ```
-
-    Overwriting src/BallotUse1.js
-
 
 ### 마이닝이 끝나면 결과가 출력된다.
 ganache가 아니면, 마이닝이 반드시 필요하다.
@@ -1284,30 +1208,29 @@ httpprovider로 실행하면 이벤트는 발생하지 않는다.
 
 
 ```python
-!node src/BallotUse1.js
+pjt_dir> node src/BallotUse1.js
+
+- contract name:  [ 'src/Ballot.sol:Ballot' ]
+Account0: 0x0dF1De1d4C0b9eDCed552594335c804c3Af74E98
+Balance0 before: 99938915360000000000
+Balance1 before: 99996131300000000000
+wining proposal before: 1
+winner before: 0x6c6565
+how many voted: 11
+wining proposal after: 1
+winner after: 0x6c6565
+how many voted: 11
+Balance0 after: 99938915360000000000
+Balance0 diff: 0
+Balance1 after: 99996131300000000000
+Balance1 diff: 0
 ```
-
-    - contract name:  [ 'src/Ballot.sol:Ballot' ]
-    Account0: 0x0dF1De1d4C0b9eDCed552594335c804c3Af74E98
-    Balance0 before: 99938915360000000000
-    Balance1 before: 99996131300000000000
-    wining proposal before: 1
-    winner before: 0x6c6565
-    how many voted: 11
-    wining proposal after: 1
-    winner after: 0x6c6565
-    how many voted: 11
-    Balance0 after: 99938915360000000000
-    Balance0 diff: 0
-    Balance1 after: 99996131300000000000
-    Balance1 diff: 0
-
 
 websocket provider 실행하면 이벤트가 발생하지만, 무한대기에 빠져 올바르게 작동하지 않을 수 있다.
 
 
 ```python
-!node src/BallotUse1.js
+pjt_dir> node src/BallotUse1.js
 ```
 
 위와 같이 일괄 실행하면 깔끔하다.
@@ -1342,7 +1265,7 @@ vote를 하고 나면 Voted이벤트가 발생한다.
 
 
 ```python
-%%writefile src/Ballot2.js
+[파일명: src/Ballot2.js]
 var Web3=require('web3');
 var web3=new Web3(new Web3.providers.HttpProvider("http://117.16.44.45:8445"));
 console.log(web3.eth.blockNumber);
@@ -1371,13 +1294,17 @@ ballot.methods.vote("0x18",1).send({from: accounts[0], gas:800000},function (err
 
 
 ```python
-!node src/Ballot2.js
+pjt_dir> node src/Ballot2.js
 ```
 
 ## 5.6 웹 DApp
 
 ### 웹소켓
 이벤트가 발생하는 페이지이므로 웹소켓으로 연결한다.
+
+### 컨트랙 주소
+ganche의 세션이 끊어졌다면, 컨트랙의 주소가 다르게 된다.
+그럴 경우에는 배포를 다시 해서 주소를 갱신해서 적어야 한다.
 
 ### 투표자의 주소
 투표는 원격에서 발생한다.
@@ -1387,9 +1314,11 @@ MetaMask가 연결되고 ethereum으로부터 계정주소를 읽지 않아도 �
 if문으로 ethereum으로 연결되면 ```ethereum.request({ method: 'eth_requestAccounts' })```에서 읽어낼 수 있다.
 그냥 보통 해왔던 것처럼 web3.eth.getAccounts()에서 읽는다.
 
-### FORM에서 읽은 값
+### gas 비용
+```vote(_a,_p).send({from: accounts[0], gas:800000})```에서 보듯이, accounts[0]에서 거래가 발생하고 비용도 그 계정에서 부담하도록 되어있다. 실제 투표에서는 비용을 유권자에게 부담지워야 하는 것인지 논의가 필요할 수 있겠다.
 
-FORM에서 주소와 투표안을 읽고 있다.
+### FORM에서 읽은 값
+여기서는 FORM에서 주소와 투표안을 읽고 있다.
 Solidity에서 주소는 16진수 값이고, 투표안은 uint이다.
 FORM에서 읽은 값은 자체가 문자열이고, 투표안은 ```parseInt()``` 함수로 형변환을 한다.
 주소는 문자열로 넘겨주어도 된므로 형변환을 하지 않아도 된다.
@@ -1421,7 +1350,7 @@ _abiArray=[
 
 
 ```python
-%%writefile scripts/ballot.html
+[파일명: scripts/ballot.html]
 <!doctype html>
 <html>
 
@@ -1437,7 +1366,7 @@ _abiArray=[
     //_abiArray=JSON.parse(JSON.stringify(_abiBinJson.contracts[contractName].abi));    //JSON parsing needed!!
 
     _abiArrayFromSolc = [{"inputs":[{"internalType":"bytes3[]","name":"proposalNames","type":"bytes3[]"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"_address","type":"address"},{"indexed":false,"internalType":"uint256","name":"_proposal","type":"uint256"}],"name":"Voted","type":"event"},{"inputs":[],"name":"chairperson","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getNVoted","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"proposals","outputs":[{"internalType":"bytes3","name":"name","type":"bytes3"},{"internalType":"uint256","name":"voteCount","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_address","type":"address"},{"internalType":"uint256","name":"proposal","type":"uint256"}],"name":"vote","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"voters","outputs":[{"internalType":"bool","name":"voted","type":"bool"},{"internalType":"uint256","name":"vote","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"winnerName","outputs":[{"internalType":"bytes3","name":"winnerName_","type":"bytes3"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"winningProposal","outputs":[{"internalType":"uint256","name":"winningProposal_","type":"uint256"}],"stateMutability":"view","type":"function"}];
-    var ballot = new web3.eth.Contract(_abiArrayFromSolc, '0x829E9bF20F12677A80d31CD37b0e9A1366D0C930');
+    var ballot = new web3.eth.Contract(_abiArrayFromSolc, '0x88f94583066fca67f0B9b46C1d89ef69288cbd22');
     async function getVoter() {
         //var coinbase = web3.eth.coinbase;
         var accounts;
@@ -1556,20 +1485,16 @@ _abiArray=[
 </html>
 ```
 
-    Overwriting scripts/ballot.html
-
-
 ### 화면 설명
 
-http server를 띄운다.
-url은 http://localhost:8000/scripts/ballot.html로 입력한다.
+http server를 띄운다. url은 http://localhost:8000/scripts/ballot.html로 입력한다.
+
 좌측화면에는 4개의 버튼이 있다.
 - 'who votes' 버튼은 coinbase와 잔고를 출력한다. 이 때 MetaMask가 설치되었으면 그 계정을 연결하는 팝업창이 뜬다. 연결할 계정을 선택하면 여기로부터 주소와 잔고를 읽어낸다.
 - 'vote' 버튼은 주소와 투표안을 입력하고 클릭하면 블록체인에 저장된다. gas비는 현재 특정계좌에서 부담하는 것으로 되어 있는 것에 주의한다.
 그 부담에 따른 규정이 결정되면 그에 따라 코드를 수정할 필요가 있다.
 - 'who wins' 버튼은 어떤 투표안이 가장 많은 득표를 하였는지 출력한다.
-- 'watch vote' 버튼은 좌하단의 표에 vote가 실행되면서 발생한 이벤트의 내역을 출력한다.
-그 내역은 발생한 이벤트가 하나씩 쌓여진 것을 보여주고 있다.
+- 'watch vote' 버튼은 좌하단의 표에 vote가 실행되면서 발생한 이벤트의 내역을 출력한다. 여러 번 버튼을 누르면 이벤트가 중복되어 출력되니 주의하자. 그 내역은 발생한 이벤트가 하나씩 쌓여진 것을 보여주고 있다.
 
 우측화면은 html 디버깅을 위해 열어놓은 창이다.
 우하단은 console.log()로 출력한 메시지를 출력하고 있다.
@@ -1578,16 +1503,14 @@ url은 http://localhost:8000/scripts/ballot.html로 입력한다.
 
 ## 연습문제: 온라인 경매
 
-스마트 컨트랙으로 문제를 풀기 전에 생각해보자.
-어떤 문제를 풀려고 하는지, 그 문제를 기존의 방식으로 하지 않고 블록체인에서 풀면 어떤 점이 개선되는지 따져보아야 한다.
-기존 방식으로도 풀리는데, 굳이 블록체인을 적용해서 더 어렵게 풀어야할 이유가 있지 않기 때문이다.
+온라인 경매를 웹디앱으로 제작해보자.
 
-온라인 경매는 중앙에서 처리하면, 무엇인가 조작이 있을 수 있다.
-투명하게 처리할 수 있다는 점에서 블록체인을 적용해 볼 수 있다.
-또한 매수가가 실시간 적용이 되고, 소유권 이전이 바로 이루어져야 한다.
-이런 점에서 NFT와도 유사점이 있다.
+문제를 풀기 전에 생각해보자. 기존의 방식으로 하지 않고 블록체인에서 풀면 어떤 점이 개선되는지 따져보아야 한다. 기존 방식으로도 풀리는데, 굳이 블록체인을 적용해서 더 어렵게 풀어야할 이유가 있지 않기 때문이다.
 
-* 경매등록
+온라인 경매는 중앙에서 처리하면, 무엇인가 조작이 있을 수 있다. 투명하게 처리할 수 있다는 점에서 블록체인을 적용해 볼 수 있다. 또한 매수가가 실시간 적용이 되고, 소유권 이전이 바로 이루어져야 한다. 이런 점에서 NFT와도 유사점이 있다.
+
+다음 기능을 요구사항을 구현한다.
+* 경매의 등록
     * 등록자 인증 (이메일, 전번) 
     * 제품등록: 제품명, 분류, 이미지
     * 경매내용
@@ -1596,8 +1519,7 @@ url은 http://localhost:8000/scripts/ballot.html로 입력한다.
         * 입찰단위 - 입찰할 경우, 최저가격차
         * 판매가능최저금액
         * 입찰단위
-* 입찰
-* 규칙
+* 입찰의 규칙
     * 동일금액인 경우, 먼저 입찰한 사람에게 낙찰
     * 1회 응찰
     * 낙찰가 산정
@@ -1607,7 +1529,3 @@ url은 http://localhost:8000/scripts/ballot.html로 입력한다.
     * 7일 이내 지불
 
 
-
-```python
-
-```
