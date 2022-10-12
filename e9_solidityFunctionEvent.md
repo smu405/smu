@@ -4,18 +4,21 @@ Solidity 함수를 정의하고, view/pure, 가시성, payable을 설정하는 �
 
 # 1. 함수의 선언
 
-함수는 크게 크게 나누면:
-* (1) Solidity에 내장되어 있어서 자체적으로 **제공되거나 built-in** 함수가 있다. 이러한 built-in 함수는 지금까지 배워왔던 ```web3.eth.getAccounts()``` 뿐만 아니라 ```keccak256()```, ```sha256()```과 같이 여럿이 있다.
+Solidity 함수를 크게 구분하면 다음과 같다.
 
-* 또는 (2) **사용자가 정의 user-defined**한 함수로 구분할 수 있다.
-사용자 정의함수를 만들 때는, 문법에 맞추어, 앞에 ```function```이라고 적어 함수 선언을 한다.
-또한 함수의 입력과 출력을 정의해서 넣어주는 것이 필요하다.
-가시성과 수행하는 기능의 성격에 따라 ```pure```, ```view```, ```payable```의 수식어를 덧붙인다.
+(1) 제공되는 함수 **built-in functions** 함수는 내장되어 있고 지금까지 배워왔던 ```web3.eth.getAccounts()``` 뿐만 아니라 ```keccak256()```, ```sha256()```과 같이 여럿이 해당된다. 
+
+반면에 (2) **사용자 정의함수 user-defined functions**는 우리가 직접 정의하고 만들게 된다.
+
 함수 선언 문법을 보면 다음과 같다.
 
 ```python
 function (param types) {internal|external} [pure|view|payable] [returns (return types)] varName;
 ```
+
+사용자 정의함수를 만들 때는, 문법에 맞추어, 앞에 ```function```이라고 적어 함수 선언을 한다.
+또한 함수의 입력  ```param types``` 및 출력  ```return types```를 정의해서 넣어주는 것이 필요하다.
+가시성 ```internal, external``` 등과 수행하는 기능의 성격에 따라 ```pure```, ```view```, ```payable```의 수식어를 덧붙인다.
 
 # 2. 생성자
 
@@ -39,11 +42,11 @@ contructor() { ... }   ---> 버전 0.7부터는 public 키워드 없이 적어�
 
 ## 3.1 view, pure
 
-Solidity에서는 함수를 실행하면, 그 결과로 인해 블록체인이 변경되는지 아닌지에 따라 구분하고 있다.
-블록체인의 상태를 변경하지 않는 함수는 ```view```, ```pure```로 표기해야 한다.
-**```view```**는 이전 ```constant```를 대체한 명령어로서, 상태를 수정하지 않는 경우, 즉 읽기 전용 read only 함수이다. 
+Solidity에서는 함수를 실행하면, 그 결과로 인해 블록체인이 변경되는지 아닌지에 따라 구분하고 있다. 블록체인의 상태를 변경하지 않는 함수는 ```view```, ```pure```로 표기해야 한다.
 
-**```pure```**는  ```view```보다 더 제약이 많은 함수에 붙이는 수식어이다. 함수의 지역변수만을 사용하며, 함수 밖의 그 어떤 변수를 수정하지 못할 뿐만 아니라, 상태 값을 읽지도 않는 경우에 사용한다. 
+```view```는 이전 ```constant```를 대체한 명령어로서, 상태를 수정하지 않는 경우, 즉 읽기 전용 read only 함수이다. 
+
+```pure```는  ```view```보다 더 제약이 많은 함수에 붙이는 수식어이다. 함수의 지역변수만을 사용하며, 함수 밖의 그 어떤 변수를 수정하지 못할 뿐만 아니라, 상태 값을 읽지도 않는 경우에 사용한다. 
 
 구분 | 설명
 ----------|----------
@@ -80,15 +83,15 @@ pure, view를 사용한 경우가 위에서 설명한 바와 같은지 확인하
 ## 3.2 Payable
 
 ```payable``` 함수는 Ether를 입출금하는 경우에 사용된다.
-web3 호출하는 측에서 { value: 0 }에 ether를 입력하면 ```msg.value```로 전달된다.
+web3 호출하는 측에서 { value: 0 }에 ether를 입력하면 전역변수 ```msg.value```로 전달된다.
 컨트랙에서 호출하는 경우는 ```value()```를 사용한다.
 
 ## 3.3 가시성
 
-* ```public``` 외부에서 누구나 사용할 수 있다.
+* ```public``` 내, 외부에서 누구나 사용할 수 있다. 가장 개방적이다.
 * ```internal``` 기본default 가시성으로, 내부 또는 상속관계에서만 사용할 수 있다.
 * ```private``` 자신만 사용할 수 있다.
-* ```external```은 ```internal```의 반대로서 외부에서만 사용할 수 있다.
+* ```external```은 ```internal```의 반대로서 외부에서만 사용할 수 있다. 내부에서 호출할 수 있지만 this를 통해서 ```this.f()```로 적어주어야 한다.
 
 ## 3.4 함수를 적어주는 순서
 
@@ -102,6 +105,8 @@ web3 호출하는 측에서 { value: 0 }에 ether를 입력하면 ```msg.value``
 
 ## 실습문제: 함수
 
+앞서 설명한 다양한 성격의 함수를 정의하고, 구현해보자.
+
 줄 | 설명
 -----|-----
 4 ~ 7 ```constructor()``` | 생성자는 앞에 위치시킨다.
@@ -114,7 +119,6 @@ web3 호출하는 측에서 { value: 0 }에 ether를 입력하면 ```msg.value``
 32 ~ 33 ```deposit()``` | ```payable```로 선언해야 입금이 가능. 함수가 비워있어도 ```msg.value```를 입금.
 35 ~ 37 ```X2()``` | ```internal```로 선언되어서 내부에서만 사용가능.
 38 ~ 40 ```getBlockNumber()``` | 전역변수를 읽을 경우 ```view```
-
 
 ```python
 [파일명: src/FuctionTest.sol]
@@ -131,9 +135,8 @@ contract FunctionTest {
     function incrementX() public {
         x += 1;
     }
-    // call when x = 0
     function doubleX() public {
-        X2();
+        X2();  //아래에 internal로 정의. 현재 public에서 호출.
     }
     // float not supported. try 0, 1/3...
     function divideBy(int by) view public returns(int) {
@@ -163,7 +166,7 @@ contract FunctionTest {
 }
 ```
 
-
+컴파일을 해보고, 오류가 있는지 확인하자. 
 ```python
 pjt_dir> solc-windows.exe src/FuctionTest.sol
 ```
@@ -207,25 +210,31 @@ contract UnderscoreTest {
 }
 ```
 
-
 ```python
 pjt_dir> solc-windows.exe src/UnderscoreTest.sol
 ```
 
-위 코드를 실행해보자.
+REMIX에서 실행해보자.
 * setSpring() 한 다음에 getSeason() 호출하면 summer가 출력된다
     * ```_```코드가 먼저 있고, 그 ```_```자리에 spring이 먼저 실행되고 다음에 summer가 실행되기 때문이다.
 * 반면에 setWinter() 하고, getSeason() 하면 winter가 출력되는데, 그 이유는 summer가 먼저 설정되고 ```_```자리에 winter가 실행되므로 그렇다. 
 
 ## 실습문제: 은행 BankV3
 
-앞의 은행 코드에 fallabck, modifier를 넣어서 수정한다.
+은행에는 입출금 관련 제한을 걸어 놓는 경우가 있다. 입금시 최소시간, 출금시 최소한도 제한 규정을 구현해보자.
 
 ### 단계 1: 컨트랙 개발
 
-* 입금을 연달아 할 경우, 반드시 일정시간이 지나야 (10초) 입금을 가능하게 하고
-* 일정 잔고 이상일 경우에만 출금이 되도록 해보자.
+앞의 은행 코드에 fallback, modifier를 넣어서 수정한다.
+* 입금시 최소시간 제한 modifier
+입금을 연달아 할 경우, 반드시 일정시간이 지난 후에야 입금을 가능하게 하고 있다. ```onlyAfter()``` 함수, 정확히는 modifier는 지난 입금 시점 후 10초로 설정하고 있다. 코드로 쓰면 ```block.timestamp + 10 seconds```이다.
 
+* 출금시 최소잔고 제한 modifier
+```minBalance()``` 함수( modifier)는 일정 잔고 이상인지 제한하고 있다. 이 modifier를 제한조건으로 ```withdrawAll()``` 함수는 최소잔고를 초과할 경우에만 출금이 되도록 한다.
+
+* fallback() 함수는 단순히 이벤트 ```PrintLog("Fallback called")```만 발생하도록 작성한다.
+
+REMIX에서 버튼을 눌러서 기능을 테스트 하면서 진행하자. 조회 버튼과 달리, deposit() 함수를 테스트할 경우에, 상단의 'VALUE'와 버튼 옆의 함수 인자 두 필드에 동일한 금액을 넣어준다. 즉 실제 금액과 인자 금액이 일치하도록 하자.
 
 ```python
 [파일명: src/BankV3.sol]
@@ -283,6 +292,7 @@ contract BankV3 {
 
 ### 단계 2: 컴파일
 
+컴파일 해서, abi와 bytecode를 파일에 저장한다.
 
 ```python
 pjt_dir> solc-windows.exe --optimize --combined-json abi,bin src/BankV3.sol > src/BankV3.json
@@ -294,7 +304,6 @@ pjt_dir> solc-windows.exe --optimize --combined-json abi,bin src/BankV3.sol > sr
 배포함수를 ```async function deploy()```로 선언한다.
 그리고 그 안에 ```await web3.eth.getAccounts()```로 계정을 구해서 이를 활용한다.
 컨트랙을 생성하기 위해 블록체인에 전송하는 ```await send()``` 함수도 비동기적으로 처리하여, 주소를 출력한다.
-
 
 ```python
 [파일명: src/BankV3DeployFromFile.js]
@@ -333,26 +342,53 @@ deploy()
 * gas를 쓰지 않으면 gas 한도 관련 오류가 발생 "Error check your gas limit"
 * gas를 대략 259210 미만을 적으면 gas가 너무 낮다는 오류가 발생 "intrinsic gas too low"
 
-
 ```python
 pjt_dir> node src/BankV3DeployFromFile.js
 
-
-    - contract name:  [ 'src/BankV3.sol:BankV3' ]
-    Deploying the contract from 0x9357f478d86D9222f4413bFd91C8adb0F4c728b7
-    hash: 0xd81a2aceb7edfccfade9b2ff7f94fa5928459e0975275a1615232398f7858425
-    ---> The contract deployed to: 0x0042048e0e97BA996CA18fC7d027379ed786Af7a
+- contract name:  [ 'src/BankV3.sol:BankV3' ]
+Deploying the contract from 0x9357f478d86D9222f4413bFd91C8adb0F4c728b7
+hash: 0xd81a2aceb7edfccfade9b2ff7f94fa5928459e0975275a1615232398f7858425
+---> The contract deployed to: 0x0042048e0e97BA996CA18fC7d027379ed786Af7a
 ```
 
 ### 단계 4: 사용
 
-프로그램에 설정한 제약조건을 지켜서 실행헤야 한다.
+node에서 대화형식으로 해보자.  주의! geth@8445에서 하려면 deposit(), withdrawAll() 함수들은 마이닝이 필요하다. 
+
+프로그램에 설정한 다음의 제약조건이 지켜지는지 살펴보면서 실행해보자.
 * 10초 이내 저축
 * 잔고 101보다 적은데 출금
 
-블록체인에 send()가 필요한 함수는 비동기적으로 처리하기 위해 ```await```로 처리한다.
-비동기적으로 처리하면, 예를 들어 입금 ```deposit()```하고 ```getBalance()```하면 잔고에 입금분만큼 반영이 되어있는 것을 알 수 있다.
+```python
+bank 객체는 스스로 만들어 보자 (아래 코드를 참조해서 만들어도 된다)
+node> bank.methods.getBalance().call().then(console.log);              잔고 0
+> 0
+> bank.methods.deposit(100).send({from:"0x4D2fF...", value:100});    입금 100 (geth@8445는 마이닝 필요)
+(geth@8445는 마이닝이 필요하다 geth> miner.start(1);admin.sleepBlocks(1);miner.stop())
+> bank.methods.getBalance().call().then(console.log);               입금금액 조회 100.
+> 100                                                                
+> bank.methods.deposit(100).send({from:"0x4D2fF...", value:111});   입금 'value'와 '인자'가 서로 다르면 입금 실패
+(geth@8445는 마이닝이 필요하다)
+> bank.methods.getBalance().call().then(console.log);              실패하였으므로 잔고는 계속 100
+> 100
+> bank.methods.deposit(111).send({from:"0x4D2fF...", value:111});    입금 111
+(geth@8445는 마이닝이 필요하다)
+> bank.methods.getBalance().call().then(console.log);              입금 100+111 = 211
+> 211
+> bank.methods.deposit(111).send({from:"0x4D2fF...", value:111});    (10초 지나서) 입금 111, 마이닝하면 금액 증가함
+(geth@8445는 마이닝이 필요하다)
+> bank.methods.getBalance().call().then(console.log);              입금 100+111+111 = 322
+> 322
+> bank.methods.deposit(111).send({from:"0x4D2fF...", value:111});    입금 111, 마이닝하면 금액 증가함
+> (geth@8445는 마이닝이 필요하다 geth> miner.start(1);admin.sleepBlocks(1);miner.stop())
+> bank.methods.deposit(111).send({from:"0x4D2fF...", value:111});    입금 111, 10초 이내이므로 마이닝해도 금액 증가하지 않음
+(geth@8445는 마이닝이 필요하다)
+> bank.methods.getBalance().call().then(console.log);              여러번 입금해도 10초 이내 거래는 실패하고 잔고가 늘지 않음
+> 433
+```
 
+이번에는 묶어서 일괄실행해보자. 블록체인에 send()가 필요한 함수는 비동기적으로 처리하기 위해 ```await```로 처리한다.
+비동기적으로 처리하면, 예를 들어 입금 ```deposit()```하고 ```getBalance()```하면 잔고에 입금분만큼 반영이 되어있는 것을 알 수 있다.
 
 ```python
 [파일명: src/BankV3Use.js]
@@ -395,55 +431,24 @@ doIt()
 ```python
 pjt_dir> node src/BankV3Use.js
 
-    - ABI: [object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]
-    Account: 0x9357f478d86D9222f4413bFd91C8adb0F4c728b7
-    Balance before: 999978775921999995002
-    Result { '0': '0', '1': '0' }
-    Result { '0': '111', '1': '111' }
-    Balance after: 999978617241999995002
-    Balance diff: 158679999971328
-    Result { '0': '0', '1': '0' }
+- ABI: [object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]
+Account: 0x9357f478d86D9222f4413bFd91C8adb0F4c728b7
+Balance before: 999978775921999995002     거래 이전의 잔고
+Result { '0': '0', '1': '0' }             잔고반환은 2개를 하고 있다. 검증목적으로 2개가 동일해야 한다.
+Result { '0': '111', '1': '111' }         111을 입금
+Balance after: 999978617241999995002
+Balance diff: 158679999971328             (1)
+Result { '0': '0', '1': '0' }             전액 출금 (101 제약보다 큰 잔고가 있으므로 가능하다)
 ```
 
-결과는 비동기 함수를 일시에 실행하기 때문에 바르게 출력되지 않고 있다.
-node창에서 실행을 해보면 알 수 있다.
-
-1. deposit(100);
-2. withdraw() ---> 실패 (프로그램에 101 wei 이상 제약조건)
-3. deposit(111);
-value를 반드시 함수인자와 동일하게 입력해야 한다.
-REMIX에서 할 경우에도 마찬가지이다. Run 탭 상단의 value, Deployed Contracts 함수의 인자 두 필드에 동일한 금액을 넣어준다.
-4. 빠르게 (프로그램에 설정해 놓은 10초 이내) deposit(111) ---> 실패
-5. queryBalance() --=> 211
-6. deposit(111); ---> 10초가 지났으면 실행. 이때 마이닝을 해서 동기화를 시켜줄 필요가 있다.
-7. queryBalance() ---> 322
-
-```python
-> bank.methods.getBalance().call().then(console.log);              잔고 0
-> 0
-> bank.methods.deposit(100).send({from:"0x4D2fF...", value:100});    입금 100
-> //miner.start(1);admin.sleepBlocks(1);miner.stop();                마이닝
-> bank.methods.getBalance().call().then(console.log);              입금금액 조회 100. 앞 입금거래를 마이닝하고 금액 증가.
-> 100                                                                
-> bank.methods.deposit(100).send({from:"0x4D2fF...", value:111});    입금 'value'와 '인자'가 서로 다르면 입금 실패
-> //miner.start(1);admin.sleepBlocks(1);miner.stop();                마이닝
-undefined
-> bank.methods.getBalance().call().then(console.log);              실패하였으므로 잔고는 계속 100
-> 100
-> bank.methods.deposit(111).send({from:"0x4D2fF...", value:111});    입금 111
-> //miner.start(1);admin.sleepBlocks(1);miner.stop();                마이닝
-> bank.methods.getBalance().call().then(console.log);              입금 100+111 = 211
-> 211
-> bank.methods.deposit(111).send({from:"0x4D2fF...", value:111});    (10초 지나서) 입금 111, 마이닝하면 금액 증가함
-> //miner.start(1);admin.sleepBlocks(1);miner.stop();
-> bank.methods.getBalance().call().then(console.log);              입금 100+111+111 = 322
-> 322
-> bank.methods.deposit(111).send({from:"0x4D2fF...", value:111});    입금 111, 마이닝하면 금액 증가함
-> bank.methods.deposit(111).send({from:"0x4D2fF...", value:111});    입금 111, 10초 이내이므로 마이닝해도 금액 증가하지 않음
-> //miner.start(1);admin.sleepBlocks(1);miner.stop();
-> bank.methods.getBalance().call().then(console.log);              여러번 입금해도 10초 이내 거래는 실패하고 잔고가 늘지 않음
-> 433
+위 출력 (1)을 잠깐 보자. balanceBefore와 balanceAfter의 연산이 정확하지 않다. 눈치를 채었는가?
+왜 그런지 자바스크립트 콘솔에서 확인해도 오류가 있다.
 ```
+Javascript > 999978775921999995002-999978617241999995002
+> 158679999971328
+```
+
+자바스크립트는 정수는 2의 53승까지, 9007199254740992가 최대 값이다. 그 수를 넘어가게 되면 연산이 올바르게 되지 않는다. 계산기로 해보면, 출력값과 다르다 (158,680,000,000,000).
 
 # 5. 이벤트
 
@@ -454,7 +459,7 @@ undefined
 키보드나 마우스가 운영체제의 인터럽트 interrupt를 발생하는 것인데,
 블록체인에는 그 특성 상 이러한 마우스 클릭이나 키를 누르거나 하는 이벤트가 발생할 수 없다.
 반면에 어떤 함수가 호출되면 그 것을 알려주는 이벤트가 발생하는 것으로 처리하고 있다.
-블록체인에서의 이벤트는 이벤트는 **로그**에 기록이 된다.
+블록체인에서의 이벤트는 **로그**에 기록이 된다.
 그 로그를 계속 듣고 있다가, 자신이 원하는 것이 포착되면 그 것이 이벤트로 인식된다.
 
 ## 5.1 이벤트 발생하기
@@ -618,10 +623,10 @@ myProvider.on('error', function(error) { console.error(error); });
 ```python
 pjt_dir> node src/webSocketTest.js
 
-    (1) websocket url:  ws://localhost:8345
-    (2) connecting websocket: true
-    (3) disconnecting Websocket: false
-    --> Websocket ended
+(1) websocket url:  ws://localhost:8345
+(2) connecting websocket: true
+(3) disconnecting Websocket: false
+--> Websocket ended
 ```
 
 ## 실습문제: 간단한 이벤트 발생
@@ -646,9 +651,6 @@ contract EventTest {
     }
 }
 ```
-
-    Writing src/EventTest.sol
-
 
 ### 단계 2: 컴파일
 
@@ -698,44 +700,22 @@ deploy()
 ```python
 pjt_dir> node src/EventTestDeployFromFile.js
 
-    - contract name:  [ 'src/EventTest.sol:EventTest' ]
-    Deploying the contract from 0x9357f478d86D9222f4413bFd91C8adb0F4c728b7
-    hash: 0xb7095ec9d332c32b6f456692746f8811d1da25deabf5cad5346d47d8592c5bb1
-    ---> The contract deployed to: 0x8911bA097c812Bf0B3ff22F90eaf2A905112C5a6
+- contract name:  [ 'src/EventTest.sol:EventTest' ]
+Deploying the contract from 0x9357f478d86D9222f4413bFd91C8adb0F4c728b7
+hash: 0xb7095ec9d332c32b6f456692746f8811d1da25deabf5cad5346d47d8592c5bb1
+---> The contract deployed to: 0x8911bA097c812Bf0B3ff22F90eaf2A905112C5a6
 ```
 
 위에서 주어진 ```transactionHash```를 가지고 처리결과를 알 수 있다.
-gas 사용량, contractAddress도 찾을 수 있다.
-
-
-```python
-geth> eth.getTransactionReceipt("0xf146911d309a2039244e57335f121bc52ea917bd23547e1801c331d941551e0c")
-
-    {
-      blockHash: [32m"0x3ac5bd8bcb62a46a8338a6585d01afd6a6e5201360491d633ee322ffd9432491"[0m,
-      blockNumber: [31m1[0m,
-      contractAddress: [32m"0x577f7d6f4f72cd57cfd3bbe7eec685ce367d4903"[0m,
-      cumulativeGasUsed: [31m110297[0m,
-      from: [32m"0x29ce1c8ad6a62b0e065890dd1eb0ff86da435929"[0m,
-      gasUsed: [31m110297[0m,
-      logs: [],
-      logsBloom: [32m"0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"[0m,
-      r: [32m"0xbf9f397bbdb8ec41e62bd274668ab297d3ab6a90ea124571c28fb74edfa805bc"[0m,
-      s: [32m"0x23a01b896e7df3386d9a3581afa02117122d3f3474482cb5d1986d34bbadcb94"[0m,
-      status: [32m"0x1"[0m,
-      to: [1mnull[0m,
-      transactionHash: [32m"0xf146911d309a2039244e57335f121bc52ea917bd23547e1801c331d941551e0c"[0m,
-      transactionIndex: [31m0[0m,
-      v: [32m"0x1c"[0m
-    }
 ```
+geth> eth.getTransactionReceipt("해시번호를 여기에 적어준다")
+```
+컨트랙주소, gas 사용량, 거래 hash도 찾을 수 있다.
 
 ### 단계 4: 사용
 
-
 ```JSON.stringify```는 Object의 내용을 문자열로 출력한다.
 파일에서 읽은 JSON을 그대로 사용해도 오류가 발생하지 않는다.
-
 
 ```python
 [파일명: src/EventTestHttpNoEventFiredUse.js]
@@ -776,16 +756,15 @@ doIt()
 
 HttpProvider는 Event를 호출하지 못하고 있다. 함수 호출하면서 발생한 로그를 ```value.events.MyLog.returnValues```를 통해 출력할 수 있다.
 
-
 ```python
 pjt_dir> node src/EventTestHttpNoEventFiredUse.js
 
-    - ABI: [object Object],[object Object]
-    Account: 0x9357f478d86D9222f4413bFd91C8adb0F4c728b7
-    Balance before: 999978310622999995002
-    ---> myFunction called {"0":"Hello World!","my":"Hello World!"}
-    Balance after: 999978287795999995002
-    Balance diff: 22827000004608
+- ABI: [object Object],[object Object]
+Account: 0x9357f478d86D9222f4413bFd91C8adb0F4c728b7
+Balance before: 999978310622999995002
+---> myFunction called {"0":"Hello World!","my":"Hello World!"}
+Balance after: 999978287795999995002
+Balance diff: 22827000004608
 ```
 
 #### WebSocketProvider
@@ -860,43 +839,38 @@ async function doIt() {
 doIt()
 ```
 
-ip가 올바르지 않는 경우: Error: connection not open
-
+IP가 올바르지 않는 경우 ```Error: connection not open``` 오류가 발생한다.
+자, 이번에는 이벤트가 발생하는가? 아래 출력에서  ```Event fired: {"0":"Hello World!","my":"Hello World!"}```가 출력되고 있다.
 
 ```python
 pjt_dir> node src/EventTestWsUse.js
 
 
-    - ABI: [object Object],[object Object]
-    Account: 0x9357f478d86D9222f4413bFd91C8adb0F4c728b7
-    Event fired: {"0":"Hello World!","my":"Hello World!"}
-    Balance before: 999978082352999995002
-    >> Writing to file
-    Event fired: {"0":"Hello World!","my":"Hello World!"}
-    >> Writing to file
-    ---> myFunction called {"0":"Hello World!","my":"Hello World!"}
-    Balance after: 999978059525999995002
-    Balance diff: 22827000004608
+- ABI: [object Object],[object Object]
+Account: 0x9357f478d86D9222f4413bFd91C8adb0F4c728b7
+Event fired: {"0":"Hello World!","my":"Hello World!"}
+Balance before: 999978082352999995002
+>> Writing to file
+Event fired: {"0":"Hello World!","my":"Hello World!"}
+>> Writing to file
+---> myFunction called {"0":"Hello World!","my":"Hello World!"}
+Balance after: 999978059525999995002
+Balance diff: 22827000004608
 ```
 
 이벤트 발생하면서 파일에는 아래와 같이 JSON 형식으로 작성된다.
 
-
 ```python
 pjt_dir> type src\EventTestLog.txt
 
-
-    {"0":"Hello World!","my":"Hello World!"}{"0":"Hello World!","my":"Hello World!"}{"0":"Hello World!","my":"Hello World!"}{"0":"Hello World!","my":"Hello World!"}{"0":"Hello World!","my":"Hello World!"}
+{"0":"Hello World!","my":"Hello World!"}{"0":"Hello World!","my":"Hello World!"}{"0":"Hello World!","my":"Hello World!"}{"0":"Hello World!","my":"Hello World!"}{"0":"Hello World!","my":"Hello World!"}
 ```
-
-
 
 ## 실습문제: 주문하면서 복수의 이벤트 사용
 
 ### 단계 1: 컨트랙 개발
 
 변수 ```_itemId```는 ```bytes2```으로 선언되어있다. 값을 입력할 경우 16진수라서 4자리를 넣었다 (예: "0x1234")
-
 
 ```python
 [파일명: src/OrderEvent.sol]
@@ -924,7 +898,6 @@ contract OrderEvent {
 
 ### 단계 2: 컴파일
 
-
 ```python
 pjt_dir> solc-windows.exe --optimize --combined-json abi,bin src/OrderEvent.sol > src/OrderEvent.json
 ```
@@ -932,15 +905,13 @@ pjt_dir> solc-windows.exe --optimize --combined-json abi,bin src/OrderEvent.sol 
 ### 단계 3: 컨트랙 배포
 
 컴파일하고 출력되는 abi, bin을 복사해서 배포 프로그램에 넣어주자.
-사설망에 배포하려면, 계정을 unlock하는 것을 잊지 말자.
+사설망(geth@8445)에 배포하려면, 계정을 unlock하는 것을 잊지 말자.
 
 ```python
 geth> personal.unlockAccount(eth.accounts[0]);
 Unlock account 0x21c704354d07f804bab01894e8b4eb4e0eba7451
 Passphrase: 
 ```
-
-
 
 ```python
 [파일명: src/OrderEventDeploy.js]
@@ -979,35 +950,10 @@ deploy()
 ```python
 pjt_dir> node src/OrderEventDeploy.js
 
-
-    - contract name:  [ 'src/OrderEvent.sol:OrderEvent' ]
-    Deploying the contract from 0x9357f478d86D9222f4413bFd91C8adb0F4c728b7
-    hash: 0xddf0be098411f1e36a9906c953a240eca4f141634853bf15fc5b7d6e1c6a532d
-    ---> The contract deployed to: 0x3E04292870AA4Ef2bc44A1638B19A50BCD99b04D
-```
-
-
-```python
-geth> eth.getTransactionReceipt('0x77ec35fe3c55b792b6d9b998fa6e6803a3da28fcf17ef07ca5bdbe996f69d9b5')
-
-
-    {
-      blockHash: [32m"0xf886f9114d3735207d53b43306ea2aa06e0efa53d744a8e64f2edfd6106eac87"[0m,
-      blockNumber: [31m1[0m,
-      contractAddress: [32m"0xa4eeb56806ad9fca1f53fe44d38f27cb7cac1fed"[0m,
-      cumulativeGasUsed: [31m201359[0m,
-      from: [32m"0xe1cd15d96c6109d32b542573f2943878cc0f5b95"[0m,
-      gasUsed: [31m201359[0m,
-      logs: [],
-      logsBloom: [32m"0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"[0m,
-      r: [32m"0x2403903754ecbc39258859b7aaa8e5b48141193fbaf410af3da8da5bdd1febaf"[0m,
-      s: [32m"0x5d147727cb64c69d24307e1a47e157b06f980418d3c4f2cf1eae4aa796ced744"[0m,
-      status: [32m"0x1"[0m,
-      to: [1mnull[0m,
-      transactionHash: [32m"0x77ec35fe3c55b792b6d9b998fa6e6803a3da28fcf17ef07ca5bdbe996f69d9b5"[0m,
-      transactionIndex: [31m0[0m,
-      v: [32m"0x1c"[0m
-    }
+- contract name:  [ 'src/OrderEvent.sol:OrderEvent' ]
+Deploying the contract from 0x9357f478d86D9222f4413bFd91C8adb0F4c728b7
+hash: 0xddf0be098411f1e36a9906c953a240eca4f141634853bf15fc5b7d6e1c6a532d
+---> The contract deployed to: 0x3E04292870AA4Ef2bc44A1638B19A50BCD99b04D
 ```
 
 ### 단계 4: 사용
@@ -1021,10 +967,9 @@ currentProvider는 MetaMask, Mist와 같은 Wallet을 사용하는 경우 자동
 라인 | 설명
 -----|-----
 6 | WebsocketProvider으로 설정한다.
-17 | **```filter: {_from: accounts[0], _value: 30}```** 인덱싱 걸어놓은 이벤트에 대해 해당 조건에 맞는 경우만 출력한다. 따라서 40, 100은 출력하지 않는다.
-18 | **```fromBlock: 'latest', toBlock: 'pending'```** 최근부터 대기하는 이벤트를 출력한다. ```fromBlock```의 ```default```는 ```latest```이다. 따라서 생략해도 된다. ```fromBlock```: 0, ```toBlock```: 'latest'는 처움 블록부터 발생한 이벤트를 모두 출력한다.
+17 | ```filter: {_from: accounts[0], _value: 30}``` 인덱싱 걸어놓은 이벤트에 대해 해당 조건에 맞는 경우만 출력한다. 따라서 40, 100은 출력하지 않는다.
+18 | ```fromBlock: 'latest', toBlock: 'pending'``` 최근부터 대기하는 이벤트를 출력한다. ```fromBlock```의 ```default```는 ```latest```이다. 따라서 생략해도 된다. ```fromBlock```: 0, ```toBlock```: 'latest'는 처움 블록부터 발생한 이벤트를 모두 출력한다.
 35 ~ 39 | 이벤트 로그에 대해 인덱싱에 해당되지 않아, ```my.events.OrderLog.returnValues``` 필드가 없게 되어 ```undefined```로 출력하고 있다.
-
 
 ```python
 [파일명: src/OrderEventUse.js]
@@ -1088,23 +1033,20 @@ async function doIt() {
 doIt()
 ```
 
-
 첫째 인자는 키를 가지고 있다.
-
-
 
 ```python
 pjt_dir> node src/OrderEventUse.js
 
-    - ABI: [object Object],[object Object],[object Object],[object Object],[object Object]
-    Account: 0x9357f478d86D9222f4413bFd91C8adb0F4c728b7
-    Balance before: 999977145423999994462
-    Event fired: {"0":"0x9357f478d86D9222f4413bFd91C8adb0F4c728b7","1":"0x1234","2":"30","_from":"0x9357f478d86D9222f4413bFd91C8adb0F4c728b7","_itemId":"0x1234","_value":"30"}
-    ---> MyFunction called undefined
-    ---> MyFunction called undefined
-    ---> MyFunction called undefined
-    Balance after: 999976974723999994292
-    Balance diff: 170700000067584
+- ABI: [object Object],[object Object],[object Object],[object Object],[object Object]
+Account: 0x9357f478d86D9222f4413bFd91C8adb0F4c728b7
+Balance before: 999977145423999994462
+Event fired: {"0":"0x9357f478d86D9222f4413bFd91C8adb0F4c728b7","1":"0x1234","2":"30","_from":"0x9357f478d86D9222f4413bFd91C8adb0F4c728b7","_itemId":"0x1234","_value":"30"}
+---> MyFunction called undefined
+---> MyFunction called undefined
+---> MyFunction called undefined
+Balance after: 999976974723999994292
+Balance diff: 170700000067584
 ```
 
 ## 실습문제: Multiply7 연산결과를 확인하려면 이벤트를 통해서 한다.
@@ -1124,7 +1066,6 @@ contract Multiply7Event {
     function multiply(param4);
 }
 ```
-
 
 ### 단계 1: 컨트랙 개발
 
@@ -1151,14 +1092,13 @@ contract Multiply7Event {
 
 ### 단계 2: 컴파일
 
-
 ```python
 pjt_dir> solc-windows.exe --optimize --combined-json abi,bin src/Multiply7Event.sol > src/Multiply7Event.json
 ```
 
 ### 단계 3: 컨트랙 배포
-* 위 abi, bin을 복사해서 붙여 넣는다.
 
+위 abi, bin을 복사해서 붙여 넣고 배포해보자.
 
 ```python
 [파일명: src/Multiply7EventDeploy.js]
@@ -1185,7 +1125,6 @@ async function deploy() {
 deploy()
 
 ```
-
 
 ```python
 [파일명: src/Multiply7EventDeploy.js]
@@ -1224,10 +1163,10 @@ deploy()
 ```python
 pjt_dir> node src/Multiply7EventDeploy.js
 
-    - contract name:  [ 'src/Multiply7Event.sol:Multiply7Event' ]
-    Deploying the contract from 0x9357f478d86D9222f4413bFd91C8adb0F4c728b7
-    hash: 0x0999eeb551e76a473873d2880a1f6c8088a42d3f30e2c439ac1b1d13cb78f35b
-    ---> The contract deployed to: 0x33add2effA3E32050aCD8446d826b0EFFB93A515
+- contract name:  [ 'src/Multiply7Event.sol:Multiply7Event' ]
+Deploying the contract from 0x9357f478d86D9222f4413bFd91C8adb0F4c728b7
+hash: 0x0999eeb551e76a473873d2880a1f6c8088a42d3f30e2c439ac1b1d13cb78f35b
+---> The contract deployed to: 0x33add2effA3E32050aCD8446d826b0EFFB93A515
 ```
 
 ### 단계 4: 사용
@@ -1239,8 +1178,6 @@ pjt_dir> node src/Multiply7EventDeploy.js
 ```call()``` 함수는 트랜잭션을 발생시키지 않으므로 결과는 알 수 있지만, **이벤트는 발생하지 않는다**.
 
 ```multiply()```함수는 state variable을 갱신하지 않으므로, ```call()```로 호출해도 연산 계산을 할 수 있고, 이벤트로 값이 전달된다.
-
-
 
 ```python
 [파일명: src/Multiply7EventUse.js]
@@ -1281,7 +1218,6 @@ async function doIt() {
 doIt()
 
 ```
-
 
 ```python
 [파일명: src/Multiply7EventUse.js]
@@ -1334,12 +1270,12 @@ doIt()
 ```python
 pjt_dir> node src/Multiply7EventUse.js
 
-    Account: 0x9357f478d86D9222f4413bFd91C8adb0F4c728b7
-    Event fired: {"0":"0x9357f478d86D9222f4413bFd91C8adb0F4c728b7","1":"1651956296","2":"56","_addr":"0x9357f478d86D9222f4413bFd91C8adb0F4c728b7","timestamp":"1651956296","res":"56"}
-    Balance before: 999976287563999994122
-    ---> MyFunction called {"_events":{}}
-    Balance after: 999976287563999994122
-    Balance diff: 0
+Account: 0x9357f478d86D9222f4413bFd91C8adb0F4c728b7
+Event fired: {"0":"0x9357f478d86D9222f4413bFd91C8adb0F4c728b7","1":"1651956296","2":"56","_addr":"0x9357f478d86D9222f4413bFd91C8adb0F4c728b7","timestamp":"1651956296","res":"56"}
+Balance before: 999976287563999994122
+---> MyFunction called {"_events":{}}
+Balance after: 999976287563999994122
+Balance diff: 0
 ```
 
 # 6. fallback 함수
@@ -1458,9 +1394,7 @@ contract Sending {
 
 존재하지 않는 함수를 호출해서 강제적으로 fallback 함수를 실행해 본다.
 
-
 ### 단계 1: 컨트랙 개발
-
 
 ```python
 [파일명: src/FallbackTest.sol]
@@ -1478,62 +1412,13 @@ contract FallbackTest {
 }
 ```
 
-
 ### 단계 2: 컴파일
-
-combined-json 명령어에 변경이 있다.
-```
-(old) solc src/FallbackTest.sol --combined-json abi,bin > src/FallbackTest.json
-(new) solc src/FallbackTest.sol --combined-json abi > src/FallbackTestABI.json
-```
-
 
 ```python
 pjt_dir> solc-windows.exe --optimize --combined-json abi,bin src/FallbackTest.sol > src/FallbackTest.json
 ```
 
 ### 단계 3: 컨트랙 배포
-
-
-```python
-[파일명: src/FallbackTestDeployFromFile.js]
-var Web3=require('web3');
-var _abiJson = require('./FallbackTestABI.json');
-var _binJson = require('./FallbackTestBIN.json');
-//var fs=require('fs');
-//var _str = fs.readFileSync("src/FallbackTestABI.json");
-//var _json=JSON.parse(_str)
-
-var web3;
-if (typeof web3 !== 'undefined') {
-    web3 = new Web3(web3.currentProvider);
-} else {
-    web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8345"));
-}
-
-contractName=Object.keys(_abiJson.contracts); // reading ['src//FallbackTest.sol:FallbackTest']
-console.log("- contract name: ", contractName[0]); //or console.log(contractName);
-_abiArray=JSON.parse(_abiJson.contracts[contractName].abi);    //JSON parsing needed!!
-_bin=_binJson.contracts[contractName].bin;
-//console.log("- ABI: " + _abiArray);
-//console.log("- Bytecode: " + _bin);
-
-async function deploy() {
-    const accounts = await web3.eth.getAccounts();
-    console.log("Deploying the contract from " + accounts[0]);
-    var deployed = await new web3.eth.Contract(_abiArray)
-        .deploy({data: _bin})
-        .send({from: accounts[0], gas: 364124, gasPrice: '1000000000'}, function(err, transactionHash) {
-                if(!err) console.log("hash: " + transactionHash); 
-        })
-        //.then(function(newContractInstance){
-        //    console.log(newContractInstance.options.address)
-        //});
-    console.log("---> The contract deployed to: " + deployed.options.address)
-}
-deploy()
-```
-
 
 ```python
 [파일명: src/FallbackTestDeployFromFile.js]
@@ -1572,14 +1457,13 @@ deploy()
 
 ```
 
-
 ```python
 pjt_dir> node src/FallbackTestDeployFromFile.js
 
-    - contract name:  [ 'src/FallbackTest.sol:FallbackTest' ]
-    Deploying the contract from 0x9357f478d86D9222f4413bFd91C8adb0F4c728b7
-    hash: 0xcd89d730a606179c4c36b84bc2ce58719fce84ecac932af8e2fd3000453fb7da
-    ---> The contract deployed to: 0x305F89e9b9C91B0b242874d77Ef675b0eBAD437C
+- contract name:  [ 'src/FallbackTest.sol:FallbackTest' ]
+Deploying the contract from 0x9357f478d86D9222f4413bFd91C8adb0F4c728b7
+hash: 0xcd89d730a606179c4c36b84bc2ce58719fce84ecac932af8e2fd3000453fb7da
+---> The contract deployed to: 0x305F89e9b9C91B0b242874d77Ef675b0eBAD437C
 ```
 
 ### 단계 4: 사용
@@ -1647,11 +1531,9 @@ doIt()
 
 ```python
 pjt_dir> type src\FallbackTest.json
+
+{"contracts":{"src/FallbackTest.sol:FallbackTest":{"abi":[{"anonymous":false,"inputs":[{"indexed":false,"internalType":"string","name":"","type":"string"}],"name":"PrintLog","type":"event"},{"stateMutability":"nonpayable","type":"fallback"},{"inputs":[],"name":"callA","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"pure","type":"function"}],"bin":"608060405234801561001057600080fd5b50610157806100206000396000f3fe608060405234801561001057600080fd5b506004361061002b5760003560e01c8063e7f09e0514610062575b7f968f0302429ff0e5bd56a45ce3ba1f4fa79f4b822857e438616435f00c3b59fd604051610058906100f8565b60405180910390a1005b61006a610080565b60405161007791906100a5565b60405180910390f35b60408051808201909152600b81526a646f696e672063616c6c4160a81b602082015290565b6000602080835283518082850152825b818110156100d1578581018301518582016040015282016100b5565b818111156100e25783604083870101525b50601f01601f1916929092016040019392505050565b6020808252600f908201526e19985b1b189858dac818d85b1b1959608a1b60408201526060019056fea26469706673582212200d9e1059d2a545eb520d53cf3762599743448a15c33b6509c126eb12fda0589564736f6c63430008010033"}},"version":"0.8.1+commit.df193b15.Windows.msvc"}
 ```
-
-    {"contracts":{"src/FallbackTest.sol:FallbackTest":{"abi":[{"anonymous":false,"inputs":[{"indexed":false,"internalType":"string","name":"","type":"string"}],"name":"PrintLog","type":"event"},{"stateMutability":"nonpayable","type":"fallback"},{"inputs":[],"name":"callA","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"pure","type":"function"}],"bin":"608060405234801561001057600080fd5b50610157806100206000396000f3fe608060405234801561001057600080fd5b506004361061002b5760003560e01c8063e7f09e0514610062575b7f968f0302429ff0e5bd56a45ce3ba1f4fa79f4b822857e438616435f00c3b59fd604051610058906100f8565b60405180910390a1005b61006a610080565b60405161007791906100a5565b60405180910390f35b60408051808201909152600b81526a646f696e672063616c6c4160a81b602082015290565b6000602080835283518082850152825b818110156100d1578581018301518582016040015282016100b5565b818111156100e25783604083870101525b50601f01601f1916929092016040019392505050565b6020808252600f908201526e19985b1b189858dac818d85b1b1959608a1b60408201526060019056fea26469706673582212200d9e1059d2a545eb520d53cf3762599743448a15c33b6509c126eb12fda0589564736f6c63430008010033"}},"version":"0.8.1+commit.df193b15.Windows.msvc"}
-
-
 
 ```python
 [파일명: src/FallbackTestUseFromFile.js]
@@ -1742,79 +1624,69 @@ Balance after: 99996167646000000000
 Balance diff: 437260000002048
 ```
 
-
 ```python
 pjt_dir> node src/FallbackTestUseFromFile.js
 
-
-    - contract name:  [ 'src/FallbackTest.sol:FallbackTest' ]
-    - ABI: [object Object],[object Object],[object Object]
-    Account: 0x9357f478d86D9222f4413bFd91C8adb0F4c728b7
-    Balance before: 999975007733999994122
-    Balance after: 999975007733999994122
-    Balance diff: 0
+- contract name:  [ 'src/FallbackTest.sol:FallbackTest' ]
+- ABI: [object Object],[object Object],[object Object]
+Account: 0x9357f478d86D9222f4413bFd91C8adb0F4c728b7
+Balance before: 999975007733999994122
+Balance after: 999975007733999994122
+Balance diff: 0
 ```
 
 
 ```python
 pjt_dir> node src/FallbackTestUseFromFile.js
 
-
-    - contract name:  src/FallbackTest.sol:FallbackTest
-    Account: 0x8218Ee4e07eE1a6000ce4542f6DC9532611A18f1
-    Balance before: 99996604906000000000
-    doing callA
-    Balance after: 99996167646000000000
-    Balance diff: 437260000002048
+- contract name:  src/FallbackTest.sol:FallbackTest
+Account: 0x8218Ee4e07eE1a6000ce4542f6DC9532611A18f1
+Balance before: 99996604906000000000
+doing callA
+Balance after: 99996167646000000000
+Balance diff: 437260000002048
 ```
 
 websocket으로 변경하면 Event fired가 출력된다.
 ABI를 파일로 읽지 않고, 수작업으로 복붙하였다.
 
-
 ```python
 pjt_dir> node src/FallbackTestUseFromFile.js
 
-
-    - contract name:  [ 'src/FallbackTest.sol:FallbackTest' ]
-    - ABI: [object Object],[object Object],[object Object]
-    Account: 0x9357f478d86D9222f4413bFd91C8adb0F4c728b7
-    Balance before: 999975007733999994122
-    Event fired: {"address":"0x305F89e9b9C91B0b242874d77Ef675b0eBAD437C","blockHash":"0x465145638b2da03dc570a319703928e6f140d1791a4f91cca36c5aadeac41c78","blockNumber":120,"logIndex":0,"removed":false,"transactionHash":"0x15866c88cd1e6da85e36fa0d6435cb69f44e1e1c28a6e173c5f7e871991b5a64","transactionIndex":0,"id":"log_663c3d49","returnValues":{"0":"fallback called"},"event":"PrintLog","signature":"0x968f0302429ff0e5bd56a45ce3ba1f4fa79f4b822857e438616435f00c3b59fd","raw":{"data":"0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000f66616c6c6261636b2063616c6c65640000000000000000000000000000000000","topics":["0x968f0302429ff0e5bd56a45ce3ba1f4fa79f4b822857e438616435f00c3b59fd"]}}
-    ---> {"0":"fallback called"}
-    Event fired: {"address":"0x305F89e9b9C91B0b242874d77Ef675b0eBAD437C","blockHash":"0x31d9eb58b769e1004aeead29a35f6bc27ce30335cf99c8020e0cc730646171ab","blockNumber":121,"logIndex":0,"removed":false,"transactionHash":"0x5b7a92d8c605ce2153f89f858fa4df3d7509a0abf7e0370bf1ee10763cb184e7","transactionIndex":0,"id":"log_dc4be599","returnValues":{"0":"fallback called"},"event":"PrintLog","signature":"0x968f0302429ff0e5bd56a45ce3ba1f4fa79f4b822857e438616435f00c3b59fd","raw":{"data":"0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000f66616c6c6261636b2063616c6c65640000000000000000000000000000000000","topics":["0x968f0302429ff0e5bd56a45ce3ba1f4fa79f4b822857e438616435f00c3b59fd"]}}
-    ---> {"0":"fallback called"}
-    Balance after: 999975007733999994122
-    Balance diff: 0
+- contract name:  [ 'src/FallbackTest.sol:FallbackTest' ]
+- ABI: [object Object],[object Object],[object Object]
+Account: 0x9357f478d86D9222f4413bFd91C8adb0F4c728b7
+Balance before: 999975007733999994122
+Event fired: {"address":"0x305F89e9b9C91B0b242874d77Ef675b0eBAD437C","blockHash":"0x465145638b2da03dc570a319703928e6f140d1791a4f91cca36c5aadeac41c78","blockNumber":120,"logIndex":0,"removed":false,"transactionHash":"0x15866c88cd1e6da85e36fa0d6435cb69f44e1e1c28a6e173c5f7e871991b5a64","transactionIndex":0,"id":"log_663c3d49","returnValues":{"0":"fallback called"},"event":"PrintLog","signature":"0x968f0302429ff0e5bd56a45ce3ba1f4fa79f4b822857e438616435f00c3b59fd","raw":{"data":"0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000f66616c6c6261636b2063616c6c65640000000000000000000000000000000000","topics":["0x968f0302429ff0e5bd56a45ce3ba1f4fa79f4b822857e438616435f00c3b59fd"]}}
+---> {"0":"fallback called"}
+Event fired: {"address":"0x305F89e9b9C91B0b242874d77Ef675b0eBAD437C","blockHash":"0x31d9eb58b769e1004aeead29a35f6bc27ce30335cf99c8020e0cc730646171ab","blockNumber":121,"logIndex":0,"removed":false,"transactionHash":"0x5b7a92d8c605ce2153f89f858fa4df3d7509a0abf7e0370bf1ee10763cb184e7","transactionIndex":0,"id":"log_dc4be599","returnValues":{"0":"fallback called"},"event":"PrintLog","signature":"0x968f0302429ff0e5bd56a45ce3ba1f4fa79f4b822857e438616435f00c3b59fd","raw":{"data":"0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000f66616c6c6261636b2063616c6c65640000000000000000000000000000000000","topics":["0x968f0302429ff0e5bd56a45ce3ba1f4fa79f4b822857e438616435f00c3b59fd"]}}
+---> {"0":"fallback called"}
+Balance after: 999975007733999994122
+Balance diff: 0
 ```
 
-
 ```python
 pjt_dir> node src/FallbackTestUseFromFile.js
 
-
-    - contract name:  src/FallbackTest.sol:FallbackTest
-    Account: 0x8218Ee4e07eE1a6000ce4542f6DC9532611A18f1
-    Balance before: 99995276566000000000
-    doing callA
-    Balance after: 99995276566000000000
-    Balance diff: 0
-    Event fired: {"logIndex":0,"transactionIndex":0,"transactionHash":"0x988203b9673bb10e9ecfed1d9e4a9aad1f6555607be560c40139625153a8ec0b","blockHash":"0x10bf044ab1a16f74a8fd22436b7cdf4cc6c1e82da6b23c8afb5c3a1a13f446f7","blockNumber":13,"address":"0x3991e87b71cBFf94aA0718F341d8Ad4bCF969f36","type":"mined","id":"log_6023f931","returnValues":{"0":"fallback called"},"event":"PrintLog","signature":"0x968f0302429ff0e5bd56a45ce3ba1f4fa79f4b822857e438616435f00c3b59fd","raw":{"data":"0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000f66616c6c6261636b2063616c6c65640000000000000000000000000000000000","topics":["0x968f0302429ff0e5bd56a45ce3ba1f4fa79f4b822857e438616435f00c3b59fd"]}}
+- contract name:  src/FallbackTest.sol:FallbackTest
+Account: 0x8218Ee4e07eE1a6000ce4542f6DC9532611A18f1
+Balance before: 99995276566000000000
+doing callA
+Balance after: 99995276566000000000
+Balance diff: 0
+Event fired: {"logIndex":0,"transactionIndex":0,"transactionHash":"0x988203b9673bb10e9ecfed1d9e4a9aad1f6555607be560c40139625153a8ec0b","blockHash":"0x10bf044ab1a16f74a8fd22436b7cdf4cc6c1e82da6b23c8afb5c3a1a13f446f7","blockNumber":13,"address":"0x3991e87b71cBFf94aA0718F341d8Ad4bCF969f36","type":"mined","id":"log_6023f931","returnValues":{"0":"fallback called"},"event":"PrintLog","signature":"0x968f0302429ff0e5bd56a45ce3ba1f4fa79f4b822857e438616435f00c3b59fd","raw":{"data":"0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000f66616c6c6261636b2063616c6c65640000000000000000000000000000000000","topics":["0x968f0302429ff0e5bd56a45ce3ba1f4fa79f4b822857e438616435f00c3b59fd"]}}
     ---> {"0":"fallback called"}
 ```
 
 ## 실습문제: 컨트랙 결합에서 payable fallback 사용
 
-앞서 존재하지 않는 함수를 호출하는 경우, ```fallback```함수가 호출되었다.
-또한 금액없이 송금을 하여도 ```fallback```함수가 호출된다.
+앞서 존재하지 않는 함수를 호출하는 경우, ```fallback```함수가 호출되었다. 또한 금액없이 송금을 하여도 ```fallback```함수가 호출된다.
 
-송금을 하면서 오류가 발생하여 ```fallback```이 호출된다 하더라도 송금액은 받을 수 없다.
-단, 다음과 같이 ```payable```으로 선언하면 송금액을 받을 수 있다.
+송금을 하면서 오류가 발생하여 ```fallback```이 호출된다 하더라도 송금액은 받을 수 없다. 단, 다음과 같이 ```payable```으로 선언하면 송금액을 받을 수 있다.
 
 ```python
 fallback() payable {}
 ```
-
 
 ### 단계 1: 컨트랙 개발
 
@@ -1822,17 +1694,45 @@ fallback() payable {}
 그렇다면 부득이 컨트랙을 하나 더 만들어야 하고, 두 컨트랙이 연관을 가져야 한다.
 아래 코드를 보면:
 * 두 컨트랙이 하나의 파일에 존재하면 ```new``` 명령어로 객체를 만들어 사용하거나,
-* 이미 배포된 컨트랙을 사용하려고 하면, 그 주소를 할당하여 사용하고 있다.
+* 이미 배포된 컨트랙을 사용하려고 하면, ```setM7()``` 함수를 통해 그 주소를 할당하여 사용하고 있다.
 
+REMIX에서 버튼을 누르며 테스트 해보자.
+* 먼저 Math의 적색버튼 deposit을 누른다. 이 때 인자에 111을, 위 VALUE에도 같은 숫자 111을 적는다.
+* 그리고 Math의 적색버튼 ```send11M7```을 누른다. 이때 REMIX의 우측 아래 단말를 보면, 녹색의 성공 체크표시가 뜬다 (실패하면 적색 X 표시). 우측의 청색 Debug를 펼치고, logs로 이동하고 args를 보면, 다음과 같은 로그 출력을 볼 수 있다.
+```
+"args": {
+			"0": "now receiving in Multiply7",
+			"1": "0x5B38Da6a701c568545dCfcB03FcB875f56beddC4",
+			"s": "now receiving in Multiply7",
+			"_from": "0x5B38Da6a701c568545dCfcB03FcB875f56beddC4"
+		}
+```
+위 출력을 보면, receive() 함수가 호출되고 있음을 알 수 있다. 소스코드의 도움말을 활성화해가면서 (쓰지 않는 부분은 비활성화), 예를 들어 receive()를 비활성화하면 fallback()을 호출하게 된다.
+
+* fallback이나 receive를 호출되는 이유를 잠깐 살펴보자.
+```payable(address(m7)).transfer(11)```는 m7에 송금을 하는 것인데, 함수를 통하지 않고 있다. 즉 없는 함수를 호출하면 어떻게 처리를 할 방법이 없다. 이 때 receive가 호출된다. receive 함수가 없으면 fallback이 호출된다.
 
 ```python
 [파일명: src/MathMultiply7.sol]
-pragma solidity ^0.6.0;
+//SPDX-License-Identifier: GPL-3.0-or-later
+pragma solidity ^0.8.0;
 
 contract Multiply7 {
-   //event Print(uint);
-   receive() external payable {}
-   fallback() external payable {}
+    //address owner;
+   event PrintLog(string s, address _from, uint _amount);
+   event PrintLog(string s, address _from);
+   event PrintLog(uint);
+   //constructor() { owner=msg.owner; }
+   receive() external payable {
+       //emit PrintLog("now receiving in Multiply7", tx.origin, msg.value); //error
+       //emit PrintLog("now receiving in Multiply7", tx.origin, 11);
+       emit PrintLog("now receiving in Multiply7", tx.origin);
+   }
+   fallback() external payable {
+       //emit PrintLog("now fallback in Multiply7", tx.origin, msg.value); //error
+       //emit PrintLog("now fallback in Multiply7", tx.origin, 111);
+       emit PrintLog("now fallback in Multiply7", tx.origin);
+   }
    function multiply(uint input) pure public returns (uint) {
       //emit Print(input * 7);
       return input * 7;
@@ -1856,7 +1756,7 @@ contract Math {
     function send11M7() public payable {
         //m7.multiply.value(11)(9);
         //m7.multiply(9);
-        address(m7).transfer(11);
+        payable(address(m7)).transfer(11); //contract address -> payable
     }
     function getBalanceOfThis() public view returns(uint) {
         return address(this).balance;
@@ -1866,99 +1766,64 @@ contract Math {
     }
     function getAddressOfM7() view public returns(address) {
         return address(m7);
-   }    
+   }
 }
 ```
 
-
 ### 단계 2: 컴파일
 
-지금은 버전 0.6으로 컴파일해서 실행하고 있다. 실행에 문제가 있으면 REMIX에서 버전을 0.4.21로 낮추어 적용하여 보자.
-
-combined-json 명령어를 abi, 바이트코드 각 각에 적용해서 해보자.
-
+combined-json 명령어를 abi, bytecode 각 각에 적용해서 해보자.
 
 ```python
 pjt_dir> solc src/MathMultiply7.sol --combined-json abi > src/MathMultiply7ABI.json
 ```
 
-abi는 2개가 생성되고 있다.
-
+파일에 2개의 컨트랙이 포함되어, 아래에서 보듯이 abi는 2개가 생성되고 있다.
 
 ```python
 pjt_dir> cat src/MathMultiply7ABI.json
 
-
-    {"contracts":{"src/MathMultiply7.sol:Math":{"abi":"[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"deposit\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getAddressOfM7\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getBalanceOfM7\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getBalanceOfThis\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"multiply\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"send11M7\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address payable\",\"name\":\"_addr\",\"type\":\"address\"}],\"name\":\"setM7\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]"},"src/MathMultiply7.sol:Multiply7":{"abi":"[{\"stateMutability\":\"payable\",\"type\":\"fallback\"},{\"inputs\":[],\"name\":\"getAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"input\",\"type\":\"uint256\"}],\"name\":\"multiply\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"stateMutability\":\"payable\",\"type\":\"receive\"}]"}},"version":"0.6.1+commit.e6f7d5a4.Linux.g++"}
+{"contracts":{
+	"src/MathMultiply7.sol:Math":{"abi":"[...생략...]"},    (1) Math 컨트랙
+	"src/MathMultiply7.sol:Multiply7":{"abi"[...생략...]"}  (2) Multiply7 컨트랙
+	},"version":"0.6.1+commit.e6f7d5a4.Linux.g++"}
 ```
 
-
+이번에는 bytecode를 생성한다.
 ```python
 pjt_dir> solc src/MathMultiply7.sol --combined-json bin > src/MathMultiply7BIN.json
 ```
 
-bytecode는 하나로 합쳐져서 생성되고 있다.
-
+bytecode도 역시 2개가 생성되고 있다.
 
 ```python
 pjt_dir> cat src/MathMultiply7BIN.json
 
-    {"contracts":{"src/MathMultiply7.sol:Math":{"bin":"60806040526040516100109061007e565b604051809103906000f08015801561002c573d6000803e3d6000fd5b506000806101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff16021790555034801561007857600080fd5b5061008b565b61013b8061048e83390190565b6103f48061009a6000396000f3fe6080604052600436106100705760003560e01c8063934d85b41161004e578063934d85b4146101015780639ef6a7041461012c578063b6b55f251461017d578063f3593cd0146101ab57610070565b806314eb4ad01461007557806356eff596146100cc57806360d2dab0146100f7575b600080fd5b34801561008157600080fd5b5061008a6101d6565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b3480156100d857600080fd5b506100e16101ff565b6040518082815260200191505060405180910390f35b6100ff61023f565b005b34801561010d57600080fd5b506101166102aa565b6040518082815260200191505060405180910390f35b34801561013857600080fd5b5061017b6004803603602081101561014f57600080fd5b81019080803573ffffffffffffffffffffffffffffffffffffffff1690602001909291905050506102b2565b005b6101a96004803603602081101561019357600080fd5b81019080803590602001909291905050506102f5565b005b3480156101b757600080fd5b506101c0610304565b6040518082815260200191505060405180910390f35b60008060009054906101000a900473ffffffffffffffffffffffffffffffffffffffff16905090565b60008060009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1631905090565b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff166108fc600b9081150290604051600060405180830381858888f193505050501580156102a7573d6000803e3d6000fd5b50565b600047905090565b806000806101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff16021790555050565b80341461030157600080fd5b50565b6000806000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1663c6888fa160086040518263ffffffff1660e01b81526004018082815260200191505060206040518083038186803b15801561037a57600080fd5b505afa15801561038e573d6000803e3d6000fd5b505050506040513d60208110156103a457600080fd5b81019080805190602001909291905050509050809150509056fea2646970667358221220afd74b1dcf1f37dcf9e4c15b050d730108450ab4d8a36e47c2c86973d9efffa564736f6c63430006010033608060405234801561001057600080fd5b5061011b806100206000396000f3fe60806040526004361060295760003560e01c806338cc4831146031578063c6888fa114608557602f565b36602f57005b005b348015603c57600080fd5b50604360d0565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b348015609057600080fd5b5060ba6004803603602081101560a557600080fd5b810190808035906020019092919050505060d8565b6040518082815260200191505060405180910390f35b600030905090565b600060078202905091905056fea26469706673582212200591b36bab7f65a539e544453c58025549bd862b50a3ea39a847058dfa99338564736f6c63430006010033"},"src/MathMultiply7.sol:Multiply7":{"bin":"608060405234801561001057600080fd5b5061011b806100206000396000f3fe60806040526004361060295760003560e01c806338cc4831146031578063c6888fa114608557602f565b36602f57005b005b348015603c57600080fd5b50604360d0565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b348015609057600080fd5b5060ba6004803603602081101560a557600080fd5b810190808035906020019092919050505060d8565b6040518082815260200191505060405180910390f35b600030905090565b600060078202905091905056fea26469706673582212200591b36bab7f65a539e544453c58025549bd862b50a3ea39a847058dfa99338564736f6c63430006010033"}},"version":"0.6.1+commit.e6f7d5a4.Linux.g++"}
+{"contracts":{
+	"src/MathMultiply7.sol:Math":{"bin":"608060...생략...10033"},
+	"src/MathMultiply7.sol:Multiply7":{"bin":"608060...생략...10033"}
+	},"version":"0.6.1+commit.e6f7d5a4.Linux.g++"}
 ```
 
 ### 단계 3: 컨트랙 배포
 
-
-```python
-[파일명: src/MathMultiply7Deploy__.js]
-var Web3=require('web3');
-var web3;
-if (typeof web3 !== 'undefined') {
-    web3 = new Web3(web3.currentProvider);
-} else {
-    web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8445"));
-}
-//taken from REMIX from here
-var mathContract = web3.eth.contract([{"constant":true,"inputs":[],"name":"queryBalance","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"send11","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"amount","type":"uint256"}],"name":"deposit","outputs":[],"payable":true,"stateMutability":"payable","type":"function"},{"constant":true,"inputs":[],"name":"queryBalanceM7","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"multiply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_addr","type":"address"}],"name":"m7set","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}]);
-var math = mathContract.new(
-   {
-     from: web3.eth.accounts[0], 
-     data: '0x606060405261000c610071565b604051809103906000f080151561002257600080fd5b6000806101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff160217905550341561006c57600080fd5b610081565b604051610105806103e883390190565b610358806100906000396000f300606060405260043610610078576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806336f40c611461007d5780633c58d09e146100a6578063b6b55f25146100cf578063b76d4d06146100e7578063f3593cd014610110578063fde3137f14610139575b600080fd5b341561008857600080fd5b610090610172565b6040518082815260200191505060405180910390f35b34156100b157600080fd5b6100b9610191565b6040518082815260200191505060405180910390f35b6100e560048080359060200190919050506101e5565b005b34156100f257600080fd5b6100fa6101f6565b6040518082815260200191505060405180910390f35b341561011b57600080fd5b610123610236565b6040518082815260200191505060405180910390f35b341561014457600080fd5b610170600480803573ffffffffffffffffffffffffffffffffffffffff169060200190919050506102e9565b005b60003073ffffffffffffffffffffffffffffffffffffffff1631905090565b60008060009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16600b60405160006040518083038185875af1925050505090565b80341415156101f357600080fd5b50565b60008060009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1631905090565b6000806000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1663c6888fa160086040518263ffffffff167c010000000000000000000000000000000000000000000000000000000002815260040180828152602001915050602060405180830381600087803b15156102c957600080fd5b5af115156102d657600080fd5b5050506040518051905090508091505090565b806000806101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff160217905550505600a165627a7a72305820ca83e1f4743e5ee693d006254f4b0cb550b1e449bc6a95c89e2b575f901cd26300296060604052341561000f57600080fd5b60e88061001d6000396000f300606060405260043610603f576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff168063c6888fa1146041575b005b3415604b57600080fd5b605f60048080359060200190919050506075565b6040518082815260200191505060405180910390f35b60007f24abdb5865df5079dcc5ac590ff6f01d5c16edbc5fab4e195d9febd1114503da600783026040518082815260200191505060405180910390a16007820290509190505600a165627a7a72305820f19d1151fc4778023048c2f305ffb042231305525da155ac10d2fdd0112e607b0029', 
-     gas: '4700000'
-   }, function (e, contract){
-    //console.log(e, contract);
-    if (typeof contract.address !== 'undefined') {
-         console.log('Contract mined! address: ' + contract.address + ' transactionHash: ' + contract.transactionHash);
-    }
- })
-```
-
-기억하자. 2개의 컨트랙이 있고 이 가운데 하나만 배포되고 있다.
-* abi는 외부에서 사용하게 될 Math만 포함한다.
-* bin은 합쳐진 bytecode를 배포하게 된다.
-
+기억하자. 2개의 컨트랙이 있고 이 가운데 외부에서 사용하게 될 Math 하나만 배포하고 있다. abi, bin 모두 Math만 포함한다.
 
 ```python
 [파일명: src/MathMultiply7DeployFromFile.js]
 var Web3=require('web3');
 var _abiJson = require('./MathMultiply7ABI.json');
 var _binJson = require('./MathMultiply7BIN.json');
-//var fs=require('fs');
-//var _str = fs.readFileSync("src/MathMultiply7ABI.json");
-//var _json=JSON.parse(_str)
 
-var web3;
-if (typeof web3 !== 'undefined') {
-    web3 = new Web3(web3.currentProvider);
-} else {
-    web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8345"));
-}
+var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8345"));
 
 contractNames=Object.keys(_abiJson.contracts); //Math, Multiply7
 contractName=contractNames[0]; // -> 'src/MathMultiply7.sol:Math', contractNames[1] -> Multiply7
 console.log("- contract name: ", contractName);
-_abiArray=JSON.parse(_abiJson.contracts[contractName].abi);    //JSON parsing needed!!
-_bin=_binJson.contracts[contractName].bin;
+//_abiArray=JSON.parse(_abiJson.contracts[contractName].abi);    //JSON parsing needed!!
+_abiArray=JSON.parse(JSON.stringify(_abiJson.contracts[contractName].abi));    //Unexpected token error
+_bin="0x"+_binJson.contracts[contractName].bin;
+//_bin=_binJson.contracts[contractName].bin;
 //console.log("- ABI: " + _abiArray);
 //console.log("- Bytecode: " + _bin);
 
@@ -1981,14 +1846,15 @@ deploy()
 ```python
 pjt_dir> node src/MathMultiply7DeployFromFile.js
 
-
-    - contract name:  src/MathMultiply7.sol:Math
-    Deploying the contract from 0x8218Ee4e07eE1a6000ce4542f6DC9532611A18f1
-    hash: 0xf62d8e59c94508e7d21110b3978da0d6f1f0deb95e9e0b0d4b4e31b04f3196c8
-    ---> The contract deployed to: 0xB555B720d74b4875A5e0E6C84Da29996e05f1681
+- contract name:  src/MathMultiply7.sol:Math
+Deploying the contract from 0x83e790081F4117bEfe83d35bcDEC772e066F675D
+hash: 0xed1c5059d1f02cf839fc125810d326a34122369da38f7f298c6def3b0cee07db
+---> The contract deployed to: 0xcD3F2A7eca9E6cF6dA466E0e011858E05B033C65
 ```
 
 ### 단계 4: 사용
+
+지금은 버전 0.8으로 컴파일해서 실행하고 있다. 혹시 geth@8445에서 실행하면서, 문제가 있으면 버전을 낮추어 적용하여 보자 (이전에 문제가 있어 0.4.21로 낮추어 한 경험이 있다.)
 
 #### 컨트랙 연관관계에서의 주소 설정
 
@@ -2001,7 +1867,7 @@ pjt_dir> node src/MathMultiply7DeployFromFile.js
 송금하면서 ```payable fabllback```를 호출되게 하기 위해 의도적으로 아래와 같이 존재하지 않는 함수를 호출하였다.
 
 ```python
-call.value()();
+call.value()();  ?????
 ```
 
 송금하려면 물론 ```deposit()```을 먼저해야 한다.
@@ -2009,8 +1875,8 @@ call.value()();
 1. ```deposit(123)```
 value를 반드시 함수인자와 동일하게 입력해야 한다.
 REMIX에서 할 경우에도 마찬가지이다. ```Run``` 탭 상단의 ```value```, ```Deployed Contracts``` 함수의 인자 두 필드에 동일한 금액을 넣어준다.
-2. ```getBalanceOfThis()``` --> 123 입금하고 난 후의 잔고
-3. ```getBalanceOfM7()``` ---> 0
+2. ```getBalanceOfThis()``` --> 123이 된다. 입금하고 난 후의 잔고이다.
+3. ```getBalanceOfM7()``` ---> 0 아직 Multiply7의 잔고는 비어있다.
 4. ```send11M7()```
 @존재하지 않는 함수를 호출하여 ```m7.call.value(11)()```,
 다른 컨트랙 ```Multiply7```의 ```payable fallback``` 함수를 호출하여 ```11 Wei```를 송금한다.
@@ -2018,65 +1884,19 @@ REMIX에서 할 경우에도 마찬가지이다. ```Run``` 탭 상단의 ```valu
 6. ```getBalanceOfM7()``` ---> 11 ```payable fallback``` **존재하지 않는 함수를 호출하는 오류에도 불구하고 11 wei 송금 성공**
 
 ```python
-> var math = mathContract.at("0xf803dac95ea40f03736060114dfb9cca9ee7d514");
-undefined
-> math.deposit.sendTransaction(123,{from:web3.eth.accounts[0], value:123});   value와 인자를 동일하게 123으로 입금
-'0x9aa405b5780c999755ae85c3bc852a1e3b09a7d29b6fea20cdfb1af2ac4da19d'          REMIX에서도 마찬가지로 value와 인자를 일치시킴.
-> //miner.start(1);admin.sleepBlocks(1);miner.stop();
-undefined
-> math.queryBalance.call().toNumber();                                        마이닝하고 나면 잔고 123
-123
-> math.queryBalanceM7.call().toNumber();                                      Multiply7 잔고는 0
-0
-> math.send11({from:web3.eth.accounts[0]});                                   call.value(11)로 송금
-'0x9c497939df2a5d37cc7f9bf29b0f149831b82bfb841c2163badd360cba5f3360'
-> //miner.start(1);admin.sleepBlocks(1);miner.stop();
-undefined
-> math.queryBalance.call().toNumber();                                        마이닝하고 나면 잔고 112=123-11
-112
-> math.queryBalanceM7.call().toNumber();                                      Multiply7 잔고는 11증가
-11
-> math.multiply.call().toNumber();                                            함수내 8은 이미 입력되어 있으므로 56 = 8 x 7
-56
-```
-
-
-```python
-[파일명: src/MathMultiply7Use__.js]
-var Web3=require('web3');
-var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8445"));
-var mathContract = web3.eth.contract([{"constant":true,"inputs":[],"name":"queryBalance","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"send11","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"amount","type":"uint256"}],"name":"deposit","outputs":[],"payable":true,"stateMutability":"payable","type":"function"},{"constant":true,"inputs":[],"name":"queryBalanceM7","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"multiply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_addr","type":"address"}],"name":"m7set","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}]);
-var math = mathContract.at("0xf803dac95ea40f03736060114dfb9cca9ee7d514");
-console.log("deposit 123..."+math.deposit.sendTransaction(123,{from:web3.eth.accounts[0], value:123}));
-console.log("math balance: "+math.queryBalance.call().toNumber());
-math.send11({from:web3.eth.accounts[0]});
-console.log("math balance: "+math.queryBalance.call().toNumber());
-console.log("m7 balance: "+math.queryBalanceM7.call().toNumber());
-math.multiply.call().toNumber();
-```
-
-
-```python
 [파일명: src/MathMultiply7UseFromFile.js]
 var Web3=require('web3');
 var _abiJson = require('./MathMultiply7ABI.json');
 //var _binJson = require('./MathMultiply7BIN.json'); // not needed
-//var fs=require('fs');
-//var _str = fs.readFileSync("src/MathMultiply7ABI.json");
-//var _json=JSON.parse(_str)
 
-var web3;
-if (typeof web3 !== 'undefined') {
-    web3 = new Web3(web3.currentProvider);
-} else {
-    //web3 = new Web3(new Web3.providers.WebsocketProvider("ws://localhost:8345"));
-    web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8345"));
-}
+var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8345"));
+//var web3 = new Web3(new Web3.providers.WebsocketProvider("ws://localhost:8345"));
 
 contractNames=Object.keys(_abiJson.contracts); //Math, Multiply7
 contractName=contractNames[0]; // -> 'src/MathMultiply7.sol:Math', contractNames[1] -> Multiply7
 console.log("- contract name: ", contractName); //or console.log(contractName);
-_abiArray=JSON.parse(_abiJson.contracts[contractName].abi);    //JSON parsing needed!!
+//_abiArray=JSON.parse(_abiJson.contracts[contractName].abi);    //JSON parsing needed!!
+_abiArray=JSON.parse(JSON.stringify(_abiJson.contracts[contractName].abi));    //Unexpected token error
 //_bin=_binJson.contracts[contractName].bin;
 //console.log("- ABI: " + _abiArray);
 //console.log("- Bytecode: " + _bin);
@@ -2086,13 +1906,13 @@ async function doIt() {
     console.log("Account: " + accounts[0]);
     const balanceBefore = await web3.eth.getBalance(accounts[0]);
     console.log("Balance before: " + balanceBefore);
-    var _instance = new web3.eth.Contract(_abiArray, "0xB555B720d74b4875A5e0E6C84Da29996e05f1681");
+    var _instance = new web3.eth.Contract(_abiArray, "0xcD3F2A7eca9E6cF6dA466E0e011858E05B033C65");
 
-    _instance.methods.multiply().call().then(console.log);
-    _instance.methods.deposit(123).send({from:accounts[0], value:123});
-    _instance.methods.getBalanceOfM7().call().then(console.log);
-    await _instance.methods.send11M7().send({from:accounts[0]});
-    _instance.methods.getBalanceOfM7().call().then(console.log);
+    _instance.methods.multiply().call().then(console.log);    //56 출력 (8 곱하기 7 연산)
+    _instance.methods.deposit(123).send({from:accounts[0], value:123}); //value, 인자에 동일한 123으로 적음
+    _instance.methods.getBalanceOfM7().call().then(console.log); //0 출력
+    await _instance.methods.send11M7().send({from:accounts[0]}); //11을 송금
+    _instance.methods.getBalanceOfM7().call().then(console.log); //잔고 11을 출력
     const balanceAfter = await web3.eth.getBalance(accounts[0]);
     console.log("Balance after: " + balanceAfter);
     console.log("Balance diff: " + (balanceBefore - balanceAfter));
@@ -2101,41 +1921,76 @@ async function doIt() {
 doIt()
 ```
 
-
 ```python
 pjt_dir> node src/MathMultiply7UseFromFile.js
 
-
-    - contract name:  src/MathMultiply7.sol:Math
-    Account: 0x8218Ee4e07eE1a6000ce4542f6DC9532611A18f1
-    Balance before: 99979801566000000000
-    56
-    0
-    11
-    Balance after: 99978782245999999877
-    Balance diff: 1019320000004096
+- contract name:  src/MathMultiply7.sol:Math
+Account: 0x83e790081F4117bEfe83d35bcDEC772e066F675D
+Balance before: 999997545196000000000
+56
+0
+Balance after: 999997431831999999877
+Balance diff: 113364000047104
+11
 ```
 
 한 번 더 실행하고 결과를 보면, 잔고가 증가하고 있다는 것을 알 수 있다.
-
+위에서 11이 송금되었고, 2번째 출력에서 이를 반영해 11을 출력한다.
 
 ```python
 pjt_dir> node src/MathMultiply7UseFromFile.js
 
-
-    - contract name:  src/MathMultiply7.sol:Math
-    Account: 0x8218Ee4e07eE1a6000ce4542f6DC9532611A18f1
-    Balance before: 99978782245999999877
-    56
-    11
-    22
-    Balance after: 99977762925999999754
-    Balance diff: 1019320000004096
+- contract name:  src/MathMultiply7.sol:Math
+Account: 0x83e790081F4117bEfe83d35bcDEC772e066F675D
+Balance before: 99978782245999999877
+56
+11
+22
+Balance after: 99977762925999999754
+Balance diff: 1019320000004096
 ```
 
-## 연습문제: 주문
+## 연습문제 
+1. 생성자 문법이 맞는지 또는 틀린지 답하세요.
+    (1) constructor() Hello public {} //error
+    (2) constructor() internal {} //error
+    (3) constructor() private {} //error
+    (4) constructor() public {} //ok but warning
+    (5) constructor() {} //ok
+2. 객체지향에서와 같이 생성자 오버로딩은 가능하다. OX로 답하세요.
 
-블록체인에서 주문을 하고, 그 주문내역을 로컬 파일에 작성하세요.
+3. pure함수는 상태변수를 읽을 수 있다. OX로 답하세요.
+4. view함수는 이벤트를 발생할 수 있다. OX로 답하세요.
+
+5. web3 호출하는 측에서 { value: 0 }에 ether를 입력하면 무엇을 통해 전달되는지 답하시오.
+전역변수 ```msg.value```
+
+6. public 가시성은 내, 외부에서 모두 사용할 수 있다. OX로 답하세요.
+7. extern 가시성은 내부에서 호출할 수 없다. OX로 답하세요.
+8. 함수의 제약조건으로 사용할 수 있는 것은?
+(1) modifier
+(2) underscore
+(3) event
+(4) returns
+
+9. 블록체인에서의 이벤트는 어디에 기록이 되는가? 여기를 계속 관찰하면서, 이벤트가 발생하는지 포착한다.
+
+10. 이벤트는 오버로딩이 가능하다. OX로 답하세요.
+
+11. 이벤트는 http를 통해서 인식할 수 있다. OX로 답하세요.
+
+12. fallback 문법이 맞는지 또는 틀린지 답하세요.
+(1) fallback() {} //error must be extern 
+(2) function() external payable {} //오류. 이전 버전 0.6.x 이하에서는 이렇게 선언하였다.
+(3) fallback() external payable {} //정상. 송금있는 경우 사용.
+(4) fallback() external {} //정상. 송금없는 경우 사용.
+
+13 컨트랙에는 한 개의 fallback 함수만 존재할 수 있다. OX로 답하세요.
+
+14. fallback() 함수가 없으면 receive() 함수가 먼저 호출된다. OX로 답하세요.
+
+
+15. 블록체인에서 주문을 하고, 그 주문내역을 로컬 파일에 작성하세요.
 블록체인으로 주문이 전송되면 이벤트가 발생하도록 프로그램하고,
 주문내역은 로컬파일에 저장됩니다.
 (강의자료 참조: ```EventTest.sol```에서 이벤트가 발생하고 로그를 파일OrderEvent.txt에 작성)
@@ -2158,19 +2013,12 @@ pjt_dir> node src/MathMultiply7UseFromFile.js
 (geth는 geth@8445 또는 geth@8446에서 자바스크립트로 한다는 의미)
 복수 거래가 발생하므로, 한 건씩 발생하도록 'OrderEventUse.js' 파일을 나누어 코딩해도 된다.
 
-제출:
-* 제출: ipynb 파일 1개 (코드와 출력이 모두 보여야 함).
-
-
-## 연습문제: receive() 함수
-
-앞서 FallbackTest에 receive()함수를 추가하고, 호출되도록 해보자.
+16.  앞서 FallbackTest에 receive()함수를 추가하고, 호출되도록 해보자.
 
 아래와 같이 시도해보자.
 ```python
 web3.eth.sendTransaction({from:web3.eth.accounts[0], to:<<contract address>>});
 ```
-
 
 ```python
 [파일명: src/FallbackTest.sol]
@@ -2185,3 +2033,4 @@ contract FallbackTest {
     }
 }
 ```
+
