@@ -1,48 +1,45 @@
-﻿# Chapter  7. 맛보기 웹디앱 프로젝트
+# Chapter  7. 맛보기 웹디앱 프로젝트
 
-Hello 프로젝트를 구현한다. 서버 측을 Solidity로 스마트컨트랙을 만들고, 클라이언트 단에서 웹호출까지 구현한다.
-매우 단순한 Greeter, Counter를 구현하면서 '아!  블록체인으로 이렇게 만드는구나'를 이해하도록 하자.
+프로그래밍 언어를 처음 배울 때 해보는 Hello 프로젝트를 구현해보자. Solidity 언어로 블록체인에 스마트 컨트랙을 만들고, 웹 클라이언트에서 자바스크립트로 호출까지 전 과정을 구현해보게 된다.
+잇달아 맛보기로서 복잡하지 않은 Greeter, Counter를 구현하면서 '아! 블록체인 앱은 이렇게 만드는구나'를 이해하도록 하자.
 
 # 1. Hello World 디앱
 
-프로그래밍을 배우면서 보통 처음으로 "Hello World"를 출력하게 된다. 간단한 프로그램이지만 코딩, 컴파일, 실행, 테스트의 전과정을 해보면서 그 언어의 특징을 보다 잘 이해하게 된다.
+어떤 언어를 배우든 처음으로 "Hello World"를 출력해보게 된다. 간단하지만 코딩, 컴파일, 실행, 테스트의 전과정을 경험하면서 그 언어의 특징을 보다 잘 이해하게 된다.
 
-블록체인 프로그래밍은 다른 프로그래밍과 다를 수 밖에 없지만, 코딩, 컴파일, 테스트 등 이러한 절차는 필수적이고, C또는 자바로 해도 별 다르지 않다. 단계별로 하는 작업을 설명하면:
-- 코딩은 자바와 비슷한 Solidity로 하고,
-- 소스코드는 컴파일해서 ABI Application Binary Interface와 Byte code를 얻어야 한다. ABI는 컨트랙을 사용하기 위해 인터페이스 표준으로, JSON으로 표현된다. 또한 Byte code는 Solidity 소스코드를 컴파일한 기계어인 바이트코드이다.
-- 컴파일한 후 배포를 하는데, 블록체인에 올려야 한다. 이 배포와 같은 작업은 독특하다. 네트워크에 떠 있는 분산 블록체인에 배포하는 작업이 필수적이고, 메모리 번지와 같은 주소가 주어진다, 
-- 마지막으로, 비로서 배포주소를 통해 블록체인의 API를 사용할 수 있게 된다. API를 사용하려면, 앞서 설명하고 있는 블록체인의 특성을 이해해야 하는 것이다. 거래에 디지털 서명을 하고, 마이닝되고, 블록체인으로 만들어지게 된다.
+블록체인 프로그래밍은 코딩, 컴파일, 테스트의 절차는 필수적이고, C 또는 자바의 그것과 비슷하고 별로 다르지 않다. 단계별로 하는 작업을 설명하면:
 
-단계 | 구분 | 설명
+- 첫째로 코딩은 Solidity 언어로 작성하고,
+- 둘째로 소스코드는 컴파일해서 ABI(Application Binary Interface)와 바이트 코드(Byte code)를 생성한다. ABI는 컨트랙을 사용하기 위해 만들어지는 인터페이스 표준으로, JSON으로 표현된다. 또한 바이트 코드는 Solidity 소스코드를 컴파일해서 생성된 것으로 이더리움 가상 기계에서 실행된다.
+- 세째로 컴파일한 다음에는 블록체인에 올려야 하는데, 이 배포 작업은 독특하다. 배포하고 나면 분산 블록체인의 메모리 번지같은 컨트랙 주소가 주어진다, 
+- 마지막으로, 방금 배포하고 얻은 컨트랙 주소를 통해 블록체인의 API를 비로서 사용할 수 있게 된다. 이른바 거래라고 하는데, 블록체인이라는 특성에 따라 디지털 서명을 하고, 마이닝하고, 블록체인으로 조립된다.
+
+이런 절차를 다음 표에 요약해 놓았는데, 앞으로 이런 절차에 따라 프로그래밍이 수행될 것이다.
+
+단계 | 절차 | 설명
 -----|-----|-----
-1 | 개발 | 컨트랙 **소스 코드** 개발
-2 | 컴파일 | 소스코드를 컴파일해서 **ABI**, **Byte code** 생성
-3 | 컨트랙 배포 | 컴파일해서 얻은 ABI, Byte code로 객체를 생성한 후 배포 요청, 마이닝해서 블록체인의 주소 **contract address** 획득
-4 | 사용 | **ABI**, **contract address**로 컨트랙 객체를 생성해서, ```call()``` 또는 ```sendTransaction()``` 함수로 API 호출.
+단계 1 | 개발 | 컨트랙의 **소스 코드** 개발
+단계 2 | 컴파일 | 소스코드를 컴파일해서 **ABI**와 **바이트 코드** 생성 
+단계 3 | 컨트랙 배포 | 컴파일해서 얻은 ABI, 바이트 코드로 객체를 생성한 후 배포 요청, 마이닝해서 블록체인의 **컨트랙 주소(contract address)** 획득 
+단계 4 | 사용 | **ABI**, **컨트랙 주소**로 컨트랙 객체를 생성한 후, ```call()``` 또는 ```send()``` 함수로 API 호출. 
 
-## 3.1 단계 1: 컨트랙 개발
+## 7.1 단계 1: 컨트랙 개발
 
-물론 그냥 많이 쓰이는 메모장 등의 편집기를 사용해도 되지만, 컨트랙은 REMIX에서 개발해보자.
+코드를 작성하기 위해서 REMIX를 사용해보자.
+단순한 편집기를 이용해서 컨트랙 코드를 작성해도 되지만, REMIX는 잘못 입력하면 알려주기도 하는 등 편리한 기능을 제공한다.
 
-또 새로운 도구가 등장하여 복잡하겠지만, **REMIX**는 온라인 http://remix.ethereum.org/ 에서 제공되는 Solidity 통합개발환경 (IDE, Integrated Development Environment)을 말한다. 이 도구를 열 때는, HTTP WebProvider를 사용하기 위해서 https 보다는 http연결을 하자.
+**REMIX**는 온라인 http://remix.ethereum.org/ 에서 제공되는 Solidity 통합개발환경 (IDE, Integrated Development Environment)이다. HTTPS로 연결할 경우에는, RPC 원격접근이 필요할 때 HTTP만 허용되지 않도록 주의한다 (메뉴에 보이는 'External http server'를 클릭하면, REMIX에서 팝업으로 설명을 띄우고 있으니 주의해서 읽어보자.)
 
-REMIX는 보통 개발환경에서 제공하는 컴파일, 디버깅, 편집, 배포, 테스트 등의 기능을 제공한다. 온라인에서 사용하는 것이 불편하다면, https://github.com/ethereum/remix-live/tree/gh-pages로 가서 zip파일을 내려받아 자신의 컴퓨터에 설치하여 사용할 수 있다.
+통합개발환경으로서 REMIX는 컴파일, 디버깅, 편집, 배포, 테스트의 절차를 지원한다. 온라인에서 사용하는 것이 느리거나 불편하다면, https://github.com/ethereum/remix-live/tree/gh-pages 로 가서 zip 압축 파일을 내려받아 자신의 컴퓨터에서 실행하거나(index.html을 웹브라우저로 열기) 또는 https://github.com/ethereum/remix-desktop/releases/ 에서 본인 운영체제에 적합한 실행 파일을 내려받아 설치할 수 있다. 
 
-또한 github과 연동하여 사용할 수 있다. ```&gist=여기에 id```를 URL에 넣어서 전송하여, gist로 소스코드를 내보내거나 읽을 수 있다.
+또한 github에서 제공하는 짧은 코드나 메모 등을 저장하고 공유할 수 있는 gist 서비스와 연동할 수 있다. ```&gist=여기에 id```를 URL에 넣어서 전송하여, gist로 소스코드를 내보내거나 읽을 수 있다.
 
-Solidity가 처음이라 명령어가 낯설겠지만, 객체지향언어이므로 클래스를 코딩하는 것과 같이 시작을 한다.
-지금은 한 사이클을 완성하기 위해서 하는 코딩이다. 명령어는 차츰 배워나가게 된다.
-REMIX에서 테스트해보고 요구사항대로 작동하면 코드를 복사해서 저장한다.
+Solidity가 처음이라 명령어가 낯설겠지만, 객체지향언어이므로 클래스를 코딩하는 것처럼 시작하도록 하자. 기억하자. 지금은 간단한 프로그램을 만들고 배포, 실행하는 전과정을 완수하기 위해서 해보는 코딩 작업이다. 천천히 따라해보고, 명령어는 차츰 배워가자.
 
-줄 | 설명
------|-----
-1 | 메이저 버전 0.6이상 가운데, 최신 버전으로 컴파일. 앞의 햇 ```^```표시가 그런 의미이다.
-2 | 컨트랙 명칭을 Hello로 정함
-3 | ```sayHello()``` 함수, string으로 지역변수 값을 반환하는 단순 조회
-4 | 문자열 ```Hello World``` 반환
+REMIX에서 코드에 오류가 없는지 테스트해보고 요구 사항대로 작동하면, 코드를 복사해서 sol 파일로 저장한다.
 
 ```python
-[파일명: src/Hello.sol]
+[파일명: src\Hello.sol]
 pragma solidity ^0.8.0;
 contract Hello {
     function sayHello() pure public returns(string memory) {
@@ -51,97 +48,94 @@ contract Hello {
 }
 ```
 
+코드를 설명해보자.
+
+줄 | 설명
+-----|-----
+1 | 버전 0.8.0이상 가운데, 최신 버전으로 컴파일. 앞의 햇(Hat, ```^```) 표시가 그런 의미이다. 
+2 | 컨트랙 명칭을 Hello로 정함
+3 | ```sayHello()``` 함수, 몇 수식어가 쓰이는데 차츰 배운다. pure는 단순 조회, public은 누구나 호출 가능, string으로 지역변수 값을 반환한다.
+4 | 문자열 ```"Hello World"``` 반환
+
 ## 3.2 단계 2: 컴파일
 
-소스코드를 컴파일하는 목적은 (1) ABI와 (2) bytecode를 얻기 위한 것이다.
+다음 2단계는 컴파일이다. 
+그 결과 (1) ABI와 (2) 바이트 코드를 생성되는데, 이들은 다음 단계에 필요하다.
 
-컴파일은 (1) REMIX를 사용하거나, (2) solc 컴퍼알로를 사용하면 된다.
+컴파일하기 위해서는 (1) REMIX의 컴파일러 또는 (2) 직접 solc 컴파일러를 사용하면 된다.
+여기서는 모두 배워보자. 우리는 두 번째 방법을 더 빈번하게 쓰게 된다. REMIX에서 컴파일하면 ABI, 바이트 코드를 복사해야 하지만, 직접 컴파일을 하면 그렇지 않아서 매우 편리하다.
 
-### REMIX 컴파일
+### 첫 번째 방법: REMIX 컴파일
 
 REMIX에서 버전 0.8.0으로 컴파일 해보자.
+
 * ```Hello.sol```을 코딩한 후,
-* ```compile``` 버튼을 누른다.
-* ```Compilation Details``` 버튼을 누르면, ABI와 bytecode가 생성되어 있다.
-또는 ```WEB3DEPLOY```에 ABI, bytecode가 포함된 코드를 발견할 수 있다.
-주의할 점은 ```WEB3DEPLOY```가 우리가 사용하는 **web3.js 버전을 지원**하는지의 여부이다.
+* 메뉴 ```Compile``` 버튼을 누른다. 오류가 있다면 물론 코드를 수정해야 한다.
+* ```Compilation Details``` 버튼을 누르고 ```WEB3DEPLOY```를 선택하면 ABI, 바이트 코드가 포함된 코드를 발견할 수 있다.
+우리가 사용하는 **web3.js 버전의 문법으로 작성되었는지** 확인하자.
 
-![alt text](figures/6_helloWeb3Remix.png "geth download page")
+### 두 번째 방법: solc 컴파일
 
-### solc compile
+REMIX를 사용하지 않고, 터미널 환경에서 Solidity 컴파일러를 실행하여 ABI와 바이트 코드를 생성할 수도 있다.
+버튼을 클릭하면 되는 REMIX와 달리, 타이핑을 해야 하니 불편하기도 하겠다.
 
-설치해 놓은 solc 컴파일러를 실행하여 ABI, bytecode를 생성할 수 있다.
+먼저 컴파일러가 설치되었는지 확인하자. 최근 버전의 컴파일러 파일 이름은 solc-windows.exe이다. 혹시 운영체제와 그 버전에 따라 명령어가 solc일 수 있다. 내려받아 설치하면서 solc(또는 solc.exe)인지 solc-windows.exe인지 분별하여 사용하자. 명령창 프롬프트의 프로젝트 디렉토리 ```pjt_dir> ```에서 확인해보자.
 
-sayHello()의 gas가 ```infinite```라고 하는 것은 반드시 무한대로 필요하다는 의미는 아니다.
-(```solc --asm src/Hello.sol```로 컴파일을 하면 backward jump 문이 포함되어 있는 경우 무한대로 계산)
-
-먼저 컴파일러가 설치되었는지 확인하자. 운영체제와 그 버전에 따라 명령어가 다르다. 내려받아 설치하면서 solc, solc-windows인지 분별하여 사용하자. 명령창 프롬프트의 프로젝트 디렉토리 ```pjt_dir> ```에서 확인해보자.
-
-```python
-pjt_dir> solc --version         이전의 리눅스, 윈도우 가리지 않고 모두 solc 명령어 사용
-solc, the solidity compiler commandline interface
-Version: 0.6.1+commit.e6f7d5a4.Windows.msvc
-
-pjt_dir> solc-windows --version  최근 윈도우 최근 버전은 solc-windows 명령어 사용
+```
+pjt_dir> solc-windows --version  최근 윈도우 버전의 컴파일 명령어
 solc, the solidity compiler commandline interface
 Version: 0.8.1+commit.df193b15.Windows.msvc
 ```
 
-ABI는 컨트랙과 인터페이스하기 위한 표준으로 JSON으로 출력된다. 아래의 abi를 보자. 
-```sayHello()``` 함수의 입력 ```inputs```, 출력 ```outputs```를 정의하고 ```stateMutability```가 ```pure```, ```view```, ```non-payable```, ```payable``` 인지 정의하고 있다.
-이전에는 ```constant```, ```payable```이 사용되었지만 지금은 제거되어 ```stateMutability```로 대체된다.
+컴파일을 해보자. 명령어에 --abi, --bin, --gas 스위치를 주고 있는데, 출력을 확인해보자.
 
 ```python
-pjt_dir> solc --abi --bin --gas src/Hello.sol
-    
-    ======= src/Hello.sol:Hello =======
-    Gas estimation:
-    construction:
-       105 + 57200 = 57305
-    external:
-       sayHello():	infinite
-    Binary:
-    608060405234801561001057600080fd5b5061011e806100206000396000f3fe6080604052348015600f57600080fd5b506004361060285760003560e01c8063ef5fb05b14602d575b600080fd5b603360ab565b6040518080602001828103825283818151815260200191508051906020019080838360005b8381101560715780820151818401526020810190506058565b50505050905090810190601f168015609d5780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b60606040518060400160405280600b81526020017f48656c6c6f20576f726c6400000000000000000000000000000000000000000081525090509056fea26469706673582212208ff7c230fefd3d4a66a11d93dd077f556120f8054ee595e3f77349648b8460e064736f6c63430006010033
-    Contract JSON ABI
-    [{"inputs":[],"name":"sayHello","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"pure","type":"function"}]
+pjt_dir> solc-windows.exe --abi --bin --gas src\Hello.sol
+======= src/Hello.sol:Hello =======
+Gas estimation:
+construction:
+   123 + 76000 = 76123
+external:
+   sayHello():	infinite
+Binary:
+608060405234801561001057600080..생략..0008010033   ---> (A) 복사해서 아래 (X)에 붙여 넣는다.
+
+Contract JSON ABI
+[{"inputs":[],"name":"sayHello","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"pure","type":"function"}] ---> (B) 복사해서 아래 (Y)에 붙여 넣는다.
 ```
 
-### 언어에 내장된 solc
+- 필요한 Gas를 출력하고 있다. construction은 배포하면서 객체를 생성하는 비용이다. external에서 ```sayHello(): infinite```는 반드시 무한대 gas가 필요하다는 의미는 아니다. 예를 들어, 바이트 코드에 backward jump 문이 포함되어 있거나 하는 경우 무한대로 계산된다.
+- Binary 다음에는 바이트 코드가 출력 되었다. 여기에서는 불필요해서 중략한다.
+- ABI는 컨트랙을 사용하는데 필요한 인터페이스이고 JSON(JavaScript Object Notation) 형식으로 작성된다. 읽어보면 ```sayHello()``` 입력 ```inputs```, 출력 ```outputs```를 정의하고 ```stateMutability```가 ```pure```, ```view```, ```non-payable```, ```payable``` 인지 정의하고 있다. 과거에는 ```constant```, ```payable```이 사용되었지만 지금은 제거되어 ```stateMutability```로 대체된다.
 
-geth 1.6부터는 eth_compilers, eth_compileSolidity 지원이 중단되었다.
+### 다른 언어나 도구들에 내장된 컴파일러
 
-```python
-geth> eth.getCompilers()
-Error: The method eth_getCompilers does not exist/is not available
-```
-
-다른 언어에서 내장형으로 컴파일 할 수 있다. node solc, py-solc 등이 제공되고 있다. 한 줄씩 실행하는 Solidity REPL 기능도 설치하여 사용할 수 있다. 우리는 사용하지 않기로 한다.
-```python
-npm install solidity-repl
-```
+geth 1.6이전에는 자체 컴파일러를 제공했지만, 중단되었다. 또는 node.js나 파이썬에서 제공하는 Solidity 컴파일러들도 있고, 파이썬 쉘(Python Shell)처럼 Solidity 언어를 한 줄씩 실행할 수 있는 Solidity REPL도 있다. 하지만 이 책에서는 다루지 않는다.
 
 ## 3.3 단계 3: 배포
 
-컨트랙 배포의 목적은 주소이다.  컴파일하고 구한 ABI, bytecode를 사용해 배포된 컨트랙의 블록체인 주소를 얻는 것이다.
+컨트랙 배포의 목적은 주소이다. 컴파일하고 생성된 ABI와  바이트 코드를 배포한 후, 배포된 컨트랙의 블록체인 주소를 얻는 것이다.
 
-필요한 절차는:
-* (3-1) 앞 2단계의 컴파일을 하고 얻은 **ABI, byteode를 사용해서 contract 객체를 생성**하고,
-* (3-2) 그 객체의 배포를 ```deploy()``` 함수로 요청하고 ```transactionHash```를 얻고,
-* (3-3) 마이닝을 하고 나면 ```blockchain```에서의 주소 ```contractAddress```를 받게 된다.
+몇 가지 세부적인 절차로 나누어 볼 수 있다.
 
-### 단계 3-1: contract 생성
+* (3-1) 앞 2단계의 컴파일을 하고 얻은 **ABI, 바이트 코드를 사용해서 컨트랙 객체를 생성**하고,
+* (3-2) 그 객체의 배포를 ```deploy()``` 함수로 요청하여 ```transactionHash```를 얻고,
+* (3-3) 마이닝을 하고 나면 블록체인에서의 컨트랙 주소 ```contractAddress```를 받게 된다.
 
-```new()``` 명령어로 객체를 생성한다. 이 때 ABI가 필수적으로 필요하고, address, options은 꼭 그렇지 않다.
+### 단계 3-1: 컨트랙 생성
+
+객체 생성은 ```new()``` 명령어로 한다. 이 때 ABI가 필수적으로 필요하고, address, options은 선택적으로 사용할 수 있다. 
 
 ```python
 new web3.eth.Contract(abi [, address] [, options])
 ```
 
-* abi: 컨트랙에 대한 json 인터페이스
-* address: 컨트랙이 배포된 블록체인 주소를 말하며, 최초 배포할 때는 당연히 없으므로 비워놓는다. 배포된 컨트랙을 사용할 경우 해당 주소를 적어주면 된다.
+* abi: 컨트랙에 대한 JSON 인터페이스
+* address: 컨트랙이 배포된 블록체인 주소를 나타낸다. 처음 배포한다면 당연히 주소가 없으므로 비워놓는다. 배포된 컨트랙을 갱신하는 것이라면 해당 주소를 적어주면 된다.
 * options: from, gasPrice, gas, data (컨트랙의 바이트코드)
 
-코드로 표현해보자. ABI, 바이트코드를 추가해서 컨트랙을 생성할 수 있다. 아직 _abi, _bin 변수가 정의가 되지 않아서 실행되지 않는다.
+코드로 예를 들어보자. 아래 코드에서 인자로 쓰이는 _abi, _bin 변수는 아직 값을 가지고 있지 않아서 오류가 발생하게 된다. _bin은 16진수로 만들기 위해 앞에 '0x'를 붙이고 있다.
+
 ```python
 node> var myGreeter = new web3.eth.Contract(_abi, {data:'0x'+_bin});
 ```
@@ -149,150 +143,114 @@ node> var myGreeter = new web3.eth.Contract(_abi, {data:'0x'+_bin});
 ### 단계 3-2 배포요청
 
 #### ```deploy()```
-컨트랙을 배포하려면 ```deploy()``` 함수를 사용하면 해당 컨트랙을 블록체인에 배포하게 된다.
+컨트랙을 배포하려면 ```deploy()``` 함수를 이용한다.
 
 ```python
 myGreeter.deploy(options)
 ```
 
-options에 설정할 수 있는 입력은 data와 arguments를 포함한다.
-* data: 컨트랙의 바이트코드
-* arguments: 컨트랙 생성자는 인자를 가질 수 있다. 그 인자를 넣고, 없으면 생략한다.
+options는 data와 arguments로 구성한다.
+
+* data: 컨트랙의 바이트 코드를 넣는다.
+* arguments: 컨트랙 생성자에 인자를 입력할 수 있는데, 그 인자를 넣고, 없으면 생략한다.
 
 #### ```send()```
 
-컨트랙을 배포할 경우, 물론 블록체인에 전송해야 한다.
-```deploy()``` 함수에 연결하여 ```send()``` 함수를 적어준다.
+컨트랙은 send() 함수를 이용해서 배포하는데, 블록체인에 전송하는 기능을 한다.
 
 ```python
 send(options [, callback])
 ```
 
-* options에는 ```from```, ```gasPrice```, ```gas```, ```value```
-* callback함수는 앞의 함수 ```send()```가 실행된 후 실행이벤트 ('transactionHash' 등)에 따라 callback된다. 첫 인자는 'error'를 넣어주어야 한다. callback 함수는 **PromiEvent를 반환**한다. ```PromiEvent```에 ```on```, ```once```, ```off``` 함수를 연결 chaining하여 이벤트를 처리할 수 있다.
-
+* options에는 ```from```, ```gasPrice```, ```gas```, ```value```를 적을 수 있다.
+* callback함수는 생략 가능한 인자이다. callback 함수가 전달되면, ```send()``` 코드를 실행한 후, 실행이벤트 ('transactionHash' 등)에 따라 callback 함수가 호출된다. 첫 인자는 'error'를 넣어주어야 한다. callback 함수는 **PromiEvent를 반환**한다. ```PromiEvent```에 ```on```, ```once```, ```off``` 함수를 연결(chaining)하여 이벤트를 처리할 수 있다.
 
 ### 비동기함수에 대한 Promise Events
 
-web3.js에서의 함수는 promise를 반환한 다음 연결함수 ```on```, ```once```, ```off```를 통해 이벤트 event를 발생할 수 있다. 사용할 수 있는 PromiEvent는:
+web3.js에서의 함수는 Promise를 반환한 다음 연결 함수 ```on```, ```once```, ```off```를 통해 이벤트 event를 발생시킬 수 있다. 사용할 수 있는 PromiEvent는:
+
 * ```transactionHash```: 거래가 전송된 직후 transction hash가 발생하는 이벤트 발생
 * ```receipt```: transactionReceipt이 만들어지는 이벤트 발생
 * ```confirmation``` 매 24번째 confirmation 마다 이벤트 발생
 * ```error```: 오류에 대해 이벤트 발생
 
-예를 들어, 이벤트가 발생하면 그 이벤트를 출력하는 명령문이다.
+다음 코드는 이벤트가 발생하면 그 이벤트를 출력하는 명령문이다.
+
 ```
 web3.eth.sendTransaction({from: '0x123...', data: '0x432...'})
-.once('sending', function(payload){ ... })
-.once('sent', function(payload){ ... })
-.once('transactionHash', function(hash){ ... })
-.once('receipt', function(receipt){ ... })
-.on('confirmation', function(confNumber, receipt, latestBlockHash){ ... })
-.on('error', function(error){ ... })
-.then(function(receipt){
-    // 마이닝이 끝나면 실행되는 코드
-});
+    .once('sending', function(payload){ ... })
+    .once('sent', function(payload){ ... })
+    .once('transactionHash', function(hash){ ... })
+    .once('receipt', function(receipt){ ... })
+    .on('confirmation', function(confNumber, receipt, latestBlockHash){ ... })
+    .on('error', function(error){ ... })
+    .then(function(receipt){
+        // 마이닝이 끝나면 실행되는 코드
+    });
 ```
 
 ### 단계 3-3 주소 출력에 필요한 ```then()```
 
-배포를 하는 이유는 무엇일까? 주소를 알아내는 것이다. 블록체인에 배포된 주소가 있어야, 그 주소를 통해 그 컨트랙을 호출할 수 있기 때문이다.
-
-그러나 deploy() 함수는 비동기적인 특징이 있으므로, 배포하고 나면 바로 주소가 주어지는 것이 아니라 대신 앞서 설명한 Promise가 주어진다. 이를 해소해야만 비로서 주소를 얻을 수 있게 된다.
-
-### 3단계 실행에 필요한 코드 종합: Web3 0.20 버전
-
-web3의 어떤 버전을 사용하는지 유의한다. 버전이 다르면 당연히 문제가 되기 때문이다. 사용하는 버전이 0.20 버전이 아니면 아래 내용은 건너뛰어도 된다.
-
-아래 ```HelloDeploy__.js```는 이전 버전의 문법을 사용하기 때문에 web3.js 1.0이상 버전에서는 실행되지 않는다 (앞으로 web3.js 0.20.x에서 실행하는 파일명 뒤에는 underscore를 붙임).
-
-실행하기 전, geth를 띄워놓아서 코드를 실행하면 어떤 변화가 발생하는지 지켜보는 것이 좋다. 포트번호만 다르게 해서 ganache도 같이 띄워 놓자.
-
-```python
-[파일명: src/HelloDeploy__.js]  이전 버전 web3 0.20.x의 문법으로 작성
-var Web3=require('web3');
-var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8345"));
-var helloContract = web3.eth.contract([{"inputs":[],"name":"sayHello","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"pure","type":"function"}]);
-var hello = helloContract.new(
-   {
-     from: web3.eth.accounts[0], 
-     data: '0x608060405234801561001057600080fd5b5061011e806100206000396000f3fe6080604052348015600f57600080fd5b506004361060285760003560e01c8063ef5fb05b14602d575b600080fd5b603360ab565b6040518080602001828103825283818151815260200191508051906020019080838360005b8381101560715780820151818401526020810190506058565b50505050905090810190601f168015609d5780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b60606040518060400160405280600b81526020017f48656c6c6f20576f726c6400000000000000000000000000000000000000000081525090509056fea2646970667358221220b6877a972a9ca7f396c5cb7c0a7ae50d7532a82ded3789e90afa4b3e108a631364736f6c63430006010033', 
-     gas: '4700000'
-   }, function (e, contract){
-    console.log(e, contract);
-    if (typeof contract.address !== 'undefined') {
-         console.log('Contract mined! address: ' + contract.address + ' transactionHash: ' + contract.transactionHash);
-    }
- })
-```
-
-위 프로그램은 web3 0.20.x 버전의 문법으로 작성되었고, 버전업이 되면서 명령어가 부분적으로 변경되어야 한다.
-현재 web3 버전으로 실행하면 당연히 오류가 발생하게 된다.
-
-```python
-pjt_dir> node src/HelloDeploy__.js
-...생략... 
-TypeError: web3.eth.contract is not a function 현재 web3 1.0 이상에서 실행하면 오류 발생
-...생략...
-```
+컨트랙을 배포하는 이유는 무엇일까? 블록체인 주소를 알아내는 것이다. 블록체인에 배포된 주소가 있어야, 그 주소를 통해 그 컨트랙을 호출할 수 있기 때문이다.
+그러나 deploy() 함수는 비동기적으로 실행되므로, 배포한 후 바로 주소가 주어지는 것이 아니라 Promise가 반환된다. 이를 해소해야만 주소를 얻을 수 있게 된다.
 
 ### 3단계 실행에 필요한 코드 종합: Web3 1.0 이상 버전
 
-web3.js 최신버전에서 실행이 되도록 작성해 주자.
+web3의 어떤 버전을 사용하는지 주의한다. 버전이 다르면 문제가 된다.
+web3.js 1.0 이상의 버전으로 실행이 되도록 작성한다.
+실행하기 전, geth를 띄워놓아서 코드를 실행하면 어떤 변화가 발생하는지 지켜보는 것이 좋다. 포트 번호만 다르게 해서 ganache도 같이 띄워 놓자.
 
 #### 계정 읽기
 
-배포하려면 계정 주소가 필요하다. 계정을 읽어 보자. web3 0.20.x에서는 계정배열의 인덱스로 쉽게 얻을 수 있었다.
-
-잠깐! **geth console에서는 배열 인덱스로 가능**하다. 지금은 **노드에서 실행했을 경우는 배열 인덱스가 더 이상 지원되지 않고** 있다.
+배포하려면 계정 주소가 필요하다. 계정을 읽어 보자. **geth console에서는 배열 인덱스로 가능**하다. **node.js에서 실행했을 경우는 배열 인덱스가 더 이상 지원되지 않는다**.
 
 ```python
 node> var address0 = web3.eth.accounts[0];  //이렇게 읽어올 수 없다.
 ```
 
-web3.js 1.0 이상에서는 비동기방식으로 계정을 읽어오며, promise가 반환이 된다. 비동기방식으로 계정 주소를 넣어주기는 불편하므로, 일단 하드코딩해서 넣자.
+web3.js 1.0 이상에서는 비동기 방식으로 계정을 읽어오며, Promise가 반환이 된다. 비동기 방식으로 계정 주소를 넣는 것은 나중에 하기로 하고, 일단 하드 코딩해서 넣자.
 
 ```python
-[파일명: src/getMyAddr.js]
+[파일명: src\getMyAddr.js]
 var Web3=require('web3');
 var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8345"))
-//var myAddr0;
 web3.eth.getAccounts().then(console.log);
 ```
 
-실행하고 출력된 계정은 자신이 띄어놓은 geth 또는 ganache의 것과 일치하는지 확인하자.
-```python
-pjt_dir> node src/getMyAddr.js
+실행하고 출력된 계정은 자신이 실행시킨 ganache@8345의 것과 일치하는지 확인하자.
+눈치채겠지만, 혼란을 피하기 위해 운용중인 포트 번호를 덧 붙여 ganache@8345로 적고 있다.
 
-[ '0xEb670169A5fcD2550035588A2ba3b45509703ABd',
+```python
+pjt_dir> node src\getMyAddr.js
+
+[ '0xEb670169A5fcD2550035588A2ba3b45509703ABd',  ---> (C) 주소를 복사해서 아래의 (Z)에 적는다.
   '0xF724CDbfCf9C94f28547b1111B3A6E3672a9aDCE',
    ...생략...
   '0xe04852Cb018778545e75CC21EEC1849DdCdFa79f' ]
 ```
 
 #### gas 계산
-다음으로 gas도 필요하므로, 계산해보자. 이를 위해서는 data를 입력해 주면 그 바이트 크기와 Opcode에 따라 계산된다. gas를 산정하는 함수는 ```estimateGas()```이다.
 
-컨트랙을 생성하는 코드가 이전 web3 0.20.x 버전과 비교해서 다른데, ```new``` 명령어를 사용하고 있다 (자바의 객체를 생성하는 코드와 비슷하다).
+다음으로 gas도 필요하므로, 계산해보자. 이를 위해서는 data를 입력해 주면 그 바이트 크기와 Opcode에 따라 계산된다. gas를 산정하는 함수는 ```estimateGas()```이다.
 
 node 창을 열어서 한 줄씩 해도 물론 된다. 그러나 코드를 보라! 한 줄씩 입력하기에는 코드가 복잡하고, 복사-붙여넣기를 상당히 해야 한다.
 
-명령어를 파일로 저장하고, 일괄실행하는 방식으로 하자.
+명령어를 파일로 저장하고, 일괄 실행하는 방식으로 하자.
 
-단계 2 컴파일에서 생성된 abi, bytecode와 또한 계정주소도 복사, 붙여넣기를 하고 있다. 불편하지만 현재는 그렇게 하자. 무엇을 어디에서 가져와 어디에 입력하는지 이해하는데 도움이 될 것이다. 나중에 코드로 처리하는 방법을 설명하게 된다.
+단계 2 컴파일에서 생성된 abi, 바이트 코드와 또한 계정주소도 복사, 붙여넣기를 하고 있다. 불편하지만 일단 그렇게 하자. 무엇을 어디에서 가져와 어디에 입력하는지 이해하는데 도움이 될 것이다. 나중에 코드로 처리하는 방법을 설명하게 된다.
 
-자바스크립트 도움말을 중간에 적어 놓았다.
+자바스크립트 도움말을 중간에 적어 놓았다. 필요한 (A) 바이트 코드, (B) abi, \(C\) 주소의 세 항목을 복사해서 붙여야 한다.
 
 ```python
-[파일명: src/HelloDeployGas.js]
+[파일명: src\HelloDeployGas.js]
 var Web3=require('web3');
 var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8345"));
-// 생성한 abi를 복사-붙여넣기로 입력한다
+// (Y) 여기에 위에서 생성한 abi (B)를 복사-붙여넣는다
 var shelloContract = new web3.eth.Contract([{"inputs":[],"name":"sayHello","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"pure","type":"function"}]);
 // 계정 address와 data도 복사-붙여넣기 한다. 자신의 개발환경에 따라 계정, 데이터는 값이 다를 수 있다.
 shelloContract.deploy({
-        from: '0x4aae75084f715390Aad4a251DC70327AfEf8a03c',
-        data: '0x608060405234801561001057600080fd5b50610139806100206000396000f3fe608060405234801561001057600080fd5b5060043610610048576000357c010000000000000000000000000000000000000000000000000000000090048063ef5fb05b1461004d575b600080fd5b6100556100d0565b6040518080602001828103825283818151815260200191508051906020019080838360005b8381101561009557808201518184015260208101905061007a565b50505050905090810190601f1680156100c25780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b60606040805190810160405280600b81526020017f48656c6c6f20576f726c6400000000000000000000000000000000000000000081525090509056fea165627a7a72305820992c2f4c73a27b9eb53c6aa7b52ba8a5eddba258089eb7d1a3710711703459950029', 
+        from: '0xEb670169A5fcD2550035588A2ba3b45509703ABd', <--- (Z) 여기에 위 주소 (C)를 복사해서 여기에 붙여 넣는다
+        data: 608060405234801561001057600080..생략..0008010033,  <--- (X) 여기에 위 바이트 코드 (A)를 복사해서 붙여 넣는다.
     }).estimateGas().then(function(myGas) {
         console.log("Estimated gas: " + myGas);
         gas = myGas;
@@ -300,48 +258,51 @@ shelloContract.deploy({
     .catch(console.error);
 ```
 
-실행하면, 컨트랙을 생성, 배포하기 위해 소요되는 gas는 120,415이다.
+실행하면, 컨트랙을 생성하고 배포하는데 소요되는 gas는 120415이다.
 ```python
-pjt_dir> node src/HelloDeployGas.js
+pjt_dir> node src\HelloDeployGas.js
 
 Estimated gas: 120415
 ```
 
-실제 금액으로 얼마나 비용이 들게 되는지 계산해 볼 수 있다. 그러려면 gasPrice를 알아야 한다.
+실제 금액으로 얼마나 비용이 들게 되는지 계산하려면 gas의 가격을 알아야 한다. getGasPrice()를 이용하면 gas 가격을 확인할 수 있다. 
 
-getGasPrice()는 사설망에서는 1 gwei로 고정되어 설정되어 있다 (아래 금액을 환산하면 0.000000001 Ether).
 ```python
 node> web3.eth.getGasPrice().then(console.log);
-1000000000 출력단위는 wei (1 gwei, 0.000000001 Ether에 해당한다)
+1000000000 
 ```
 
-그러나 실제 거래에 사용되는 평균가격은 보통 이 보다 높고 변동하기 마련이다 (참조: https://ethgasstation.info/)
-대략으로 gas, gasPrice를 곱하고, 한화로 환산하면 24,000원이 필요하다. 물론 환전가격은 매일 변동하니까 정확하지 않다. 적지 않은 금액이다. gasPrice가 2배가 되는 경우도 많다. 그렇다면 48,000원으로 껑충 높아진다.
+getGasPrice()의 단위는 wei이다 앞에서 실행한 결과에서 gas 가격은 1000000000 wei이고 1 gwei이다. 이는 0.000000001 Ether에 해당한다.
 
-120,000 gas * 0.000000050 gasPrice * 4백만원 (환전가격) = 24,000원
+참고로 사설망에서 gas 가격은 1 gwei로 고정되어 있다.
+
+그러나 실제 거래에 사용되는 평균 가격은 보통 이 보다 높고 변동된다 (참조: https://ethgasstation.info/).
+대략 gas와 gasPrice를 곱하고, 한화로 환산하면 약 24,000원이 필요하다. 물론 환전가격은 매일 변동하니까 정확하지 않다. 적지 않은 금액이다. gasPrice가 2배가 되는 경우도 많다. 그렇다면 48,000원으로 껑충 높아진다.
+
+약 120,000 gas * 0.000000050 gasPrice * 약 4백만원 (환전가격) = 약 24,000원
 
 게다가 곧 배포된 컨트랙을 사용하기 위해서 별도로 gas를 지불해야 한다. 이 금액을 더한다면 가격은 더 올라가게 된다.
 
 #### ganache 배포 web3 1.20
 
-자, 이제 배포해보자. ganache로 배포하려면 포트 번호 8345로 해주면 된다.
-
-아래 코드 ```from``` 필드에 적힐 지급계정 주소는 위 ```getMyAddr```실행하고 출력된 목록에서 복사해서 넣어주었다.
+이제 ganache@8345에 배포해보자. geth@8445는 곧 이어서 나중에 해보자.
+앞서 gas 계산에서 하였듯이, abi는 컨트랙 인자로, 바이트 코드는 ```data```, 그리고 지급계정주소(위 ```getMyAddr```실행하고 출력된 목록에서 복사)는 ```from``` 필드에 복사해 넣었다. 지금은 복사해서 붙여 넣고 있지만, 나중에 자동으로 가져오도록 수정할 것이다. 
 
 ```python
 [파일명: src/HelloDeploy.js]
 var Web3=require('web3');
 var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8345"));
+(Y) 여기에 위에서 생성한 abi (B)를 복사-붙여넣는다
 var shelloContract = new web3.eth.Contract([{"inputs":[],"name":"sayHello","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"pure","type":"function"}]);
 shelloContract
     .deploy({
-            data: '0x608060405234801561001057600080fd5b50610139806100206000396000f3fe608060405234801561001057600080fd5b5060043610610048576000357c010000000000000000000000000000000000000000000000000000000090048063ef5fb05b1461004d575b600080fd5b6100556100d0565b6040518080602001828103825283818151815260200191508051906020019080838360005b8381101561009557808201518184015260208101905061007a565b50505050905090810190601f1680156100c25780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b60606040805190810160405280600b81526020017f48656c6c6f20576f726c6400000000000000000000000000000000000000000081525090509056fea165627a7a72305820992c2f4c73a27b9eb53c6aa7b52ba8a5eddba258089eb7d1a3710711703459950029', 
+        data: 608060405234801561001057600080..생략..0008010033,  <--- (X) 여기에 위 바이트 코드 (A)를 복사해서 붙여 넣는다.
     })
     .send({
-     from: "0xEb670169A5fcD2550035588A2ba3b45509703ABd",
-     gas: '4700000'
+        from: '0xEb670169A5fcD2550035588A2ba3b45509703ABd', <--- (Z) 여기에 위 주소 (C)를 복사해서 여기에 붙여 넣는다
+        gas: '4700000'
     }, function (error, transactionHash){ 
-            console.log(error, transactionHash); 
+        console.log(error, transactionHash); 
     })
     .then(function(newContractInstance){
         console.log(newContractInstance.options.address)
@@ -352,43 +313,49 @@ shelloContract
 ```python
 pjt_dir> node src/HelloDeploy.js
 
-null '0xc255f82ab2150858ce0414f2ceaf0f919a64359f405ebded942bd04610f1a2f4'
-0x0d3C29cAD3c40497699e13CC34bA099E1fe426Ba
+null '0xc255f82ab2150858ce0414f2ceaf0f919a64359f405ebded942bd04610f1a2f4'   이 것이 transactionHash
+0x0d3C29cAD3c40497699e13CC34bA099E1fe426Ba                                  이 것이 배포된 컨트랙 주소
 ```
 
 #### geth배포 web3 1.20
 
-사설망 geth에 배포하려면 ganache에 비해 추가 작업이 필요하다.
+ganache@8345에 비해 geth@8445는 지급계좌를 해제하고, 마이닝을 하는 등 추가 작업이 필요하다. 당연히 조금 복잡하겠다.
 
-geth에 배포할 경우에는 지급계정을 해제하고 또한 마이닝도 해주어야 한다. 몇 번 설명하였지만, ganache에서는 계정를 해제해 줄 필요가 없다.
+몇 번 설명하였지만, ganache에서는 계정를 해제해 줄 필요가 없다.
 
-**지급계정을 해제**하면 시간을 설정하지 않는한 1회에 한한다. 또한 **잔고**가 남아 있어, 거래에 필요한 gas비용을 충당할 수 있어야 한다.
+터미널 윈도우를 열고 지급 계정을 해제한다. **지급계정을 해제**하면 시간을 설정하지 않는한 1회에 한한다. 또한 **잔고**가 남아 있어, 거래에 필요한 gas비용을 충당할 수 있어야 한다.
 
-**node**에서는 **계정, 비밀번호, 해제기간**을 인자로 넣어주고 계정을 해제한다. 이 코드를 프로그램에 위 배포프로그램에 넣어 실행할 수도 있다 (아래 comment로 비활성화). 비밀번호를 넣어 하드코딩한다는 것은 좋은 생각은 아니다.
+터미널 환경에서 \"geth attach http://localhost:8445"를 실행시킨다. geth 커맨드 프롬프트가 나타나면, 다음을 geth 명령행에서 실행시켜 계정을 해제하고 \"exit\" 명령으로 geth 프롬프트로부터 빠져 나온다. 
 
-물론 **geth**창에서 직접해줄 수 있다. coinbase로 하거나 eth.accounts[0]과 같이 인덱스를 넣어주어도 된다.
-```python
-geth> personal.unlockAccount(eth.coinbase);  //or eth.accounts[0]
+```
+geth> personal.unlockAccount(eth.coinbase);  //또는 eth.accounts[0]
+Unlock account 0x6819f8376ef2da6A01082c7F45E51FF15Fc69cDa
+Passphrase: 여기에 비밀번호를 입력한다.
+true
+> exit
 ```
 
-앞 ganache 배포 코드와 거의 동일하게 작성한다. 여기서는 몇 가지 이벤트 처리를 추가해서 다르게 보인다.
+앞 ganache 배포 코드와 거의 동일하게 작성한 HelloDeploy2.js 코드를 실행시킨다. 여기서는 몇 가지 이벤트 처리를 추가해서 다르게 보인다. 
+
+코드에서 사용하는 계정은 geth를 실행한 후 획득한 eth.accounts[0]에 있는 것으로 10번째 줄의 \"from:\"에 입력한다. 만약 계정이 unlock되어 있지 않다면 3번 줄의 주석을 해제하고, 계정 번호와 \"password\"대신 본인의 비밀 번호를 입력한 후에 실행시켜야 한다. 비밀 번호는 따옴표 안에 입력하면 된다. 이렇게 비밀번호를 코드에 넣는 것은 보안상 권장할 수 없다. 따라서 번거롭더라도 앞에서 했던 것처럼 geth에서 unlock하는 방법을 사용하자.
+
 ```python
 [파일명: src/HelloDeploy2.js]
 var Web3=require('web3');
 var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8445"));
-//web3.eth.personal.unlockAccount("0x21c70...생략...7451","password",1000).then(console.log('unlocked!'));
+//web3.eth.personal.unlockAccount("0x6819f8376ef2da6A01082c7F45E51FF15Fc69cDa","password",1000).then(console.log('unlocked!'));
 var shelloContract = new web3.eth.Contract([{"constant":true,"inputs":[],"name":"sayHello","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"pure","type":"function"}]);
 shelloContract
     .deploy({
-            data: '0x608060405234801561001057600080fd5b50610139806100206000396000f3fe608060405234801561001057600080fd5b5060043610610048576000357c010000000000000000000000000000000000000000000000000000000090048063ef5fb05b1461004d575b600080fd5b6100556100d0565b6040518080602001828103825283818151815260200191508051906020019080838360005b8381101561009557808201518184015260208101905061007a565b50505050905090810190601f1680156100c25780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b60606040805190810160405280600b81526020017f48656c6c6f20576f726c6400000000000000000000000000000000000000000081525090509056fea165627a7a72305820992c2f4c73a27b9eb53c6aa7b52ba8a5eddba258089eb7d1a3710711703459950029', 
+        data: 608060405234801561001057600080..생략..0008010033,  <--- (X) 여기에 위 바이트 코드 (A)를 복사해서 붙여 넣는다.
     })
     .send({
-     from: "0x21c704354D07f804baB01894e8B4eB4E0EBA7451",
-     gas: '4700000'
+        from: '0xEb670169A5fcD2550035588A2ba3b45509703ABd', <--- (Z) 여기에 위 주소 (C)를 복사해서 여기에 붙여 넣는다
+        gas: '4700000'
     }, function (error, transactionHash){ 
-            console.log(error, transactionHash); 
+        console.log(error, transactionHash); 
     })
-    .on('transactionHash', function(error,transactionHash) {
+    .on('transactionHash', function(error,transactionHash) {  이 코드는 테스트 용도로 넣는다. 꼭 필요한 코드는 아니다.
         console.log("hash-- "+transactionHash);
     })
     .on('receipt', function(receipt) {
@@ -399,9 +366,10 @@ shelloContract
     });
 ```
 
-지급계정이 풀려 있다는 것을 확인하고 다름 프로그램을 실행하자.실행해보자. 계정해제를 해주지 않고 거래를 요청하면 '불충분 가스' 오류가 생성된다 (```Error: Returned values aren't valid, did it run Out of Gas?```)
+지급 계정이 풀렸는지 확인하고 다름 프로그램을 실행해본다. 계정을 해제하지 않고 거래를 요청하면 '불충분 가스' 오류가 생성된다 (```Error: Returned values aren't valid, did it run Out of Gas?```)
+
 ```python
-pjt_dir> node src/HelloDeploy2.js
+pjt_dir> node src\HelloDeploy2.js
 
 null '0xa40eaf3185812b93c6a5432288a6efe6f6a1d3c644ca50592d850256afa3729c'
 hash-- undefined
@@ -409,27 +377,25 @@ receipt:: 0xb8770393a75E5B88E7d5cFb5db1068e28B4dA8Ba
 0xb8770393a75E5B88E7d5cFb5db1068e28B4dA8Ba
 ```
 
-node로 ```HelloDeploy2.js```를 실행하고 나서, geth 백그라운드를 확인하자 (그림의 좌측). 그림 좌측에서 보듯이 transaction이 생성되고 그 hash와 contract (컨트랙 주소를 의미한다)이 로그로 출력된다. 그 메시지를 여기 복사해 놓으면 다음과 같다.
-```python
+node로 ```HelloDeploy2.js```를 실행하고 나서, geth@8445 실행 화면의 출력을 확인하자. 로그는 쌓이기 때문에 잘 찾아봐야 한다. transaction이 생성되고 그 hash와 contract (컨트랙 주소를 의미한다)이 로그로 출력 된다. 그 메시지를 여기 복사해 놓으면 다음과 같다.
+```
 INFO [01-07|10:34:47.871] Submitted contract creation
 fullhash=0x851d565882f9758d03ef232a5badb6f23629a1f5768db2f3ca2c13e22a1ef40b
 contract=0xd29b9e81388F91658a2120587A0e123c29eC6c36
 ```
 
-![alt text](figures/6_helloWeb3DeployMining.png "deploy hello.sol using web3 with mining")
-
-get 콘솔에서 대기 거래를 아래와 같이 출력하면, 대기하고 있는 transaction hash 값이 서로 일치한다 (그림의 우측 화면을 보자). 마이닝을 하고 나면 컨트랙 주소가 주어진다.
+geth 콘솔에서 대기 거래를 아래와 같이 출력하면, 대기하고 있는 transaction hash 값이 서로 일치한다. 마이닝을 하고 나면 컨트랙 주소가 주어진다.
 
 ```python
 geth> eth.pendingTransactions
 [{
     blockHash: null,
     blockNumber: null,
-    from: "0x21c704354d07f804bab01894e8b4eb4e0eba7451",
+    from: "0xEb670169A5fcD2550035588A2ba3b45509703ABd",
     gas: 4700000,
     gasPrice: 1000000000,
     hash: "0x851d565882f9758d03ef232a5badb6f23629a1f5768db2f3ca2c13e22a1ef40b",
-    input: "0x60806...생략...50029",
+    input: "0x608060405234801561001057600080..생략..0008010033",
     nonce: 265,
     r: "0xe995ae41b4193839df768ad629a9f2dc09ec7cfc08d5f42ce1207021d3395835",
     s: "0x26c380eb4f60e90cbdb54a45fbf691ce37b18b4b3e8603875f3cf5f6e30a0553",
@@ -442,7 +408,7 @@ geth> eth.pendingTransactions
 
 ### 마이닝
 
-배포를 완성하려면 그 거래가 마이닝되어야 한다. 물론 geth에서 배포할 경우에 그렇고, ganache는 마이닝이 불필요하다.
+배포를 완성하려면 그 거래가 마이닝되어야 한다. 물론 geth@8445에서 배포할 경우에 그렇고, ganache@8345는 마이닝이 불필요하다.
 
 ```python
 geth> miner.start(1);admin.sleepBlocks(1);miner.stop()
@@ -453,79 +419,67 @@ geth> miner.start(1);admin.sleepBlocks(1);miner.stop()
 그리고 컨트랙이 배포된 블록체인의 주소 값이 생성된다. 아래 ```getTransactioinReceipt(해시주소)```를 조회해보면 마이닝이 완료되기 전에는 null이다.
 
 ```python
-geth> eth.getTransactionReceipt("0x3c58a...50bd5") 괄호 인자는 hash를 적어준다.
-> eth.getTransactionReceipt("0x3c58a...50bd5").contractAddress 배포주소를 출력한다.
+geth> eth.getTransactionReceipt("0x851d5...ef40b") 괄호 인자는 hash를 적어준다.
+> eth.getTransactionReceipt("0x851d5...ef40b").contractAddress 배포주소를 출력한다.
 > eth.getCode(greeter.address) 배포 주소로 deployed code를 출력한다.
 ```
 
 ## 3.4 단계 4: 사용
 
-컨트랙이 배포되었고, 그 주소를 획득하였다. 이제 그 컨트랙의 API를 호출해보자.
+컨트랙이 배포되었고, 그 주소를 획득하였다. 이제 그 컨트랙의 함수(API)를 호출해보자.
+
+그렇게 하려면:
 * 먼저 컨트랙의 객체를 생성하고,
-* API를 호출한다.
+* 함수(API)를 호출한다.
 
 ### 4-1 주소를 가진 객체생성
 
-배포한 콘트랙을 사용하려면 객체를 먼저 생성해야 한다.
+배포한 컨트랙을 사용하려면 객체를 생성해야 하는데, 앞서 얻은 ABI, 컨트랙 주소가 필요하다.
 
-앞서 블록체인에 생성된 객체를 얻어와야 하므로, 거래가 발생하게 된다. 거래가 발생하면, transactionHash가 생성되고, 마이닝이 수행되면 블록체인에 기록된다. 앞에서 얻은 ABI, contractAddress가 필요하다.
+web3 1.0 이후에는 아래와 같이 ```new``` 명령어와 함께, abi와 contractAddress를 인자로 넘겨줘야 한다.
 
-web3 0.20.x에서는 ```at()``` 함수를 사용하는데, 앞서 얻은 컨트랙 주소를 넣어준다.
-
-```python
-var MyContract = eth.contract(ABI).at(Address); // web3 0.20.x
+```
+var MyContract = new web3.eth.Contract(abi, Address);
 ```
 
-web3 1.20에서는 ```new``` 명령어와 함께, abi와 컨트랙주소를 인자로 넘겨주어야 한다.
-```
-var MyContract = new web3.eth.Contract(abi, 컨트랙주소);  // web3 1.0 이후
-```
+이 명령어는 블록체인에 생성된 객체를 가져온다. 이러한 거래가 발생하면, transactionHash가 생성되고, 마이닝이 완성되면 블록체인에 기록된다.
 
 ### 4-2 methods
 
-```methods```는 함수호출을 가능하게 한다. 즉 ```myContract.methods.myMethod(123)```과 같이 컨트랙의 함수를 호출할 수 있게 한다. 이어서 call 또는 send함수의 호출이 가능하다.
+컨트랙의 API 함수를 호출하려면, ```methods```와 함수 이름을 '.'으로 구분해서 붙인다. 즉 ```myContract.methods.myMethod(123)``` 형태로 코드를 작성해서 myContract의 myMethod 함수를 호출할 수 있다. 
+
+또는 함수 이름에 ```call()``` 또는 ```send()```를 붙여서 함수를 호출할 수 있다.
 
 ```
 myballot.methods.vote.call(1);
-myballot.methods.vote.sendTransaction(1, {from: primary})
+myballot.methods.vote.send(1, {from: 계정주소를 여기에 넣는다}) 
+```
+
+인자가 여러 개인 경우, 콤마(',')로 분리해서 전달한다. 다음에서는 문자열 'param1', 정수 23 인자 2개가 콤마로 분리해서 전달되고 있다.
+아래는 send()를 생략하고, 바로 함수의 인자로 직접 적고 있다. 어느 쪽을 선택해도 가능하다.
 
 ```
-인자가 여러 개인 경우
-```
-myInstance.methods.myStateChangingMethod('param1', 23, {value: 200, gas: 2000});
+myContract.methods.myStateChangingMethod('param1', 23, {value: 200, gas: 2000});
 ```
 
 ### call, send
 
 주소를 획득하면 컨트랙 객체를 사용할 수 있게 된다.
-로컬 블록체인에서 실행하는 ```call()``` 또는 블록체인에 기록되는 ```send()``` 함수를 사용한다.
-거래가 발생하면, ```transactionHash```가 생성된다. 마이닝 전까지 대기 pending 한다.
+블록체인에 기록되지 않는 ```call()``` 또는 블록체인에 기록되는 ```send()``` 함수를 사용한다. call() 함수는 주로 데이터를 가져올 때 사용한다. 따라서 블록을 생성하지 않는다. send() 함수는 블록에 새로운 내용을 추가하거나 수정할 때 사용한다. gas가 소요된다. 
 
 함수 | 설명 | 블록체인
-----------|----------|----------
-```call()``` | 로컬에서 실행, 마이닝 불필요 | ```view```, ```pure```, ```constant``` 함수를 호출하는 경우. 블록체인에 기록되지 않는다.
-```send()``` | 블럭체인에 기록하는 거래라서 마이닝 필요 | 블록체인에 기록된다.
+---------|----------|---------
+```call()```  | 로컬에서 실행, 마이닝 불필요 | ```view```, ```pure```,  ```constant``` 함수를 호출하는 경우. 블록체인에 기록되지 않는다.
+```send()```  | 블록체인에 기록하는 거래라서 마이닝 필요. ```transactionHash```가 생성된다. | 블록체인에 기록된다.
 
-
-```python
-[파일명: src/HelloUse__.js]  이 파일은 web3 0.20.x 버전으로 작성
-var Web3=require('web3');
-var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8345"));
-var shelloContract = web3.eth.contract([{"constant":true,"inputs":[],"name":"sayHello","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"pure","type":"function"}]);
-var hello = shelloContract.at("0x325bb34f889fa04ada00fa126ed7e8a7600080ba");
-console.log(hello.sayHello.call());
-```
-
-API를 사용하는 프로그램은 geth, ganache 어느 경우에나 포트번호만 변경해주면 된다. 물론 컨트랙의 주소는 정확하게 복사해서 사용한다.
-
-이번에는 web3 1.20 버전으로 작성한다.
+API를 사용하는 프로그램은 geth나 ganache 어떤 것을 사용해도 동작한다. 단 배포와 어긋나게 사용하지 않아야 한다. 배포를 geth@8445에 했다면, 일관되게 그 것을 사용해야 한다는 의미이다. 여기서는 geth@8445와 ganache@8345를 사용할 때 포트 번호를 다르게 지정했으므로, 다음 코드의 HttpProvier() 함수에 전달되는 URL을 지정할 때 포트 번호를 적절하게 지정하면 된다. 컨트랙의 주소는 정확하게 복사해서 사용한다.
 
 ```python
 [파일명: src/HelloUse.js]
 var Web3=require('web3');
 var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8345"));
-var shelloContract = new web3.eth.Contract([{"constant":true,"inputs":[],"name":"sayHello","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"pure","type":"function"}],
-                                      "0x0d3C29cAD3c40497699e13CC34bA099E1fe426Ba");
+var shelloContract = new web3.eth.Contract([{"constant":true,"inputs":[],"name":"sayHello","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"pure","type":"function"}], <--- 컴파일해서 얻은 abi를 복사-붙여넣는다
+                                      "0x0d3C29cAD3c40497699e13CC34bA099E1fe426Ba"); <--- ganache@8345의 배포후 얻은 컨트랙 주소를 복사-붙여넣는다
 shelloContract.methods.sayHello().call().then(function(str) {console.log(str);});
 ```
 
@@ -536,29 +490,33 @@ pjt_dir> node src/HelloUse.js
 Hello World
 ```
 
-> **버전의 문제**
+> **버전 문제**
 
-> ```Hello```를 Geth에서 Deploy는 성공하였지만, API를 사용하는 단계에서 반환 값의 오류가 나는 경우가 있다. 이런 오류를 경험하였다 **ERROR Returned values aren't valid. did it run Ouf of Gas?** 지급계좌도 해제해놓고, gas가 충분했다. 이 경우 **Solidity 버전을 낮추어** 컴파일 한 후 (0.4.25, 0.5.0, 0.5.1, 0.5.3 모두 성공, 0.5 후반대와 0.6은 모두 오류), ABI와 Bytecode로 새로 배포해서 API를 호출해보자.
+> ```Hello```를 Geth@8445에서 Deploy는 성공하였지만, API를 사용하는 단계에서 반환 값의 오류가 나는 경우가 있다. 이런 오류를 경험하였다 **ERROR Returned values aren't valid. did it run Ouf of Gas?** 지급계좌도 해제해놓고, gas가 충분했다. 이 경우 **Solidity 버전을 낮추어** 컴파일 한 후 얻은 ABI와 바이트 코드를 적용해보자 (0.4.25, 0.5.0, 0.5.1, 0.5.3 모두 성공, 0.5 후반대와 0.6은 모두 오류)
 또는 getPastEvents() 함수를 사용하는 경우 web3 1.0.0 beta에서는 **ERROR Returned values aren't valid. did it run Ouf of Gas?** 오류가 나지만, **web3 버전을 낮추어** 0.20.7에서는 그렇지 않다는 이슈가 있기도 하다.
-나중에 배우겠지만 **Library**를 배포하고, API를 사용하면서 Solidity 0.5.x에서는 올바르게 작동하지 않았다. 버전을 낮추어 0.4.25로 하니까 오류가 사라졌다. Solidity 언어가 버전 간의 **후방호환성 backward compatibility**가 보장이 되지 않아서 문제가 발생할 수 있다.
+나중에 배우겠지만 **Library**를 배포하고, API를 사용하면서 Solidity 0.5.x에서는 올바르게 작동하지 않기도 하였다. 버전을 낮추어 0.4.25에서는 오류가 사라졌다. Solidity 언어가 상위 버전이 하위 버전을 동일하게 지원하는 **하위 호환성(backward compatibility)**이 보장되지 않아서 이러한 문제가 발생할 수 있다.
 
 ### 3.5 웹디앱
 
-앞서 구현한 Hello 컨트랙을 웹페이지로 만들어 보자. 매우 단순한 기능이지만 웹페이지에서 블록체인과 인터페이스하게 된다.
+이제까지 "Hello World"를 출력하기 위한 절차를 완성하였다. 다른 언어에서의 경험과 사뭇 다르기도 하다.
 
-여기서 만드는 웹페이지는 서비스가 처리하되는 중앙 서버가 없는 **분산 애플리케이션 Distriubted Application, dApp**이다. 서버가 없고, 블록체인에서 서비스가 제공된다는 점이 특이하다.
+앞서 구현한 Hello 컨트랙을 웹페이지로 만들어 보자. 단순하지만 웹페이지에서 블록체인과 인터페이스하는 경험을 하게 된다.
+
+지금까지 경험한 웹페이지는 서버가 어디 한 곳에 있고, 서비스를 요청하면 응답하는 중앙 처리 방식이다.
+
+여기서 만드는 웹페이지는 서비스가 처리되는 중앙 서버가 없는 **분산 애플리케이션(Distriubted Application, dApp)**이다. 서버가 없고, 블록체인에서 서비스가 제공된다는 점이 특이하다.
 
 먼저 웹서버를 띄우자.
 
-```python
+```
 pjt_dir> python -m http.server 8045
 Serving HTTP on 0.0.0.0 port 8045 (http://0.0.0.0:8045/) ...
 127.0.0.1 - - [30/Apr/2020 06:38:09] "GET / HTTP/1.1" 200 -
 ```
 
-다음으로 Hello 컨트랙으로터 결과를 받아서, "Hello World!"를 출력해보자. 적지 않은 시간과 노력을 들어, 처음으로 만드는 dApp이다.
+다음으로 Hello 컨트랙으로부터 결과를 받아서, "Hello World!"를 출력해보자. 처음으로 만드는 dApp이다.
 
-아래는 web3 1.2에 맞추고 있다. web3는 cdn에서 호출하고 있으니 버전을 올려도 되고, 작동에는 문제가 없을 것으로 보인다. 단 하위 0.20 버전은 문법이 다르므로, 주석처리 해놓았고 필요하면 활성화하면 된다.
+아래는 web3 1.2에 맞추고 있다. web3는 cdn에서 호출하고 있으니 버전을 올려도 되고, 작동에는 문제가 없을 것으로 보인다. 단 하위 0.20 버전은 문법이 다르므로, 주석처리 해놓았고 필요하면 활성화하면 된다. 코드 내용은 웹 페이지와 버튼 등이 눌렸을 때 페이지에 내용을 보여주기 위해 사용되는 자바스크립트 코드를 제외하면, node.js를 이용해서 실행시켰던 자바스크립트 코드를 복사해서 붙인 정도이므로 더 이상의 설명은 생략한다. 
 
 ```python
 [파일명: scripts/hello.html]
@@ -568,7 +526,7 @@ Serving HTTP on 0.0.0.0 port 8045 (http://0.0.0.0:8045/) ...
 <script src="https://cdn.jsdelivr.net/npm/web3@1.2.5/dist/web3.min.js"></script>
 <!-- script src="https://cdn.jsdelivr.net/npm/web3@0.20.5/dist/web3.min.js"></script -->
 <script type="text/javascript">
-    //var Web3 = require('web3');  //can be removed
+    //var Web3 = require('web3');  // node에서는 필요하지만 여기서는 필요하지 않다
     var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8345"));
 
     function displayHello() {
@@ -605,38 +563,35 @@ Serving HTTP on 0.0.0.0 port 8045 (http://0.0.0.0:8045/) ...
 </html>
 ```
 
-이 파일을 로컬호스트에서 띄어보자.
+이 파일을 로컬 호스트에서 띄어보자. 웹브라우저에서 다음 주소를 입력해본다.
 
 ```python
 http://localhost:8045/scripts/hello.html
 ```
 
+![](figures/HelloWebDApp.png)
+
 # 4. Greeter 디앱
 
-앞서 Hello 컨트랙은 함수 하나만으로 구성되었다. 이를 조금 수정하여, **데이터를 저장하는 컨트랙**으로 개발해 보자. 저장하는 데이터는 단순한 문자열이고, 구현하는 방식은 보통 프로그램과 크게 다르지 않다.
+앞서 Hello 컨트랙은 함수 하나만으로 구성되었다. 이를 조금 수정하여, **데이터를 저장하는 컨트랙**을 개발해보자. 아직 초보니까 단순한 문자열을 저장하기로 한다. 기억해보면, 앞에서는 "Hello World"를 반환했을 뿐이다. 저장한 후 반환하는 것이 뭐 다를까 생각하지 말고, 앞서 배운 절차를 숙련하는 느낌으로 도전해보자.
 
-우리가 저장하는 문자열을 생각해보자. string은 동적으로 크기가 할당된다. 반면에 일정한 크기로 제한한다면 bytes4, bytes8 등을 사용하는 편이 필요하다. 최대 32바이트를 사용하다면 bytes32, 크키를 알 수 없다면 string을 사용한다.
+Solidity 언어에 대해서는 다음 장부터 설명한다. 그러니 여기서 디앱에 사용되는 코드가 이해가 안된다고 걱정하지 말자. 나중에 배우게 된다. 여기서는 단순하게 따라해보도록 한다. 
 
-그러나 데이터를 저장하면, 그 크기에 따라 gas가 더 필요하다는 것을 주의해야 한다. 256비트 당 20,000 gas가 필요하다.
+우리가 저장하는 문자열을 생각해보자. Solidity의 string 자료형은 동적으로 크기가 할당된다. 따라서 문자열의 길이가 가변적일 때 사용하면 유용하다. 반면에 일정한 크기로 제한한다면 bytes4(4 바이트까지 저장하는 자료형), bytes8(8 바이트까지 저장할 수 있는 자료형) 등을 사용하는 편이 효율적이다. 비슷하게 최대 32바이트를 사용한다면 bytes32를 사용하고 크기를 알 수 없다면 string 자료형을 선택한다. 
+
+단 데이터를 저장하면, 그 크기에 따라 gas가 더 필요하다는 것을 주의해야 한다. 256비트 당 20,000 gas가 필요하다.
 
 ## 4.1 단계 1. 컨트랙 개발
 
-생성자는 배포하는 시점에 실행이 되기 때문에 'Hello' 문자열이 기본으로 저장된다.
+### REMIX에서 프로그램 작성
 
-매우 단순한 기능으로, ```set()```, ```get()```함수를 구현했다. ```get()```은 블록체인에서 읽어오는 함수, set()은 블록체인의 값을 변경한다. 따라서 ```set()```함수는 블록체인에 저장된다.
+REMIX 사용법은 자세히 다루지 않고 있다. 직관적이므로 둘러보면 자연스럽게 배울 수 있다.
 
-```web3.js```에서 ```sendTransaction()``` 함수로 호출한다.
-
-### REMIX
-
-좌측 메뉴에서 ```+``` 버튼을 눌러 프로그램을 새로 연다. 프로그램의 이름을 정한다. REMIX의 디렉토리 ```browser/```는 기본으로 주어지는 디렉토리이므로 그냥 둔다.
-
-![alt text](figures/6_remixConnectToWebProvider.png "remix connecting to web provider")
-
+맨 좌측 '파일 탐색기(File Explorer)' 메뉴를 선택하고 '문서' 모양의 버튼을 눌러 빈 프로그램을 하나 연다. 프로그램의 이름을 정하면 그 이름을 파일명으로 쓰도록 하자. src 디렉토리에 ```Greeter.sol```이라고 명명하자 (아래 파일명 참조)
 
 ```python
-[파일명: src/greeter.sol]
-pragma solidity ^0.6.0;
+[파일명: src\Greeter.sol]
+pragma solidity ^0.8.0;
 
 contract Greeter {
     string greeting;
@@ -655,36 +610,54 @@ contract Greeter {
 }
 ```
 
+프로그램은 매우 단순하다. 코드를 설명해보자.
+
+- 생성자(constructor): 컨트랙의 생성자는 객체를 만드는 기능이다. 특이하게 배포 시점에 실행되고 그 상태가 유지된다. 컨트랙에서 'Hello' 문자열을 기본으로 저장하고 있다.
+- 매우 단순한 기능으로, 문자열에 대해 set, get 기능을 구현한다. ```greet()```은 블록체인에서 읽어오는 함수, setGreeting()은 블록체인의 값을 변경한다. ```setGreeting()```함수는 블록체인에 기록된다.
+
+다음으로 컴파일 해야 한다. 더 진행하기 전, REMIX에서 컴파일, 배포, 테스트까지 해보는 것이 좋다.
+컴파일-오류 발견-재컴파일-배포-테스트-수정-재컴파일 이런 흔히 겪는 개발자의 고통스런 반복을 상당히 줄일 수 있기 때문이다.
+
+- 컴파일은 맨 좌측 메뉴에서 찾을 수 있다. 컴파일하고 오류가 발생하면 알려준다. 물론 오류가 없으면 다음 단계로 이동할 수 있다.
+- 다음은 컴파일 메뉴 바로 아래에 위치한 배포 버튼을 클릭하면 된다. 배포하고 나면 바로 테스트가 가능하다. 우리가 만든 함수들이 주황색, 하늘색 버튼이 만들어져 있다. Greeter의 경우 2개의 버튼이 생성되어 있다는 것을 발견할 것이다. 얼마나 편리한가!
+- 테스트는 주황색 버튼 옆 칸 (set함수이므로 인자가 필요하다)에 문자열을 입력하면 된다 (한글도 가능하다). 그러고 나서 하늘색 버튼을 클릭하면 방금 입력한 문자열이 출력된다.
+
+이렇게 하고 나서는 '다 끝났네..' 하면서, 더 이상 읽지 않고 다음 단계를 건너뛰려고 하지 말자.
+침착하자. 설마 버튼 클릭하면서 블록체인 프로그래밍을 배우려는 생각은 아닐 것이다.
+곧 설명하려는 컴파일, 배포, 사용 단계에서는 자바스크립트로 코딩하고 있고, 웹디앱을 만들 때 반드시 필요하게 된다.
+
 ## 4.2 단계 2. 컴파일
 
-REMIX 또는 Solc로 컴파일해볼 수 있다. 여기서는 ```solc```로 컴파일 해보자.
+REMIX에서도 컴파일할 수 있지만, 여기서는 solc로 컴파일 해보자.
 
-컴파일해서 abi를 구해보자.
-```python
-pjt_dir> solc --abi src/greeter.sol
+우선 스위치에 적어서 abi를 구해보자.
 
-======= src/greeter.sol:Greeter =======
+```
+pjt_dir> solc-windows.exe --abi src\Greeter.sol
+
+======= src/Greeter.sol:Greeter =======
 Contract JSON ABI
 [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[],"name":"greet","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"_greeting","type":"string"}],"name":"setGreeting","outputs":[],"stateMutability":"nonpayable","type":"function"}]
 ```
 
-이번에는 bytecode를 출력해보자.
+이번에는 바이트 코드를 출력해보자. 길어서 중간 생략한다.
+
 ```python
-pjt_dir> solc --bin src/greeter.sol
+pjt_dir> solc-windows.exe --bin src\Greeter.sol
    
-======= src/greeter.sol:Greeter =======
+======= src/Greeter.sol:Greeter =======
 Binary:
-    608060405234801561001057600080fd5b506040518060400160405280600581526020017f48656c6c6f0000000000000000000000000000000000000000000000000000008152506000908051906020019061005c929190610062565b50610107565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f106100a357805160ff19168380011785556100d1565b828001600101855582156100d1579182015b828111156100d05782518255916020019190600101906100b5565b5b5090506100de91906100e2565b5090565b61010491905b808211156101005760008160009055506001016100e8565b5090565b90565b610310806101166000396000f3fe608060405234801561001057600080fd5b50600436106100365760003560e01c8063a41368621461003b578063cfae3217146100f6575b600080fd5b6100f46004803603602081101561005157600080fd5b810190808035906020019064010000000081111561006e57600080fd5b82018360208201111561008057600080fd5b803590602001918460018302840111640100000000831117156100a257600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600081840152601f19601f820116905080830192505050505050509192919290505050610179565b005b6100fe610193565b6040518080602001828103825283818151815260200191508051906020019080838360005b8381101561013e578082015181840152602081019050610123565b50505050905090810190601f16801561016b5780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b806000908051906020019061018f929190610235565b5050565b606060008054600181600116156101000203166002900480601f01602080910402602001604051908101604052809291908181526020018280546001816001161561010002031660029004801561022b5780601f106102005761010080835404028352916020019161022b565b820191906000526020600020905b81548152906001019060200180831161020e57829003601f168201915b5050505050905090565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f1061027657805160ff19168380011785556102a4565b828001600101855582156102a4579182015b828111156102a3578251825591602001919060010190610288565b5b5090506102b191906102b5565b5090565b6102d791905b808211156102d35760008160009055506001016102bb565b5090565b9056fea2646970667358221220944f93b1d9f9ab2ca4e9ac2c5e6ec4fb4d64c53439729ef8f7856a4f0cdcea1864736f6c63430006010033
+60806040523480156100...0006010033
 ```
 
-참고로 gas를 산정하자. gas비용이 무한 infinite로 산정되고 있다. 이 경우는 산정할 수 없다는 표현이 더 적절하다. 프로그램의 string은 배열이고 그 크기를 알 수 없기 때문에 그렇다.
+참고로 gas를 산정해보자. gas가 무한 infinite로 산정되고 있다. 이 경우는 산정할 수 없다는 표현이 더 적절하다. 프로그램의 string은 배열이고 그 크기를 알 수 없기 때문에 그렇다.
 
-실제 동적배열 또는 반복문을 적절하지 못하게 사용하면 무한의 gas비가 산정될 수 있고 따라서 실행이 되지 않을 수 있다는 점에 유의해야 한다.
+실제 동적배열 또는 반복문을 적절하지 못하게 사용하면 gas가 무한으로 산정될 수 있고 따라서 실행이 되지 않을 수 있다는 점에 유의해야 한다.
 
 ```python
-pjt_dir> solc --gas src/greeter.sol
+pjt_dir> solc-windows.exe --gas src\Greeter.sol
     
-======= src/greeter.sol:Greeter =======
+======= src/Greeter.sol:Greeter =======
 Gas estimation:
 construction:
    infinite + 156800 = infinite
@@ -695,83 +668,46 @@ external:
 
 ## 4.3 단계 3. 컨트랙 배포
 
-ABI, Byte code로 컨트랙 객체를 생성하고 배포를 요청한다.
-배포하기 전 지급계정은 해제되어야 한다.
-배포하기 위해서는 마이닝을 해야 하고, 비로서 콘트랙이 블록체인에 배포된다.
-배포가 완성되면 주소 값이 생성된다.
+앞서 획득한 ABI, 바이트 코드로 컨트랙 객체를 생성하고 배포를 요청한다.
+기억하자. geth@8445에 배포하고 있다. 배포하기 전 지급 계정이 해제되어야 하고, 마이닝을 해야 하고, 비로서 컨트랙이 블록체인에 배포된다. 배포가 완성되면 주소 값이 생성된다.
 
 ### REMIX
 
-```Run``` 탭을 누르고 ```Deploy``` 버튼을 눌러 배포할 수 있다. 배포할 때는 3가지 옵션 가운데 선택할 수 있다:
-- ```JavaScript VM```: 브라우저에서 독립적으로 실행. 콘트랙을 테스트할 때 유용하다.
-- ```Injected Web3```: MetaMask, Mist 등을 web3의 provider로 사용할 경우에 선택한다.
-    * metamask에서 사설망으로 전송할 경우 ```invalid sender``` 오류가 발생하면 사설망의 ```chainId```가 ```networkId```와 동일한지 확인한다.
-- ```Web3 Provider```: RPC를 통하여 ```http://localhost:8305```에 연결한다. ```Web3 provider```에 연결하면 자신의 계정이 나타난다.
+REMIX에서의 배포는 매우 간편하다. ```Deploy``` 버튼을 누르기만 하면 된다. 배포하기 전, 옵션 중 하나를 선택해야 하는 것은 잊지 말자.
 
-* ```Javascript VM```
+- ```REMIX VM```: 현재 사용 중인 REMIX의 가상 환경에 배포하는 것으로, 테스트할 때 유용하다. 우리는 보통 이 방법을 사용하고 있다.
+- ```Injected Provider```: MetaMask를 사용할 경우에 선택한다. MetaMask는 14장에서 배우게 된다.
+- ```External Http Provider```: 현재 로컬호스트에 떠 있는 원격접근 RPC에 연결할 때, 우리는 ```http://localhost:8445```에 접속한다. 연결하면 자신의 계정이 'ACCOUNT' 박스에 보일 것이다. 거래에 사인할 때 이 계정이 사용된다. 주황색```Deploy```'버튼을 누르면, geth@8445에 배포하게 된다. 자신의 백그라운드를 확인하면 거기에 뜬다. 당연히 마이닝은 해주어야 한다. 그러고 나면, 우리가 원하는 컨트랙 주소가 주어진다.
 
-Deployed Contracts 아래에 해당 컨트랙을 선택하여 실행해 볼 수 있다. 버튼의 색에 따라 함수를 구분할 수 있게 해 놓았다.
-**분홍색은 transaction**,
-**하늘색은 view, pure 함수**로 블록체인에 기록되지 않는 함수이다. 
+어떤 방법을 선택하든 매우 간편하게 클릭으로 해결된다. 이렇게 배포하고 나면 
+아래 REMIX 화면의 아래 쯤에 있는 ```Deployed Contracts``` 밑에 ```Greeter``` 컨트랙을 발견하게 될 것이다. 이를 선택하여 실행해 볼 수 있다. 버튼의 색에 따라 함수를 구분할 수 있게 해 놓았다.
 
-함수에 필요한 실제 값을 타입에 맞게 넣고 실행해 보자.
+![png](figures/DeployedGreeter.png)
 
-타잎 | 구성 | 예
------|-----|-----
-bytes | 따옴표 | "0x123456"
-strings | 따옴표 | "hello"
-large numbers | 따옴표 |
-array | [] | ["hello",42,"0x123456"]
-
-* ```Web3 provider```
-
-Web3 provider를 선택하면, 해당 IP에서 개설된 자신의 계정으로 거래에 사인을 하게 된다. 그리고 우측 '```Deploy```'버튼을 누르면 하단에 보이듯이 contract address가 주어진다.
-단 마이닝이 실행되어야 한다.
-
-![alt text](figures/6_remixConnectToWebProviderKeySign.png "remix connecting to web provider")
+- **주황색은 transaction**, 이 경우 setGreeting() 함수에 0x로 시작하는 16진수 문자열을 입력하자.
+- **하늘색은 view, pure 함수**로 블록체인에 기록되지 않는 함수이다. greet() 함수가 해당되는데, 버튼을 누르면 설정된 인사가 출력된다.
 
 ### web3.js
 
-아래는 web3 0.20.x 버전을 사용하고 있는 코드다.
+REMIX로 하면 매우 간편하다는 것을 경험하였는데, 굳이 코딩해서 배포하고 싶지 않을 수 있다. 익숙해지면, 코딩 방식이 효율적이고 오류에 대처할 수 있는 능력이 향상될 수 있다.
+
+web3 1.20으로 배포를 해보자. 3째 줄에서 web3.currentProvider는 현재 설정을 그대로 쓴다는 뜻이다 (14장에서 배우게 된다). 그렇지 않으면 6째 줄에서 외부의 설정을 사용하게 된다.
+
+15번째 줄의 from: 부분에 본인의 어카운트 번호를 입력하고 코드를 실행시킨다. geth@8445 또는 ganache@8345에 배포하느냐에 따라 6번째 줄의 URL의 포트 번호를 다르게 지정한다. 여기서는 geth@8445에 배포하는 것을 설명한다. 
 
 ```python
-[파일명: src/greeterDeploy__.js] 이전 버전의 문법으로 작성되었다.
+[파일명: src\greeterDeploy.js]
 var Web3=require('web3');
 var web3;
 if (typeof web3 !== 'undefined') {
     web3 = new Web3(web3.currentProvider);
 } else {
-    web3 = new Web3(new Web3.providers.HttpProvider("http://117.16.44.45:8445"));
+    web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8445"));
 }
 var _abiArray=[{"constant":false,"inputs":[{"name":"_greeting","type":"string"}],"name":"setGreeting","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"greet","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"}];
-var _bin="608060405234801561001057600080fd5b506040805190810160405280600581526020017f48656c6c6f0000000000000000000000000000000000000000000000000000008152506000908051906020019061005c929190610062565b50610107565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f106100a357805160ff19168380011785556100d1565b828001600101855582156100d1579182015b828111156100d05782518255916020019190600101906100b5565b5b5090506100de91906100e2565b5090565b61010491905b808211156101005760008160009055506001016100e8565b5090565b90565b610323806101166000396000f3fe608060405234801561001057600080fd5b5060043610610053576000357c010000000000000000000000000000000000000000000000000000000090048063a413686214610058578063cfae321714610113575b600080fd5b6101116004803603602081101561006e57600080fd5b810190808035906020019064010000000081111561008b57600080fd5b82018360208201111561009d57600080fd5b803590602001918460018302840111640100000000831117156100bf57600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600081840152601f19601f820116905080830192505050505050509192919290505050610196565b005b61011b6101b0565b6040518080602001828103825283818151815260200191508051906020019080838360005b8381101561015b578082015181840152602081019050610140565b50505050905090810190601f1680156101885780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b80600090805190602001906101ac929190610252565b5050565b606060008054600181600116156101000203166002900480601f0160208091040260200160405190810160405280929190818152602001828054600181600116156101000203166002900480156102485780601f1061021d57610100808354040283529160200191610248565b820191906000526020600020905b81548152906001019060200180831161022b57829003601f168201915b5050505050905090565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f1061029357805160ff19168380011785556102c1565b828001600101855582156102c1579182015b828111156102c05782518255916020019190600101906102a5565b5b5090506102ce91906102d2565b5090565b6102f491905b808211156102f05760008160009055506001016102d8565b5090565b9056fea165627a7a72305820e8cd5af384936c8c5f80781ebbc5ca63f8fa0e43133353c27accbb02ee216b550029";
-var _contract = web3.eth.contract(_abiArray);
-//unlock the account with a password provided
-//web3.personal.unlockAccount(web3.eth.accounts[0],'password');
-var _instance=_contract.new("hello world",{data:"0x"+_bin,from:web3.eth.accounts[0],gas:1000000}, function(err, contract) {
-    if (!err) {
-        console.log("contractAddress: ", contract.address);
-        console.log("transactionHash: ", contract.transactionHash);
-    }
-});
-```
-
-web3 1.20으로 배포를 해보자. currentProvider는 현재 설정된 Web3.providers가 있다면, 예를 들어 MetaMask, Mist가 제공하는 것을 쓴다는 뜻이다. 그렇지 않으면 수동으로 설정된 IP를 사용하게 된다.
-
-```python
-[파일명: src/greeterDeploy.js]
-var Web3=require('web3');
-var web3;
-if (typeof web3 !== 'undefined') {
-    web3 = new Web3(web3.currentProvider);
-} else {
-    web3 = new Web3(new Web3.providers.HttpProvider("http://117.16.44.45:8345"));
-}
-var _abiArray=[{"constant":false,"inputs":[{"name":"_greeting","type":"string"}],"name":"setGreeting","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"greet","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"}];
-var _bin="608060405234801561001057600080fd5b506040805190810160405280600581526020017f48656c6c6f0000000000000000000000000000000000000000000000000000008152506000908051906020019061005c929190610062565b50610107565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f106100a357805160ff19168380011785556100d1565b828001600101855582156100d1579182015b828111156100d05782518255916020019190600101906100b5565b5b5090506100de91906100e2565b5090565b61010491905b808211156101005760008160009055506001016100e8565b5090565b90565b610323806101166000396000f3fe608060405234801561001057600080fd5b5060043610610053576000357c010000000000000000000000000000000000000000000000000000000090048063a413686214610058578063cfae321714610113575b600080fd5b6101116004803603602081101561006e57600080fd5b810190808035906020019064010000000081111561008b57600080fd5b82018360208201111561009d57600080fd5b803590602001918460018302840111640100000000831117156100bf57600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600081840152601f19601f820116905080830192505050505050509192919290505050610196565b005b61011b6101b0565b6040518080602001828103825283818151815260200191508051906020019080838360005b8381101561015b578082015181840152602081019050610140565b50505050905090810190601f1680156101885780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b80600090805190602001906101ac929190610252565b5050565b606060008054600181600116156101000203166002900480601f0160208091040260200160405190810160405280929190818152602001828054600181600116156101000203166002900480156102485780601f1061021d57610100808354040283529160200191610248565b820191906000526020600020905b81548152906001019060200180831161022b57829003601f168201915b5050505050905090565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f1061029357805160ff19168380011785556102c1565b828001600101855582156102c1579182015b828111156102c05782518255916020019190600101906102a5565b5b5090506102ce91906102d2565b5090565b6102f491905b808211156102f05760008160009055506001016102d8565b5090565b9056fea165627a7a72305820e8cd5af384936c8c5f80781ebbc5ca63f8fa0e43133353c27accbb02ee216b550029";
+var _bin="60806040523480156100...생략...216b550029";
 var _contract = new web3.eth.Contract(_abiArray);
-//unlock the account with a password provided
-//web3.personal.unlockAccount(web3.eth.accounts[0],'password');
+//web3.personal.unlockAccount(web3.eth.accounts[0],'password'); 비밀번호 해제는 콘솔에서 하는 편이 좋다
 _contract
     .deploy({data:"0x"+_bin})
     .send({from: "0xfA279EEA36550b831ce5734475F67e7d6eC4d607", gas: 364124, gasPrice: '1000000000'})
@@ -781,24 +717,73 @@ _contract
 
 ```
 
-이제 배포를 해보자.
-```python
-pjt_dir> node src/greeterDeploy.js
+이제 배포를 해보자. 터미널 화면에서 node를 이용해 greeterDeploy.js를 실행시킨다. 
 
-0xE4E640c0BF81Bbe45342589bd0c318D837ebDf2A
+```python
+pjt_dir> node src\greeterDeploy.js
 ```
+
+배포할 때 주의할 점을 살펴보자. 
+
+배포를 geth@8445에 하려면, geth 콘솔에서 몇 가지 추가 작업을 해야 한다. 다음과 같이 \"geth attach http://localhost:8445" 콘솔창을 열자.
+
+```
+pjt_dir> geth attach http://localhost:8445
+```
+
+우선 배포할 컨트랙이 큐에 대기하고 있는지 확인한다. 마이닝을 켜놓지 않아서 대기 상태로 있을 것이다.
+다음과 같이 \"txpool.inspect\" 명령을 입력해보자. 현재 상태에 따라 출력은 다를 수 있으니, 자신과 다르다고 걱정할 필요는 없다. 배포 명령이 대기에 들어와 있으면 된다.
+
+```
+geth> txpool.inspect
+{
+  pending: {
+    0x8E6A037be185a70C101cDE94079a0d244Cc30FbA: {
+      0: "contract creation: 0 wei + 4700000 gas × 1000000000 wei",
+      1: "contract creation: 0 wei + 364124 gas × 1000000000 wei",
+      2: "contract creation: 0 wei + 364124 gas × 1000000000 wei",
+      3: "contract creation: 0 wei + 364124 gas × 1000000000 wei"
+    }
+  },
+  queued: {}
+}
+```
+
+대기하는 배포 명령을 완성하려면, 마이닝이 필요하다. 지금 열려 있는 geth 명령행에 다음을 입력한다. 마이닝을 시작하고 ```.start()```, 거래 한 건의 마이닝이 진행될 동안 단말을 대기하도록 ```.sleepBlocks(1)``` 한다. 그리고 마이닝이 끝나면 ```.stop()``` 중단한다. 
+
+```
+geth> miner.start(1);admin.sleepBlocks(1);miner.stop();
+null
+```
+
+마이닝을 하는 시간은 상황에 따라 편차가 있다. 컴퓨터 속도와 현재 실행되고 있는 프로그램 등에 따라 얼마나 걸릴지 모르는데, 기다리다 보면 마이닝이 끝난 후 null이라는 결과가 나타난다. 그러면, greeterDeploy.js를 실행시킨 창에 컨트랙 주소가 출력된다.
+
+```
+pjt_dir> node src\greeterDeploy.js
+0xE4E640c0BF81Bbe45342589bd0c318D837ebDf2A  ---> 이 주소는 복사해서 사용단계에서 코드의 (X)에 붙여넣는다.
+```
+
+이러면서 geth@8445를 띄어 놓은 단말을 관찰하자. 화면이 바쁘게 로그를 출력하고 있을텐데 다음 메시지를 발견할 수 있다.
+
+- Submitted contract creation 컨트랙 생성을 요청한 후 해시를 발행하고,
+- Commit new mining work 마이닝이 되었다는 로그 메시지를 관찰할 수 있다.
+
+이 다음은 이 과정을 화면에 보인 것이다.
 
 ![alt text](figures/5_greeterDeployPending.png "remix connecting to web provider")
 
 ![alt text](figures/5_greeterDeployMining.png "remix connecting to web provider")
 
+다시 한 번 강조하면, ganache@8345에 배포하는 경우 이런 절차가 필요없다.
+
 ## 4.4 단계 4. 사용
 
-위에서 얻은 contract address를 넣어 방금 만든 콘트랙을 사용할 수 있게 된다.
+위에서 얻은 컨트랙 주소는 꼭 필요하다. 앞서 만든 컨트랙을 이 주소가 없으면 호출할 수 없다.
 
-객체를 생성할 경우 ABI, Byte code를 사용한다.
+객체를 생성할 경우 ABI, 바이트 코드가 필요하다.
 
-함수를 호출할 경우 로컬 또는 블록체인을 사용할지 판단한다.
+함수를 호출할 경우, call() 또는 send() 어느 방식을 적용할지 판단한다.
+
 * 값을 읽는 경우 ```call()```을 사용하고, gas비용이 발생하지 않는다.
 ```python
 greeter.methods.greet().call()
@@ -810,22 +795,10 @@ greeter.methods.greet().call()
 myContract.methods.myMethod([param1[, param2[, ...]]]).send(options[, callback])
 ```
 
+자 그럼 setGreeting() 함수를 호출해보자.
+
 ```python
 greeter.methods.setGreeting("Hello World").send({from:web3.eth.accounts[0],gas:1000});
-```
-
-아래는 web3 0.20.x 버전을 사용하고 있는 코드다.
-
-```python
-[파일명: src/greeterUse__.js]
-var Web3=require('web3');
-var web3 = new Web3(new Web3.providers.HttpProvider("http://117.16.44.45:8445"));
-var _abiArray=[{"constant":false,"inputs":[{"name":"_greeting","type":"string"}],"name":"setGreeting","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"greet","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"}];
-var _contract = web3.eth.contract(_abiArray);
-var greeter = _contract.at("0x9397fbedbcdf9b80bad6805df98d24b6676e19e3");
-console.log(greeter.greet.call());
-console.log(greeter.setGreeting({from:web3.eth.accounts[0],gas:100000}));
-//console.log(greeter.greet());
 ```
 
 web3 1.20으로 배포를 해보자.
@@ -833,7 +806,7 @@ web3 1.20으로 배포를 해보자.
 ```python
 [파일명: src/greeterUse.js]
 var Web3=require('web3');
-var web3 = new Web3(new Web3.providers.HttpProvider("http://117.16.44.45:8345"));
+var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8445"));
 var _abiArray=[{"constant":false,"inputs":[{"name":"_greeting","type":"string"}],"name":"setGreeting","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"greet","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"}];
 var greeter = new web3.eth.Contract(_abiArray,"0xE4E640c0BF81Bbe45342589bd0c318D837ebDf2A");
 greeter.methods.greet().call().then(function(value) {console.log(value);});
@@ -841,8 +814,7 @@ greeter.methods.setGreeting("Hello SMU").send({from:"0xfA279EEA36550b831ce573447
 greeter.methods.greet().call().then(function(value) {console.log(value);});
 ```
 
-노드 함수를 1회 실행하면, 비동기적 특성으로 ```setGreeting()``` 함수가 반영되지 않는다. 처음에는 Hello가 출력된다. 2회 실행시키면, 즉 Hello World로 문자열을 변경한 결과가 출력된다.
-
+위 함수를 1회 실행하면, 비동기적 특성으로 ```setGreeting()``` 함수가 반영되지 않는다. 반영되지 않은 상태로 처음에는 "Hello"가 출력된다. 2회 실행시키면, 비로서 "Hello SMU"로 문자열을 변경한 결과가 아래와 같이 출력된다.
 
 ```python
 pjt_dir> node src/greeterUse.js
@@ -855,12 +827,19 @@ Hello SMU
 
 계수기는 언제나 현재의 계수를 가지고 있다. 0부터 시작해서 하나씩 증가하거나 감소하며, **현재의 계수로부터 증감**한다는 것이다.
 
-블록체인은 **state machine**이라서, 전의 값을 기억하고 그로부터 증가하게 된다. **프로그램을 호출한 횟수**가 좋은 예가 될 수 있다. 여러 사람이 호출했다고 하더라도 총 횟수를 기억할 수 있다. 현재 값을 저장하고 있고, 그 값이 누구에게나 공개된다는 점이 블록체인의 특징을 보여주고 있다.
+블록체인은 **상태 기계(state machine)**이라서, 전의 값을 기억하고 그로부터 증가하게 된다. **프로그램을 호출한 횟수**가 좋은 예가 될 수 있다. 여러 사람이 호출했다고 하더라도 총 횟수를 기억할 수 있다. 현재 값을 저장하고 있고, 그 값이 누구에게나 공개된다는 블록체인의 특징을 보여주고 있다.
 
 ## 5.1 단계 1. 컨트랙 개발
 
+프로그램의 add(), subtract() 함수는 계수를 1씩 증감하고 있다.
+getCounter()는 계수를 읽어내고 있다.
+
+코드는 REMIX에서 작성하자.
+다음 단계에서 컴파일, 배포를 하겠지만, REMIX에서 앞서 그랬던 것과 같이 테스트까지 하는 편이 좋다.
+그렇지 않으면 개발-컴파일-배포-오류-수정 절차가 반복되기 때문이다.
+
 ```python
-[파일명: src/Counter.sol]
+[파일명: src\Counter.sol]
 pragma solidity ^0.6.0;
 contract Counter {
     uint256 counter = 0;
@@ -878,70 +857,43 @@ contract Counter {
 
 ## 5.2 단계 2. 컴파일
 
-solc 컴파일을 통해 abi, bin, gas를 구한다.
-
+컴파일해서 abi, bin, gas를 구한다.
 
 ```python
-pjt_dir> solc --abi --bin --gas src/Counter.sol
+pjt_dir> solc-windows.exe --abi --bin --gas src\Counter.sol
  
 ======= src/Counter.sol:Counter =======
 Gas estimation:
 construction:
-   5099 + 42200 = 47299
+   5141 + 89400 = 94541
 external:
-   add():	20959
-   getCounter():	1035
-   subtract():	20984
+   add():	21082
+   getCounter():	1159
+   subtract():	21104
+
 Binary:
-    60806040526000805534801561001457600080fd5b5060d3806100236000396000f3fe6080604052348015600f57600080fd5b5060043610603c5760003560e01c80634f2be91f1460415780636deebae31460495780638ada066e146051575b600080fd5b6047606d565b005b604f6080565b005b60576094565b6040518082815260200191505060405180910390f35b6000808154809291906001019190505550565b600080815480929190600190039190505550565b6000805490509056fea2646970667358221220a19d7e0374295c3c6dd75807d6b2bb20a12deb6f736a4ad98c0065f0d9d4bf5764736f6c63430006010033
-    Contract JSON ABI
-    [{"inputs":[],"name":"add","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getCounter","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"subtract","outputs":[],"stateMutability":"nonpayable","type":"function"}]
+60806040526000805534...생략...736f6c63430008010033  ---> (A) 아래 (X)에 복사-붙여넣기
+
+Contract JSON ABI
+[{"inputs":[],"name":"add","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getCounter","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"subtract","outputs":[],"stateMutability":"nonpayable","type":"function"}] ---> (B) 아래 (Y)에 복사-붙여넣기
 ```
 
 ## 5.3 단계 3. 배포
 
-web3 0.20.x버전과 1.2.x 버전의 배포 프로그램이다.
+web3.js를 사용한 배포 프로그램이다.
+
+코드에서 \".send({from: \"의 값을 본인 계정 번호로 수정한 후 실행시킨다. 기억하자. ganache@8345에서 출력한 10개 가운데 하나를 복사-붙여넣기 하고 있다.
 
 ```python
-[파일명: src/counterDeploy__.js]
+[파일명: src\counterDeploy.js]
 var Web3=require('web3');
-var web3;
-if (typeof web3 !== 'undefined') {
-    web3 = new Web3(web3.currentProvider);
-} else {
-    web3 = new Web3(new Web3.providers.HttpProvider("http://117.16.44.45:8445"));
-}
-var _abiArray=[{"constant":false,"inputs":[],"name":"add","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"subtract","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getCounter","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}];
-var _bin="60806040526000805534801561001457600080fd5b5060e6806100236000396000f3fe6080604052348015600f57600080fd5b50600436106059576000357c0100000000000000000000000000000000000000000000000000000000900480634f2be91f14605e5780636deebae31460665780638ada066e14606e575b600080fd5b6064608a565b005b606c609d565b005b607460b1565b6040518082815260200191505060405180910390f35b6000808154809291906001019190505550565b600080815480929190600190039190505550565b6000805490509056fea165627a7a723058201fbaa288a76e68fea3b0373a390c6e375e9bb90c0fd24b0660d64ebb408088d60029";
-var _contract = web3.eth.contract(_abiArray);
-//unlock the account with a password provided
-//web3.personal.unlockAccount(web3.eth.accounts[0],'password');
-var _instance=_contract.new({data:"0x"+_bin,from:web3.eth.accounts[0],gas:100000}, function(err, contract) {
-    if (!err) {
-        console.log("contractAddress: ", contract.address);
-        console.log("transactionHash: ", contract.transactionHash);
-    }
-});
-```
+var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8345"));
 
-```python
-[파일명: src/counterDeploy.js]
-var Web3=require('web3');
-var web3;
-if (typeof web3 !== 'undefined') {
-    web3 = new Web3(web3.currentProvider);
-} else {
-    web3 = new Web3(new Web3.providers.HttpProvider("http://117.16.44.45:8345"));
-}
-//solc 0.5.0
-//var _abiArray=[{"constant":false,"inputs":[],"name":"add","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"subtract","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getCounter","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}];
-//var _bin="60806040526000805534801561001457600080fd5b5060e6806100236000396000f3fe6080604052348015600f57600080fd5b50600436106059576000357c0100000000000000000000000000000000000000000000000000000000900480634f2be91f14605e5780636deebae31460665780638ada066e14606e575b600080fd5b6064608a565b005b606c609d565b005b607460b1565b6040518082815260200191505060405180910390f35b6000808154809291906001019190505550565b600080815480929190600190039190505550565b6000805490509056fea165627a7a723058201fbaa288a76e68fea3b0373a390c6e375e9bb90c0fd24b0660d64ebb408088d60029";
-//solc 0.6.1
-var _abiArray=[{"inputs":[],"name":"add","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getCounter","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"subtract","outputs":[],"stateMutability":"nonpayable","type":"function"}];
-var _bin="60806040526000805534801561001457600080fd5b5060d3806100236000396000f3fe6080604052348015600f57600080fd5b5060043610603c5760003560e01c80634f2be91f1460415780636deebae31460495780638ada066e146051575b600080fd5b6047606d565b005b604f6080565b005b60576094565b6040518082815260200191505060405180910390f35b6000808154809291906001019190505550565b600080815480929190600190039190505550565b6000805490509056fea2646970667358221220a19d7e0374295c3c6dd75807d6b2bb20a12deb6f736a4ad98c0065f0d9d4bf5764736f6c63430006010033";
+var _abiArray=[{"inputs":[],"name":"add","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getCounter","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"subtract","outputs":[],"stateMutability":"nonpayable","type":"function"}]; <--- (Y) 위 (B)를 복사-붙여넣기
+
+var _bin=60806040526000805534...생략...736f6c63430008010033;   <--- (X) 위 (A)를 복사-붙여넣기
+
 var _contract = new web3.eth.Contract(_abiArray);
-//unlock the account with a password provided
-//web3.personal.unlockAccount(web3.eth.accounts[0],'password');
 _contract
     .deploy({data:"0x"+_bin})
     .send({from: "0x0A815B7818A8e6BC27B430e41Edc8FC455F658c2", gas: 364124, gasPrice: '1000000000'})
@@ -950,20 +902,24 @@ _contract
     });
 ```
 
-```python
-pjt_dir> node src/counterDeploy.js
+위 프로그램을 실행하면 컨트랙 주소가 성공적으로 출력된다.
 
-0xb24ab776373e53fFeb9B7298209E195853D2fc8e
+```python
+pjt_dir> node src\counterDeploy.js
+
+0xb24ab776373e53fFeb9B7298209E195853D2fc8e  ---> (C) 아래 (Z)에 복사-붙여넣기
 ```
 
 ## 5.4 단계 4. 사용
 
+counterDeploy.js를 실행시킨 후에 나온 주소값을 addr 변수에 저장하고, \"counter.methods.add().send({from:\"의 값을 역시 본인 것으로 수정한 후 실행한다.
+
 ```python
 [파일명: src/counterUse.js]
 var Web3=require('web3');
-var web3 = new Web3(new Web3.providers.HttpProvider("http://117.16.44.45:8345"));
+var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8345"));
 var abi =[{"constant":false,"inputs":[],"name":"add","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"subtract","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getCounter","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}];
-var addr = "0xb24ab776373e53fFeb9B7298209E195853D2fc8e";
+var addr = "0xb24ab776373e53fFeb9B7298209E195853D2fc8e"; <--- (Z) 위 (C)를 복사-붙여넣기
 var counter = new web3.eth.Contract(abi,addr);
 counter.methods.getCounter().call().then(function(str) {console.log(str);});
 //counter.methods.subtract().send({from:"0x0A815B7818A8e6BC27B430e41Edc8FC455F658c2",gas:100000});
@@ -976,7 +932,7 @@ geth 개인망에서 ```add()```, ```subtract()``` 함수는 호출하고, Pendi
 
 ```add()```는 counter에 1을 더하는, ```subtract()```은 1을 빼는 상태변경 이므로 마이닝을 해야 그 결과가 반영된다. 그러고 나면 ```getCounter()```에서 알 수 있다.
 
-주목할 점은 수가 계속 증감한다는 점이다. 세션을 다시 열어도 전의 ```counter``` 값은 남아 있는다.
+주목할 점은 수가 계속 증감한다는 점이다. 세션을 다시 열어도 전의 ```counter``` 값은 남아 있다.
 
 ```python
 pjt_dir> node src/counterUse.js
@@ -985,66 +941,70 @@ pjt_dir> node src/counterUse.js
 4
 ```
 
+# 실습문제: 타이머 디앱 - 파일에서 ABI, 바이트 코드 읽는 방식
 
-# 실습문제: 타이머 디앱 (파일에서 ABI, bytecode 읽음)
+블록체인의 타이머를 만들어 보자.
 
-블록체인에서 시간을 측정해보자.
+블록체인에서 객체는 한 번만 생성되고, 공유된다. 따라서 블록체인의 타이머는 자신만 사용하는 것이 아니라, 다른 누군가 사용해도 된다. 공유 타이머를 만들려고 하면, 매핑을 적용해서 나의 시간, 너의 시간을 다르게 설정할 수 있다. 여기서는 자신만 쓰는 간단한 타이머를 만들기로 하자.
 
-블록체인은 개방되어 있으므로 누구나 타이머를 설정하고 사용할 수 있다. 이러한 점때문에 누구나 자신의 타이머를 가질 수 있지만, 다른 누군가에 의해 재설정될 수도 있다. 이러한 단점을 보완하는 방법은 차츰 학습하기로 하자.
+지금까지 컴파일하고 abi, 바이트 코드를 매번 복사하는 것이 불편할 수 밖에 없다. 여기서는 컴파일하고 생성되는 abi, 바이트 코드를 파일로 저장하도록 하자. 프로그램이 조금 복잡해지겠지만, 작성된 파일에서 읽어내면, 복사-붙여넣기를 하지 않아도 되기때문에 간편해진다.
 
-이번 예제에서는 배포, 사용하는 방법을 바꾸어 보았다. 컴파일하고 **abi, bin을 매번 복사하는 것이 불편**하다고 생각할 것이다. 파일로 저장한 후, abi, bin을 읽도록 프로그램을 작성해보자. 프로그램이 조금 복잡해지지만, 복사-붙여넣기 없이 개발할 수 있게 된다.
-
-또한 Geth에서도 배포하고, API를 사용하여 보자.
+또한 geth@8445에 배포하고, API를 사용하여 보자.
 
 ## 단계 1: 컨트랙 개발
 
-줄 | 설명
------|-----
-1 | Pragma 프로그램 버전. 맨 앞의 ```^``` (caret)은 메이저버전으로 시작하는 최근 버전의 컴파일러를 사용. 따라서 5로 시작하는 최근 버전인 5.21을 사용
-4 | public으로 사용권한을 제한하지 않음
-5 | ```now```는 현재 시간, 시스템에서 제공하는 전역변수. now는 버전0.7부터 더 이상 지원되지 않는다. ```block.timestamp```를 사용하자.
-7 | public이고, pure 또는 view로 읽는 기능으로 한정함.
-
-
-0.6.0으로 로컬컴파일 후, ganache에서는 문제가 없으나, geth에서 getNow()호출에 ```returned values aren't valid, did it run out of gas?``` 오류가 발생한다. REMIX에서 컴파일하고, 그 abi, bin으로 사용해서 확인하니, 문제가 없다.
-
-* 개선: timePassed가 REMIX에서는 올바르게 출력. 그러나 web3에서는 0으로 출력. 멤버변수로 설정하면?
+코드는 REMIX에서 작성하자. 코드를 작성하고 난 후, 그냥 끝내지 말고 배포까지 하고 나서 기능 버튼이 만들어 지면 테스트도 해보자.
 
 ```python
-[파일명: src/Timer.sol]
-pragma solidity ^0.6.0;
+[파일명: src\Timer.sol]
+pragma solidity ^0.8.0;
 contract Timer {
     uint256 startTime;
     function start() public {
-        //startTime=now; now is deprecated as of v0.7
         startTime=block.timestamp;
     }
     function timePassed() public view returns(uint256) {
-        //return now-startTime;
         return block.timestamp-startTime;
     }
     function getNow() view public returns(uint) {
-        //return now;
         return block.timestamp;
     }
 }
 ```
 
+줄 | 설명
+-----|-----
+1 | Pragma 프로그램 버전. 맨 앞의 ```^``` (caret)은 메이저버전으로 시작하는 최근 버전의 컴파일러를 사용. 따라서 0.8.1도 문제 없이 사용할 수 있다.
+4 | 함수의 가시성을 public으로 설정하여, 사용권한을 제한하지 않는다 (가시성은 나중에 배우게 된다)
+5 | ```now```는 현재 시간, 시스템에서 제공하는 전역변수. now는 버전0.7부터 더 이상 지원되지 않는다. ```block.timestamp```를 사용해야 하며, 요청이 발생하는 시점의 timestamp이다.
+7 | 시간측정 함수이고 public view로 설정하여, 누구나 조회할 수 있도록 한다 (view는 나중에 배운다)
+10 | 현재시간을 조회하는 함수이다.
+
 ## 단계 2: 컴파일
 
-컴파일하고 난 ABI, bytecode를 (1) 자바스크립트, (2) JSON 파일로 내보내게 된다.
+컨트랙 주소를 복사-붙여넣기를 하지 않기 위해, 이번에는 컴파일하고 출력되는 ABI, 바이트 코드를 JSON 파일로 내보내보자.
 
-abi, bin를 하나씩 생성하지 않고, 한꺼번에 ```json```파일을 생성하여 읽도록 하자. ```combined-json```을 사용하면, 한꺼번에 컴파일 결과를 ```Timer.js``` 파일에 저장한다.  파일의 확장자가 ```.js```라는 것은 자바스크립트를 의미한다.
+abi, 바이트코드를 하나씩 생성하지 않고, 한꺼번에 ```json```파일에 저장하기 위해, ```combined-json```을 사용하면, 한꺼번에 컴파일 결과를 ```Timer.js``` 파일에 저장한다. 파일의 확장자가 ```.js```라는 것은 자바스크립트를 의미한다.
 
-주의: ```--combined-json abi, bin``` 이렇게 공백이 포함되면 안된다.
+--optimize 옵션은 컨트랙이 200회 정도 실행될 것이라고 예상하고, 생성하는 바이너리를 최적화하게 된다. 
+
+주의! 운영체제 별로 디렉토리 구분자가 다르므로 주의해야 한다.
+- 윈도우는 역슬래쉬 ```src\Timer.json```,
+- 리눅스는 그냥 슬래쉬 ```src/Timer.json```라고 적는다.
+
+이런 원칙에도 불구하고 컴파일 결과에서 보면 리눅스 스타일로 적혀 있다 (아래 결과를 보면 그렇다).
+아래 컴파일할 경우에도 슬래쉬, 역슬래쉬 모두 작동된다.
+주의! ```--combined-json abi, bin``` 이렇게 공백이 포함되면 안된다.
 
 ```python
-pjt_dir> solc --optimize --combined-json abi,bin src/Timer.sol > src/Timer.json
+pjt_dir> solc-windows.exe --optimize --combined-json abi,bin src/Timer.sol > src/Timer.json
 ```
 
-```Timer.json```에 저장이 잘 되었는지 출력해보자.  운영체제 별로 명령어와 디렉토리 구분자가 다르므로 주의해야 한다. 윈도우에서는 ```type src\Timer.json``` 리눅스에서는 ```cat src/Timer.json```이다.
+```Timer.json```에 저장이 잘 되었는지 출력해보자. 리눅스에서는 ```cat src/Timer.json```이다.
+윈도우에서는 ```type src\Timer.json``` (src/Timer.json로 타이핑하면 슬래쉬의 문법오류)이다.
 
-출력결과는 이해하기 쉽도록 편집하였다. JSON 형식으로 키, 값이 사상되어 저장되어 있다. 컨트랙의 명칭, abi, bin을 유의해서 보아야, 나중에 배포하면서 이 파일에서 읽어올 수 있게 된다.
+출력 결과는 이해하기 쉽도록 편집하였다. JSON 형식으로 키와 값이 사상(mapping)되어 저장되었다. 컨트랙의 명칭, abi, bin을 유의해서 보아야, 나중에 배포하면서 이 파일에서 읽어올 수 있게 된다.
+
 ```python
 pjt_dir> type src\Timer.json
 
@@ -1052,25 +1012,31 @@ pjt_dir> type src\Timer.json
 	{
 		"src/Timer.sol:Timer":{
 			"abi":"[{\"inputs\":[],...생략...}]",
-			"bin":"60806...생략...10033"
+			"bin":"60806040523480156100...생략...736f6c63430008010033"
 		}
 	},
-"version":"0.6.1+commit.e6f7d5a4.Windows.msvc"}
+"version":"0.8.1+commit.df193b15.Windows.msvc"}
 ```
 
-이와 같이 생성된 형식은 다음 명령어로 JSON으로 변환할 수 있다.
+#### 파일에서 abi, 바이트 코드 조회
+
+위 파일에서 abi, 바이트 코드를 읽는 프로그램을 작성해보자.
+
 ```python
-node> var fs = require('fs');
-> var _abiJson=JSON.parse(fs.readFileSync('./src/TimerABI.json', 'utf8'));
+[파일명: src/TimerImportTest.js]
+줄1 const _abiBinJson = require('./Timer.json');     // 파일 가져오기
+줄2 contractName=Object.keys(_abiBinJson.contracts); // ['src/Timer.sol:Timer'] 이 부분을 읽어온다
+줄3 console.log("- contract name: ", contractName);
+줄4 _abi=_abiBinJson.contracts[contractName].abi;
+줄5 _abiArray=JSON.parse(JSON.stringify(_abi));
+줄6 _bin=_abiBinJson.contracts[contractName].bin;
+줄7 console.log("- ABI: ", _abi);
+줄8 console.log("- ABIArray: ", _abiArray);
+줄9 console.log("- Bytecode: ", _bin);
 ```
 
-반면에 JSON파일은 바로 ```require(JSON파일명)``` 함수로 아래와 같이 읽으면 편하다. Javascript 파일의 ```require(자바스크립트파일명)```와 달리 export 명령어를 사용할 필요가 없다.
-
-```require```에서 읽는 파일경로는 **현재파일의 상대적 경로**로 적어준다. 앞서 컴파일 결과는 JSON 형식이고, 여기서 abi, bin을 읽어올 수 있다.
-
-#### **solc로 컴파일할 경우 파일 경로와 import**
-
-위 파일을 보면, 컨트랙 명칭이 'src/Timer.sol:Timer'로 작명된다. 이 부분은 문법 ```context:prefix=target```에 따라 생성이 된다.
+- 줄1 JSON파일은 바로 ```require(JSON파일명)``` 함수로 읽으면 편하다. 자바스크립트 파일의 ```require(자바스크립트파일명)```와 달리 export 명령어를 사용할 필요가 없다. ```require```에서 읽는 파일 경로는 **현재 파일의 상대적 경로**를 지정한다. src폴더 아래에 있어서 src\Timer.json라고 써야 한다고 생각할 수 있으나 현재 파일에서 보면 같은 디렉토리에 있는 것이다. 같은 폴더에 파일이 있더라도 앞에서 보인 것처럼 "./"를 붙여줘야 한다.
+- 줄2 자바스크립트 문법으로 **객체의 키**를 읽어오려면, ```Object.keys(키)``` 함수에 인자 '키'를 입력하면, 그에 해당하는 값을 얻을 수 있다. 컨트랙 명칭은 'src/Timer.sol:Timer'로 작명된다. 이 부분은 문법 ```context:prefix=target```에 따라 생성이 된다.
 
 구분 | 설명 | 선택 | 예
 -----|-----|-----|-----
@@ -1078,21 +1044,8 @@ context | 읽을 파일 | 선택적 | src/Timer.sol
 :prefix |  |  | :Timer
 =target | 없으면 prefix와 동일  | 선택적 | 
 
-이 명칭이 꽤 복잡하므로 프로그램으로 얻어보자.
-줄2를 보자. 자바스크립트 문법으로 **객체의 키**를 읽어오려면, ```Object.keys(키)``` 함수에 인자 '키'를 입력하면, 그에 해당하는 값을 얻을 수 있다.
-
-```python
-[파일명: src/TimerImportTest.js]
-const _abiBinJson = require('./Timer.json');     //importing a javascript file
-contractName=Object.keys(_abiBinJson.contracts); // reading ['src/Timer.sol:Timer']
-console.log("- contract name: ", contractName);
-_abi=_abiBinJson.contracts[contractName].abi;
-_abiArray=JSON.parse(JSON.stringify(_abi));
-_bin=_abiBinJson.contracts[contractName].bin;
-console.log("- ABI: ", _abi);
-console.log("- ABIArray: ", _abiArray);
-console.log("- Bytecode: ", _bin);
-```
+- 줄4 JSON 자료를 점연산자로 접근하고, ```.abi``` 필드를 읽고 있다. 줄6은 같은 방식으로 ```.bin```을 읽는다.
+- 줄5 stringify() 함수는 자바스크립트 오브젝트를 문자열로 전환한다. 연쇄적으로 문자열을 JSON 자료로 변환하기 위해 .parse() 함수를 적용한다.
 
 이 프로그램을 실행하면, abi, bin 정보를 출력한다. 잘 읽었는지 확인해보자.
 
@@ -1102,17 +1055,16 @@ pjt_dir> node src/TimerImportTest.js
 	- contract name:  [ 'src/Timer.sol:Timer' ]
 	- ABI:  [{"inputs":[],"name":"getNow","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"start","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"timePassed","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"}]
     - ABIArray:  [{"inputs":[],"name":"getNow","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"start","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"timePassed","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"}]
-    - Bytecode:  608060405234801561001057600080fd5b5060af8061001f6000396000f3fe6080604052348015600f57600080fd5b5060043610603c5760003560e01c8063b4454253146041578063bbe4fd50146059578063be9a655514605f575b600080fd5b60476067565b60408051918252519081900360200190f35b6047606f565b60656073565b005b600054420390565b4290565b4260005556fea2646970667358221220f2dd49ad7ab0645d152793d9df9439e21492b4a9dd91cb1b9fcfd494293709bd64736f6c63430006010033
+    - Bytecode:  60806040523480156100...생략...736f6c63430006010033
 ```
 
 ### 노드에서 한 줄씩 코딩해보기
 
-json을 생성하고 그 파일을 읽어오는 과정이 이해하기 어려우면 손코딩이 제일이다.
-노드에서 한 줄씩 ABI, BIN을 읽어오는 연습을 해보자.
+JSON을 생성하고 그 파일을 읽어오는 과정이 이해하기 어려우면 한 줄씩 상호작용해보자. Node에서 한 줄씩 abi, bin을 읽어오는 연습을 해보자.
 
 ```python
 pjt_dir> node
-> var _abiBinJson=require('./src/Timer.json')
+node> var _abiBinJson=require('./src/Timer.json')
 undefined
 > Object.keys(_abiBinJson.contracts)
 [ 'src/Timer.sol:Timer' ]
@@ -1121,24 +1073,25 @@ undefined
 
 ## 단계 3: 컨트랙 배포
 
-컴파일하고 abi, bin는 파일에 저장하였고, 그 파일에서 읽어서 배포해 보자.
+컴파일하고 abi, bin를 파일에 저장하였고, 그 파일에서 읽어서 배포해 보자.
 
 Node에서는 앞서 하나씩 생성한 ```Timer.json``` 파일을 읽어서 배포해보자.
 
 주의:
 * ```require('./Timer.json')```에 호출 시점의 상대 디렉토리 ```src/Timer.json```를 적는다.
-* bytecode는 16진수 표현 "0x"를 붙인다.
-
+* 바이트 코드에는 16진수 표현 "0x"를 붙인다.
 
 줄 | 설명
 -----|-----
-1 | 사용 계정을 설정한다.
-4 | 컴파일하고 생성된 abi, bin이 저장된 js파일을 읽는다
+1 | web3 라이브러를 가져온다.
+2 | 컴파일하고 생성된 abi, bin이 저장된 JSON 파일(Timer.json)을 읽는다. 
+3 | HttpProvider를 ganache@8345로 설정한다.
 5 | contract명에 path prefix인 디렉토리 구분자 '/'가 포함되어 있다. Object.keys로 읽은 key를 contract명으로 사용한다.
-10 | binary data는 '0x'가 빠져 있다. 블록체인에 배포할 때 0x를 붙여서 16진수 문자열이라고 명시해 준다. **gas**를 임의로 정해준다. 가격이 맞지 않으면....
+10 | binary data는 '0x'가 빠져 있다. 블록체인에 배포할 때 0x를 붙여서 16진수 문자열이라고 명시해 준다. **gas**를 임의로 정해준다. 적으면 문제가 되지만, 쓰고 남으면 반환된다.
+12 | ```deploy()``` 함수는 ```async```로 선언되었다. 중간 ```await new```로 객체 생성을 하고 있다. 
 
 ```python
-[파일명: src/TimerDeployAbiBinFromFile.js]
+[파일명: src\TimerDeployAbiBinFromFile.js]
 var Web3 = require('web3');
 var _abiBinJson = require('./Timer.json');      //importing a javascript file
 
@@ -1148,7 +1101,7 @@ contractName=Object.keys(_abiBinJson.contracts); // reading ['src/Timer.sol:Time
 console.log("- contract name: ", contractName);
 _abi=_abiBinJson.contracts[contractName].abi;
 //_abiArray=JSON.parse(JSON.stringify(_abi));
-_abiArray=JSON.parse(_abi);      //JSON parsing needed!!
+_abiArray=JSON.parse(_abi);      // 오류가 발생하면 JSON.stringfy(_abi)를 사용할 것
 _bin=_abiBinJson.contracts[contractName].bin;
 
 console.log("- ABI: " + _abiArray);
@@ -1162,39 +1115,38 @@ async function deploy() {
         .send({from: accounts[0], gas: 364124}, function(err, transactionHash) {
                 if(!err) console.log("hash: " + transactionHash); 
         })
-        //.then(function(newContractInstance){
-        //    console.log(newContractInstance)
-        //});
     console.log("---> The contract deployed to: " + deployed.options.address)
 }
 deploy()
 ```
 
-ABI를 출력하면 object가 포함되어 있다. 마지막 줄을 보면, 배포된 컨트랙의 주소를 얻을 수 있다.
+파일을 실행해보자.
 
 ```python
-pjt_dir> node src/TimerDeployAbiBinFromFile.js
+pjt_dir> node src\TimerDeployAbiBinFromFile.js
 
-    - contract name:  [ 'src/Timer.sol:Timer' ]
-    - ABI: [object Object],[object Object],[object Object]
-    - Bytecode: 608060405234801561001057600080fd5b5060af8061001f6000396000f3fe6080604052348015600f57600080fd5b5060043610603c5760003560e01c8063b4454253146041578063bbe4fd50146059578063be9a655514605f575b600080fd5b60476067565b60408051918252519081900360200190f35b6047606f565b60656073565b005b600054420390565b4290565b4260005556fea2646970667358221220f2dd49ad7ab0645d152793d9df9439e21492b4a9dd91cb1b9fcfd494293709bd64736f6c63430006010033
-    Deploying the contract from 0xEb670169A5fcD2550035588A2ba3b45509703ABd
-    hash: 0xbd010c6ed017b05579abd42f94d332ece6b4ce21c83eb881d46094fb3572eed4
-    ---> The contract deployed to: 0x5dB5E509ff13A760345C0B58591E2a5DA6e1B2DE
+- contract name:  [ 'src/Timer.sol:Timer' ]
+- ABI: [object Object],[object Object],[object Object]  Object 형식을 문자열로 출력하려면 JSON.stringify()
+- Bytecode: 60806040523480156100...생략...736f6c63430006010033   
+Deploying the contract from 0xEb670169A5fcD2550035588A2ba3b45509703ABd
+hash: 0xbd010c6ed017b05579abd42f94d332ece6b4ce21c83eb881d46094fb3572eed4
+---> The contract deployed to: 0x5dB5E509ff13A760345C0B58591E2a5DA6e1B2DE
 ```
 
-nodejs example.sol compile, deploy
+- 컨트랙 명이 올바르게 출력되고 있고,
+- ABI는 출력하면 Javaascript Object가 포함되어 있다. 문자열로 출력하려면 JSON.stringify(obj) 함수를 적용한다.
+- 마지막 줄에 배포된 컨트랙의 주소를 출력하고 있다.
 
-![alt text](figures/6_nodejsWeb3Example.png "node web3 test run Example.sol")
+혹시 코드를 실행하면서 JSON.parse()에서 오류가 발생할 수 있다. Solidity JSON 파일을 생성하는 방법이 버전마다 차이가 있는 것 같다. 어떤 버전으로 컴파일 하느냐에 따라 JSON.parse(_abi)형태로 실행될 수도 있고, 오류가 발생하는 경우도 있다. 오류가 발생하면, JSON.parse(JSON.stringfy(_abi))형태로 사용해본다.
 
 ## 단계 4: 사용
 
-JSON에서 파일을 읽어서 ABI를 가져온다. bytecode는 API를 호출할 때 불필요하다.
+JSON에서 파일을 읽어서 ABI를 가져온다. 바이트코드는 API를 호출할 때 불필요하다. 사용할 때 지정하는 주소는 배포 후 얻은 주소값으로 변경한다. 앞에서 언급한 것처럼 JSON.parse(_abi)에서 오류가 발생하면, JSON.parse(JSON.stringfy(_abi))형태로 사용해본다. 
 
 우리가 호출한 ```getNow()```, ```timePased()```는 **call 함수**이다. 반면에 ```start()```는 **send 함수**이다.
 
 ```python
-[파일명: src/timerUse.js]
+[파일명: src\timerUse.js]
 var Web3=require('web3');
 var _abiBinJson = require('./Timer.json');      //importing a javascript file
 
@@ -1202,13 +1154,12 @@ var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8345"));
 contractName=Object.keys(_abiBinJson.contracts); // reading ['src/Timer.sol:Timer']
 //console.log("- contract name: ", contractName); //or console.log(contractName[0]);
 _abi=_abiBinJson.contracts[contractName].abi;
-//_abiArray=JSON.parse(JSON.stringify(_abi));
-_abiArray=JSON.parse(_abi);      //JSON parsing needed!!
+//_abiArray=JSON.parse(JSON.stringify(_abi));  
+_abiArray=JSON.parse(_abi);      // 오류가 발생하면 JSON.stringfy(_abi)를 사용할 것
 //_bin=_abiBinJson.contracts[contractName].bin;
-//console.log("- ABI: " + _abiArray);
-//console.log("- Bytecode: " + _bin);
 
-var timer = new web3.eth.Contract(_abiArray,"0x5dB5E509ff13A760345C0B58591E2a5DA6e1B2DE");
+// TimerDeployAbiBinFromFile.js를 실행시킨 후 나온 주소값으로 변경
+var timer = new web3.eth.Contract(_abiArray,"0x5dB5E509ff13A760345C0B58591E2a5DA6e1B2DE"); 
 
 async function doIt() {
     const accounts = await web3.eth.getAccounts();
@@ -1222,230 +1173,91 @@ async function doIt() {
 doIt()
 ```
 
-일정 시간이 지난 후 몇 번 반복시켜서 지나간 시간이 변동하는지 확인해 보자.
+일정 시간이 지난 후 몇 번 반복시켜 지나간 시간이 변동하는지 확인해 보자.
 
-지난 시간은 타임스탬프 signed 32-bit 형식으로 출력된다. 이 형식을 우리가 사용하는 시간 형식으로 변환해야 한다. https://www.epochconverter.com/
+지난 시간은 타임스탬프 signed 32-bit 형식으로 출력된다. 이 형식을 우리가 사용하는 시간 형식으로 변환해야 한다 (참조: https://www.epochconverter.com/ 에서 변환기능을 제공한다)
 
 
 > **타임스탬프 timestamp**
 
 > 유닉스에서 사용하는 타임스탬프이고 Long Integer 형식이다. 1970년 1월 1일 00:00:00 기준으로 몇 초나 지났는지 계산한다. 하루는 86400초, 60초 x 24시간 x 60분 기준이다. 윤초는 계산에서 제외해야 한다.
 
-REMIX에서 테스트하면, 올바르게 작동하지만 여기서는 Passed가 0으로 출력되고 있다. (start를 생성자에서 하면 이런 문제가 사라질지 해보자)
+REMIX에서 테스트하면, 올바르게 작동하지만 여기서는 Passed가 0으로 출력되고 있다. 비동기적 특성으로 인한 것으로 판단하며, 일정시간을 기다리고 출력해서 확인해보자 (```await 4000```).
 
 ```python
-pjt_dir> node src/timerUse.js
+pjt_dir> node src\timerUse.js
 
 Call from: 0xEb670169A5fcD2550035588A2ba3b45509703ABd
 Now:  1648957889
 Passed:  0
 ```
 
-```python
-pjt_dir> node src/timerUse.js
+# 연습문제
 
-- contract name:  src/Timer.sol:Timer
-1619427898
-4
+1. 컨트랙을 블록체인에 올려서 그 API를 사용하기 위해 해야 할 절차를 순서대로 배열하시오.
+
+* (1) 컨트랙을 코딩한다.
+* (2) 컨트랙을 컴파일 한다.
+* (3) 컨트랙 주소를 획득한다.
+* (4) ABI, 바이트코드를 생성한다.
+* (5) ABI와 컨트랙주소를 입력해서 객체를 생성한다.
+* (6) 컨트랙의 API를 호출한다.
+
+2. 컨트랙을 컴파일 한 후 획득해서 다음 배포단계에서 넘겨주어야 하는 것은 무엇인가? 모두 고르시오.
+
+(1) ABI (2) 바이트 코드 (3) gas (4) 계정 주소 (5) 컨트랙 주소
+
+3. 컴파일 한 후 획득해서 다음 사용단계에서 넘겨주어야 하는 것은 무엇인가? 위 보기에서 고르시오. 
+
+4. REMIX는 컴파일만 가능하다. OX로 답하시오.
+
+5. 컴파일한 후 획득하는 ABI의 형식은 무엇인가?
+
+(1) 문자열 (2) 자바스크립트 JSON (3) 바이트 코드
+
+6. 컨트랙을 배포하기 위해서 비용이 발생하는가? 힌다면, 비용 계산은 어떻게 하는가?
+
+7. gas와 gas price를 임의로 자신이 결정할 수 있는가?
+
+8. 계정에서 지출이 가능하도록 해제하는 것이 어느 경우 필요한가?
+
+(1) ganache (2) geth
+
+9. 계정해제를 해주지 않는 경우, 발생하는 오류는 무엇인가?
+
+10. 발생한 거래를 마이닝해주어야 하는 망은?
+
+(1) ganache (2) geth 사설망 (3) geth 공중망
+
+11. REMIX에서 배포할 수 없는 대상은?
+
+* (1) REMIX 자체의 가상머신
+* (2) 웹지갑 (예: MetaMask)
+* (3) 로컬의 RPC (예: geth@8445)
+* (4) 로컬의 운영체제
+
+12. call()과 send() 함수의 차이를 식별하시오.
+
+13. 책에서 정의한 마지막 '사용' 단계에서:
+
+* (1) 투표 컨트랙의 vote() 함수를 호출하는 코드를 작성하시오. 이 함수는 투표 기능이다.
+* (2) 투표 컨트랙의 getProposalNum() 함수를 호출하는 코드를 작성하시오. 이 함수는 투표안 번호를 읽는 기능이다.
+
+14. REMIX에서 버튼 기능이 활성화되면 색으로 식별할 수 있다.
+주황색은 어떤 종류의 기능에 주어지는 색인지 설명하시오.
+푸른색은 어떤 종류의 기능에 주어지는 색인지 설명하시오.
+
+15. 웹디앱은 중앙처리 방식인지 아닌지 선택하고, 이유를 설명하시오.
+
+16. 웹디앱에서 web3 라이브러리는 require('web3')로 읽어온다. OX로 답하시오.
+
+17. 솔리더티 버전을 0.8 가운데 가장 큰 것으로 사용하는 것으로 정하는 문법을 작성하시오.
+
+
+18.  전역변수 설정하는 자바스크립트 코드이다. 결과를 적으시오.
+
 ```
-
-nodejs example.sol use after deploy 배포
-
-![alt text](figures/6_nodejsWeb3ExampleUse.png "node web3 test run Example.sol")
-
-## 부록: ```geth --exec loadScript()```을 하기 위한 단계 2~4
-
-### 방법 1: 자바스크립트 파일로 내보내기
-
-아래 solc명령어는 앞서 사용했던 명령문과 다르지 않지만, 조금 복잡해졌다. 그 이유는, ```combined-json```을 사용한 컴파일 결과를 ```Timer.js``` 파일에 저장하고 있지만, 자바스크립트 파일로 만들기 위해 몇 가지 명령문을 사용하고 있다.
-
-```python
-pjt_dir> echo "exports._compiled=`solc --optimize --combined-json abi,bin,interface src/Timer.sol`" > src/Timer.js
-```
-
-위 명령문에 쓰인 echo, exports 그리고 부등호 (>)를 하나씩 배워보자.
-
-명령문 | 의미
------|-----
-리눅스 echo | echo는 부등호와 같이 쓰여, 부등호 우측으로 내용을 보내 파일을 생성하게 된다. 이 경우, solc 컴파일이 되고 --combined-json의 abi, bin, interface가 생성되어 자바스크립트 파일이 만들어지게 된다. 즉 ```src/Timer.sol```을 컴파일하고 그 결과를 자바스크립트 변수 **```_compiled```**로 저장하고, ```src/Timer.js``` 파일에 쓴다.
-```exports``` | 변수를 require()할 때 노출시키게 되어 사용할 수 있다.
-부등호 | 좌측 결과를 우측으로 보내라는 의미, 그러니까 echo의 결과를 src/Timer.js 파일을 생성하여 쓰게 된다. 참고로 부등호 2개 ">>"는 이미 기존에 있는 파일에 추가한다는 의미이다.
-
-```python
-pjt_dir> echo "exports._compiled=`solc --optimize --combined-json abi,bin,interface src/Timer.sol`" > src/Timer.js
-```
-
-> 주의: **윈도우 echo 명령어**
-
-> 윈도우는 운영체제가 달라, 조금 다르다는 점에 유의하자.
-> 윈도우에서는 echo 다음에 쓰이는 pipe ```"|"```, 변수값을 입력받는 "set /p" 명령어, 파일에 쓰고 ">", 파일에 붙여넣는 ">>" 명령어를 사용한다.
-
-```python
-pjt_dir> echo | set /p="exports.compiled=" > src\Timer.js
-```
-
-```python
-pjt_dir> solc --optimize --combined-json abi,bin,interface src/Timer.sol >> src\Timer.js
-```
-
-결과가 적힌 ```Timer.js``` 파일의 내용을 확인해 보자.
-
-그 내용이 아래와 같이 생성이 되어 있지 않으면 오류이다.
-cat은 내용을 출력하는 리눅스 명령어이다. 윈도우에서는 type을 대신 사용한다.
-
-
-```python
-pjt_dir> type src\Timer.js
-```
-
-    exports.compiled={"contracts":{"src/Timer.sol:Timer":{"abi":"[{\"inputs\":[],\"name\":\"getNow\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"start\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"timePassed\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]","bin":"608060405234801561001057600080fd5b5060af8061001f6000396000f3fe6080604052348015600f57600080fd5b5060043610603c5760003560e01c8063b4454253146041578063bbe4fd50146059578063be9a655514605f575b600080fd5b60476067565b60408051918252519081900360200190f35b6047606f565b60656073565b005b600054420390565b4290565b4260005556fea2646970667358221220f2dd49ad7ab0645d152793d9df9439e21492b4a9dd91cb1b9fcfd494293709bd64736f6c63430006010033"}},"version":"0.6.1+commit.e6f7d5a4.Windows.msvc"}
-
-
-파일확장자를 주었듯이, 이렇게 생성된 파일은 자바스크립트 파일이다. json파일이 아니다.
-
-* (1) **node에서 그 파일을 require**해서 사용할 수 있고, 
-* (2) 반면에 geth는 자바스크립트를 사용하면서도 불구하고 require() 함수를 사용해서 파일을 읽을 수 없다.
-
-### 단계 3: 자바스크립트 파일을 읽어서 geth 스크립트로 배포
-
-앞서 **--combined-json abi,bin, interface** 스위치로 자바스크립트 파일을 생성해 놓았다. 이 파일을 읽어 Geth에서 Deploy를 해보자.
-loadScript()함수는 Geth에서 자바스크립트를 읽어 들일 수 있다. 단 require() 함수를 지원하지 않아서, JSON파일을 읽어올 수 없다.
-
-require()가 아니, loadScript()를 사용하면, export 명령어가 작동하지 않는다.
-따라서 ```export``` 대신, ```var _compiled```라고 해주었다.
-리눅스에서는 다음과 같이 명령어가 단순하다.
-
-
-```python
-pjt_dir> echo "var _compiled=`solc --optimize --combined-json abi,bin,interface src/Timer.sol`" > src/TimerGeth.js
-```
-
-윈도우에서는 다음과 같이 한다.
-
-
-```python
-pjt_dir> echo | set /p="var _compiled=" > src\TimerGeth.js
-```
-
-
-```python
-pjt_dir> solc --optimize --combined-json abi,bin,interface src/Timer.sol >> src\TimerGeth.js
-```
-
-그리고 나서 Geth에서 읽을 수 있는지 확인해볼 수 있다.
-```
-pjt_dir> geth attach http://localhost:8345
-Welcome to the Geth JavaScript console!
-> loadScript('src/TimerGeth.js') <--- 조금 전 생성한 파일을 읽기
-true
-> _compiled                      <--- 파일의 변수 읽기 (solc 컴파일 결과)
-{
-  contracts: {
-    src/Timer.sol:Timer: {
-      abi: "[{\"inputs\":[],\"name\":\"getNow\",\"outputs\":...}]", 중간 생략
-      bin: "6080604052...10033"                                     중간 생략
-    }
-  },
-}
-> Object.keys(_compiled.contracts)   <--- 컨트랙 명 읽기
-["src/Timer.sol:Timer"]
-```
-
-
-
-```python
-[파일명: src/TimerDeployGeth.js]
-var primary = eth.accounts[0];
-console.log("primary ac: ",primary);
-console.log("balance: ",eth.getBalance(primary));
-loadScript('src/TimerGeth.js');
-contractName=Object.keys(_compiled.contracts); // reading ['src//Timer.sol:Timer']
-//_abi=JSON.parse(_compiled.contracts['src/Example.sol:Example'].abi)
-//_bin=_compiled.contracts['src/Example.sol:Example'].bin
-_abi=JSON.parse(_compiled.contracts[contractName[0]].abi)
-_bin=_compiled.contracts[contractName[0]].bin
-
-_class=eth.contract(_abi);
-console.log('bin code: ', _bin)
-//this async way does not work from the Jupyter Notebook
-_object=_class.new({from:primary,data:'0x'+_bin,gas:1000000}, function(err, contract) {
-  if (!err && contract.address)
-    console.log("contractAddress: ", contract.address);
-    console.log("transactionHash: ", contract.transactionHash);
-});
-```
-
-```python
-pjt_dir> geth --exec "loadScript('src/TimerDeployGeth.js')" attach http://localhost:8345
-
-
-    primary ac:  0xeb670169a5fcd2550035588a2ba3b45509703abd
-    balance:  999998252516772701039
-    bin code:  608060405234801561001057600080fd5b5060af8061001f6000396000f3fe6080604052348015600f57600080fd5b5060043610603c5760003560e01c8063b4454253146041578063bbe4fd50146059578063be9a655514605f575b600080fd5b60476067565b60408051918252519081900360200190f35b6047606f565b60656073565b005b600054420390565b4290565b4260005556fea2646970667358221220f2dd49ad7ab0645d152793d9df9439e21492b4a9dd91cb1b9fcfd494293709bd64736f6c63430006010033
-    transactionHash:  0x1eb79103f4919a5540d19d1fb301468739adf5ad4d94b352c283d06451d76dcb
-    true
-```
-
-마이닝하고나면 블록체인의 주소가 주어진다. **Jupyter Notebook에서는 geth async가 실행되지 않으므로, 주소가 출력이 되지 않는** 것으로 보인다. ```getTransactionReceipt()```의 결과를 보면 ```contractAddress```가 출력되어 있다.
-
-
-```python
-pjt_dir> geth --exec "eth.getTransactionReceipt('0x1eb79103f4919a5540d19d1fb301468739adf5ad4d94b352c283d06451d76dcb')" attach http://localhost:8345
-
-
-    {
-      blockHash: "0x67717ff2152812529c2171659bea8606dd2b8129d00b130b97fc387d7920bb4f",
-      blockNumber: 21,
-      contractAddress: "0x41918c2a0b147ccbf4dc1061311c48534722016a",
-      cumulativeGasUsed: 91227,
-      effectiveGasPrice: "0x49c3b7b",
-      from: "0xeb670169a5fcd2550035588a2ba3b45509703abd",
-      gasUsed: 91227,
-      logs: [],
-      logsBloom: "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-      status: "0x1",
-      to: null,
-      transactionHash: "0x1eb79103f4919a5540d19d1fb301468739adf5ad4d94b352c283d06451d76dcb",
-      transactionIndex: 0,
-      type: "0x2"
-    }
-```
-
-### 단계 4: web3.js가 아닌 eth를 사용
-
-위에서 Geth 배포가 성공하였다면, 이어서 API를 호출해보자.
-
-```python
-[파일명: src/TimerUseGeth.js]
-loadScript('src/TimerGeth.js')
-contractName=Object.keys(_compiled.contracts)
-_abi=JSON.parse(_compiled.contracts[contractName[0]].abi)
-//_abi=JSON.parse(_compiled.contracts['src/Example.sol:Example'].abi)
-var _contract=eth.contract(_abi);
-var _address="0xb5f064b6cf3d7b7497ab88a846819629d0c05136";
-var _instance=eth.contract(_abi).at(_address);
-console.log(_instance.getNow.call());
-_instance.start.sendTransaction({from:eth.accounts[0]});
-console.log(_instance.timePassed.call());
-```
-
-Geth 개인망에서 실행하는 경우, 마이닝이 뒤따라야 한다.
-여기서는 조금 있다 보게되는 node의 실행결과와 달리 ```timePassed```가 올바르게 출력이 되지 않고 있다.
-
-```python
-pjt_dir> geth --exec 'loadScript("src/TimerUseGeth.js")' attach http://localhost:8345
-1588492924
-0
-true
-```
-
-## 연습문제: 자바스크립트 전역변수 설정
-
-
-```python
-%%writefile src/hoistingTest.js
 var x = 11;
-
 function hoist() {
     x = 22;
 }
@@ -1453,464 +1265,25 @@ hoist();
 console.log(x);
 ```
 
-    Overwriting src/hoistingTest.js
+19. ```Hello``` 컨트랙을 수정해서 ```sayHello()``` 함수를 호출하면 ```"Hello, Snowman"```이 출력되도록 하세요.
+Solidity로 ```Hello.sol```을 수정하고, 컴파일하고, web3.js를 사용하여 node로 프로그램해서 배포한 후, ```sayHello()``` 출력하시오.
 
+20. ```greeter```의 ```greeting```의 데이터타입을 ```string```에서 ```bytes32```로 변경하시오.
 
+* (1) 노드에서 배포한 후, 인사하는 문자열을 설정하고 ```setGreeting("Hello World!")```, ```greet()```을 출력하시오.
 
-```python
-!node src/hoistingTest.js
-```
+* (2) ```string```에서 ```bytes32```로 변경하면 gas의 차이가 있는지 확인하시오.
+```string```을 ```byte32```로 변경하면 글자 수가 제한되므로, gas비가 산정되는지 확인하송.
 
-    22
+* (3) "Hello SMU"와 같은 String을 인자로 사용하면, 오류가 발생하는지 확인하시오.
+"Hello SMU"에 해당하는 16진수 "0x48656c6c6f20534d55"를 넘겨주면, 오류가 없어지는지 확인하시오.
 
+21. 7을 곱하는 컨트랙을 구현하시오.
+8을 인자로 넘기면, 7을 곱해서 56을 출력하면 된다.
+컨트랙 명은 ```Multiply7```, 함수는 ```function multiply(uint input) public pure returns (uint)```를 구현하시오.
+컨트랙은 Solidity로, 클라이언트는 노드로 프로그램하시오.
 
-## 연습문제: Hello Snowman 출력
-
-```Hello``` 컨트랙을 수정해서 ```sayHello()``` 함수를 호출하면 ```"Hello, Snowman"```이 출력되도록 하세요.
-
-- Solidity로 ```Hello.sol```을 코딩하고
-- solc로 컴파일하고
-- web3.js를 사용하여 node로 프로그램해서 배포
-- web3.js를 사용하여 node로 ```sayHello()``` 출력
-
-
-```python
-pragma solidity ^0.6.0;
-contract Hello {
-    function sayHello() pure public returns(string memory) {
-        return "Hello, Snowman";
-    }
-}
-```
-
-## 연습문제: byte32 타입의 Hello Greeter
-
-```greeter```의 ```greeting```의 데이터타입을 ```string```에서 ```bytes32```로 변경하세요.
-- ```string```에서 ```bytes32```로 변경하면 gas의 차이가 있는지 확인
-- 노드에서 배포
-- 노드에서 인사를 설정하고 ```setGreeting("Hello World!")```, ```greet()```을 출력하세요.
-
-
-```python
-%%writefile src/GreeterB.sol
-pragma solidity ^0.6.0;
-contract GreeterB {
-    bytes32 greeting;
-    constructor() public {
-        greeting = 'Hello';
-    }
-    function setGreeting(bytes32 _greeting) public {
-        greeting = _greeting;
-    }
-    function greet() view public returns (bytes32) {
-        return greeting;
-    }
-}
-```
-
-    Overwriting src/GreeterB.sol
-
-
-
-```python
-!solc --abi src/GreeterB.sol
-```
-
-    
-    ======= src/GreeterB.sol:GreeterB =======
-    Contract JSON ABI
-    [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[],"name":"greet","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"_greeting","type":"bytes32"}],"name":"setGreeting","outputs":[],"stateMutability":"nonpayable","type":"function"}]
-
-
-
-```python
-!solc --bin src/GreeterB.sol
-```
-
-    
-    ======= src/GreeterB.sol:GreeterB =======
-    Binary:
-    608060405234801561001057600080fd5b507f48656c6c6f00000000000000000000000000000000000000000000000000000060008190555060c7806100466000396000f3fe6080604052348015600f57600080fd5b506004361060325760003560e01c806350513b4f146037578063cfae3217146062575b600080fd5b606060048036036020811015604b57600080fd5b8101908080359060200190929190505050607e565b005b60686088565b6040518082815260200191505060405180910390f35b8060008190555050565b6000805490509056fea2646970667358221220569ff00f36b612b13c5f4906994b92b30bfbfc6ab25826e600a94a44d18ff11a64736f6c63430006010033
-
-
-```string```을 ```byte32```로 변경하면 글자 수가 제한되므로, gas비가 산정되는 것을 볼 수 있다.
-위에서는 infinite로 산정된 것을 기억해보자.
-
-
-```python
-!solc --gas src/GreeterB.sol
-```
-
-    
-    ======= src/GreeterB.sol:GreeterB =======
-    Gas estimation:
-    construction:
-       20107 + 39800 = 59907
-    external:
-       greet():	1013
-       setGreeting(bytes32):	20220
-
-
-
-```python
-!node src/getMyAddr.js
-```
-
-    [ '0x1a694B14D7e7eFf1F8A788E4F4f535aDfD164378',
-      '0xae52FF68C2525c0De82E9cdf73333B7653Ec7C60',
-      '0x06112A4dd2C07dF56c8c228fc84249D8401eFdF9',
-      '0xF4d70043D4bbC309265AB5050e16cbc234dFba86',
-      '0xf43CCed11cdb4978B19eD346eAEF16e5E294903C',
-      '0x86938655342a8DA12914e2B07129447B64c71B28',
-      '0xC74f7d1BEF7a15ACa7511c1a3dDba2D989b98304',
-      '0x5603a1F1e40214c59328d0F6c8d9e19c18f07F0d',
-      '0x3E632Cf0Bb1b966f7868Fde61C20CF520141546b',
-      '0x89771d784bd8D5aE0A165aa59537CFdAd389d7Ba' ]
-
-
-
-```python
-%%writefile src/GreeterBDeploy.js
-var Web3=require('web3');
-var web3;
-if (typeof web3 !== 'undefined') {
-    web3 = new Web3(web3.currentProvider);
-} else {
-    web3 = new Web3(new Web3.providers.HttpProvider("http://117.16.44.45:8345"));
-}
-var _abiArray=[{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[],"name":"greet","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"_greeting","type":"bytes32"}],"name":"setGreeting","outputs":[],"stateMutability":"nonpayable","type":"function"}];
-var _bin="608060405234801561001057600080fd5b507f48656c6c6f00000000000000000000000000000000000000000000000000000060008190555060c7806100466000396000f3fe6080604052348015600f57600080fd5b506004361060325760003560e01c806350513b4f146037578063cfae3217146062575b600080fd5b606060048036036020811015604b57600080fd5b8101908080359060200190929190505050607e565b005b60686088565b6040518082815260200191505060405180910390f35b8060008190555050565b6000805490509056fea2646970667358221220569ff00f36b612b13c5f4906994b92b30bfbfc6ab25826e600a94a44d18ff11a64736f6c63430006010033";
-var _contract = new web3.eth.Contract(_abiArray);
-//unlock the account with a password provided
-//web3.personal.unlockAccount(web3.eth.accounts[0],'password');
-_contract
-    .deploy({data:"0x"+_bin})
-    .send({from: "0x1a694B14D7e7eFf1F8A788E4F4f535aDfD164378", gas: 364124, gasPrice: '1000000000'})
-    .then(function(newContractInstance){
-        console.log(newContractInstance.options.address) // instance with the new contract address
-    });
-```
-
-    Writing src/GreeterBDeploy.js
-
-
-
-```python
-!node src/GreeterBDeploy.js
-```
-
-    0x6A107Ac45F0C516D865aD426aE356B19e967a2C5
-
-
-"Hello SMU"와 같은 String을 인자로 사용하면, 오류가 발생한다.
-반면에 "Hello SMU"에 해당하는 16진수 "0x48656c6c6f20534d55"를 넘겨주면,
-16진수 결과가 반환된다.
-
-
-```python
-%%writefile src/GreeterBUse.js
-var Web3=require('web3');
-var web3 = new Web3(new Web3.providers.HttpProvider("http://117.16.44.45:8345"));
-var _abiArray=[{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[],"name":"greet","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"_greeting","type":"bytes32"}],"name":"setGreeting","outputs":[],"stateMutability":"nonpayable","type":"function"}];
-var greeter = new web3.eth.Contract(_abiArray,"0x6A107Ac45F0C516D865aD426aE356B19e967a2C5");
-greeter.methods.greet().call().then(function(value) {console.log(value);});
-greeter.methods.setGreeting("0x48656c6c6f20534d55").send({from:"0x1a694B14D7e7eFf1F8A788E4F4f535aDfD164378",gas:100000});
-//ERROR greeter.methods.setGreeting("Hello SMU").send({from:"0x1a694B14D7e7eFf1F8A788E4F4f535aDfD164378",gas:100000});
-greeter.methods.greet().call().then(function(value) {console.log(value);});
-```
-
-    Overwriting src/GreeterBUse.js
-
-
-
-```python
-!node src/GreeterBUse.js
-```
-
-    0x48656c6c6f20534d550000000000000000000000000000000000000000000000
-    0x48656c6c6f20534d550000000000000000000000000000000000000000000000
-
-
-## 연습문제: Timer
-
-
-```python
-pragma solidity ^0.5.0;
-contract Timer {
-    uint256 startTime;
-    uint256 endTime;
-    function start() public {
-        startTime=now;
-    }
-    function stop() public {
-        endTime=now;
-    }
-    function timePassed() public view returns(uint256) {
-        return endTime-startTime;
-    }
-    function getNow() view public returns(uint) {
-        return now;
-    }
-}
-```
-
-## 연습문제: 7 곱하는 컨트랙
-
-### 문제
-
-어떤 수에 7을 곱하는 스마트 컨트랙을 만든다.
-
-
-### 해결
-
-컨트랙은 ```Multiply7```, 함수는:
-
-```python
-function multiply(uint input) public pure returns (uint)
-```
-
-- 컨트랙은 Solidity로, 클라이언트는 노드로 프로그램한다.
-
-- 8을 인자로 너기면, 7을 곱해서 56을 출력하세요.
-
-단계 | 방식 | 결과
------|-----|-----
-개발 | solidity | ok
-컴파일 | eth | ok
-배포 | _class.new | ok (transactionHash는 배포하지 않아도 생성)
-배포 | _class.new, async 방식 | nok  (geth console에서만 ok)
-생성 | async방식 | nok (geth console에서만 ok)
-
-* geth console에서의 사용 예.
-```
-> myMultiply=eth.contract(compiled.test.info.abiDefinition).at(_object.address)
-{
-  abi: [{
-      constant: false,
-      inputs: [{...}],
-      name: "multiply",
-      outputs: [{...}],
-      payable: false,
-      type: "function"
-  }],
-  address: "0x050c96a751f86a699a541001223b1ba7f5364d8d",
-  transactionHash: null,
-  allEvents: function(),
-  multiply: function()
-}
-> myMultiply.multiply.call(6)
-'42'
-```
-
-
-```python
-%%writefile src/Multiply7.sol
-pragma solidity ^0.5.0;
-
-contract Multiply7 {
-   function multiply(uint input) public pure returns (uint) {
-      return input * 7;
-   }
-}
-```
-
-    Overwriting src/Multiply7.sol
-
-
-
-```python
-!solc --gas --abi --bin src/Multiply7.sol
-```
-
-    
-    ======= src/Multiply7.sol:Multiply7 =======
-    Gas estimation:
-    construction:
-       93 + 38800 = 38893
-    external:
-       multiply(uint256):	291
-    Binary: 
-    608060405234801561001057600080fd5b5060c28061001f6000396000f3fe6080604052348015600f57600080fd5b50600436106045576000357c010000000000000000000000000000000000000000000000000000000090048063c6888fa114604a575b600080fd5b607360048036036020811015605e57600080fd5b81019080803590602001909291905050506089565b6040518082815260200191505060405180910390f35b600060078202905091905056fea165627a7a723058200bedf7a8055c5e72976164e3b7fb22ab8a88ab449168b60b5cf7ba2203eb8a240029
-    Contract JSON ABI 
-    [{"constant":true,"inputs":[{"name":"input","type":"uint256"}],"name":"multiply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"}]
-
-
-0
-
-The problem here is upon creation of your contract you do not send enough gas. By default it is 90000 ( for Geth ) or the results given after creating it are
-
-Transaction cost: 112321 gas. 
- Execution cost: 44689 gas.
-
-
-```python
-%%writefile src/Multiply7Deploy.js
-var Web3=require('web3');
-var web3;
-if (typeof web3 !== 'undefined') {
-    web3 = new Web3(web3.currentProvider);
-} else {
-    web3 = new Web3(new Web3.providers.HttpProvider("http://117.16.44.45:8445"));
-}
-var _abiArray=[{"constant":true,"inputs":[{"name":"input","type":"uint256"}],"name":"multiply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"}];
-var _bin="608060405234801561001057600080fd5b5060c28061001f6000396000f3fe6080604052348015600f57600080fd5b50600436106045576000357c010000000000000000000000000000000000000000000000000000000090048063c6888fa114604a575b600080fd5b607360048036036020811015605e57600080fd5b81019080803590602001909291905050506089565b6040518082815260200191505060405180910390f35b600060078202905091905056fea165627a7a723058200bedf7a8055c5e72976164e3b7fb22ab8a88ab449168b60b5cf7ba2203eb8a240029";
-var _contract = web3.eth.contract(_abiArray);
-//unlock the account with a password provided
-//web3.personal.unlockAccount(web3.eth.accounts[0],'password');
-var _instance=_contract.new({data:"0x"+_bin,from:web3.eth.accounts[0],gas:1000000}, function(err, contract) {
-    if (!err) {
-        console.log("contractAddress: ", contract.address);
-        console.log("transactionHash: ", contract.transactionHash);
-    }
-});
-```
-
-    Overwriting src/Multiply7Deploy.js
-
-
-* asynch 방식이라 마이닝이 될 때까지 기다려야 한다.
-
-
-```python
-!node src/Multiply7Deploy.js
-```
-
-    contractAddress:  undefined
-    transactionHash:  0x875388e6058ba088d323a3056260c55c504faf4d3aa807b45819a49cb976e0fd
-    contractAddress:  0x276c3db04f43197e5f67f79b65f7394cd8dd2627
-    transactionHash:  0x875388e6058ba088d323a3056260c55c504faf4d3aa807b45819a49cb976e0fd
-
-
-
-```python
-!node src/Multiply7Deploy.js
-```
-
-    contractAddress:  undefined
-    transactionHash:  0x7f9393b66a3b6f8a048eb6a6ae1d8ffbfa5c70471c819e252a3e1e83023748ad
-    contractAddress:  0xb0858506a4b677e06af14a02be37011bd4196cd5
-    transactionHash:  0x7f9393b66a3b6f8a048eb6a6ae1d8ffbfa5c70471c819e252a3e1e83023748ad
-
-
-* 위에서 만들어진 abi, contract address를 사용한다.
-* call은 로컬에서 실행하기 때문에, hash값도 없고 gas도 필요하지 않다. 블록체인에 기록되지 않는 거래이다.
-* sendTransaction으로 실행하면 블록체인에 기록된다.
-
-* transactionHash
-    * at()으로 생성하면, 거래가 발생하지 않았으므로 (주소에서 컨트랙을 생성했다), transactionHash는 null
-    * 계정에서는 여러 거래를 발생하므로, 거래를 확인하려면 id인 transactionHash가 필요.
-
-
-```python
-%%writefile src/Multiply7Use.js
-var Web3=require('web3');
-var web3 = new Web3(new Web3.providers.HttpProvider("http://117.16.44.45:8445"));
-var _abiArray=[{"constant":true,"inputs":[{"name":"input","type":"uint256"}],"name":"multiply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}];
-var _contract = web3.eth.contract(_abiArray);
-var multiply7 = _contract.at("0x276c3db04f43197e5f67f79b65f7394cd8dd2627");
-console.log("multiply7: ", multiply7.multiply.call(6).toNumber());
-```
-
-    Overwriting src/Multiply7Use.js
-
-
-
-```python
-!node src/Multiply7Use.js
-```
-
-    multiply7:  42
-
-
-* geth console이 아니라서 async nok. 따라서 거래가 대기 상태.
-    * input은 소스의 bin code
-    * from은 전송 계정
-    eth.getBlock("pending", true).transactions;
-    
-```
-현재 대기 거래 건수를 확인할 수 있다.
-> txpool.status
-{
-  pending: 1,
-  queued: 0
-}
-
-대기가 일정 시간 걸리면, 마이닝을 직접한다. 완료되면 주소가 생성된다.
-> miner.start(1); admin.sleepBlocks(1); miner.stop();
-true
-> eth.pendingTransactions 대기 거래 처리됨 (블럭체인으로 넣어짐)
-> _object
-{
-  address: '0x837b3d973f29559e8edab1abd4c0fec6e1445d12',
-  transactionHash: '0xf48e7e262bae6566f8592c5a532e389854782130a995c75765829657ce17e6ff',
-  allEvents: function (),
-  multiply: function ()
-}
-```
-
-
-```python
-!geth --exec 'eth.pendingTransactions;' attach http://117.16.44.45:8445
-```
-
-    [{
-        blockHash: [1mnull[0m,
-        blockNumber: [1mnull[0m,
-        from: [32m"0x2e49e21e708b7d83746ec676a4afda47f1a0d693"[0m,
-        gas: [31m90000[0m,
-        gasPrice: [31m20000000000[0m,
-        hash: [32m"0x7ccd5dc3a6498394320201fe09f9553cd5ce4aaa957363a6d2baca4be8309bd9"[0m,
-        input: [32m"0x6060604052346000575b60458060156000396000f3606060405260e060020a6000350463c6888fa18114601c575b6000565b346000576029600435603b565b60408051918252519081900360200190f35b600781025b91905056"[0m,
-        nonce: [31m59[0m,
-        r: [32m"0xb35022f42f760331f2d2e0bb5530d05948da599b3b03510c2007a86eecf147b9"[0m,
-        s: [32m"0x484e7f295f9999dd20da97c569c99bd34f0023260677ff46a2662c7ef9c8dcce"[0m,
-        to: [1mnull[0m,
-        transactionIndex: [1mnull[0m,
-        v: [32m"0x1c"[0m,
-        value: [31m0[0m
-    }]
-
-
-* 위 transactionHash를 가지고 transactionReceipt()를 실행하여 주소를 사용한다.
-    * 주소는 마이닝 후 생성된다. 마이닝하지 않으면 주소는 null
-    * transactionHash
-    "0x7ccd5dc3a6498394320201fe09f9553cd5ce4aaa957363a6d2baca4be8309bd9"
-    * contractAddress: "0x13581bb3c23492b722f230e967a0232741ccd247"
-    * 주소의 bin code도 확인할 수 있다.
- 
-
-
-```python
-!geth --exec 'eth.getTransactionReceipt("0x7ccd5dc3a6498394320201fe09f9553cd5ce4aaa957363a6d2baca4be8309bd9");' attach http://117.16.44.45:8445
-```
-
-    {
-      blockHash: [32m"0x62c6f4ea5b26f1efbbbfa78dac40b29a6f8a9c3c14510b98301e8c16056a060e"[0m,
-      blockNumber: [31m61711[0m,
-      contractAddress: [32m"0x13581bb3c23492b722f230e967a0232741ccd247"[0m,
-      cumulativeGasUsed: [31m40597[0m,
-      from: [32m"0x2e49e21e708b7d83746ec676a4afda47f1a0d693"[0m,
-      gasUsed: [31m40597[0m,
-      logs: [],
-      logsBloom: [32m"0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"[0m,
-      root: [32m"0xdf63ca69b3ac58bf423229d501dff8897306e2b0c9a821c2fa6b4f19c980c98c"[0m,
-      to: [1mnull[0m,
-      transactionHash: [32m"0x7ccd5dc3a6498394320201fe09f9553cd5ce4aaa957363a6d2baca4be8309bd9"[0m,
-      transactionIndex: [31m0[0m
-    }
-
-
-
-```python
-!geth --exec 'eth.getCode("0x13581bb3c23492b722f230e967a0232741ccd247");' attach http://117.16.44.45:8445
-```
-
-    [32m"0x606060405260e060020a6000350463c6888fa18114601c575b6000565b346000576029600435603b565b60408051918252519081900360200190f35b600781025b91905056"[0m
-
-
-
-
-## 연습문제: 계수기와 Timer 콘트랙
+22. 계수기와 Timer 컨트랙
 
 * (1) Counter 컨트랙을 구현하세요. add(), subtract(), getCount() 함수를 구현하고, 여기에 호출하는 시점을 출력하기 위해 다음 함수를 추가하세요. 강의자료의 Counter와 Timer를 참조하세요.
 ```
@@ -1929,201 +1302,40 @@ call to Counter.getTimeCalled
 CALL [call]from: 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4to: Counter.getTimeCalled()data: 0xc45...7a0a4
 ```
 
-* (2) 로컬에서 컴파일하세요. 파일로 abi, bytecode를 작성하세요.
-* (3) 파일로부터 abi, bytecode를 읽어서 배포하세요. 배포부터 geth 8445로 연결하여 node로 하세요 (ganache 8345로 하면 감점).
+* (2) 로컬에서 컴파일하세요. 파일로 abi, 바이트코드를 작성하세요.
+* (3) 파일로부터 abi, 바이트코드를 읽어서 배포하세요. 배포부터 geth 8445로 연결하여 node로 하세요 (ganache 8345로 하면 감점).
 * (4-1) 배포된 주소로 부터 객체를 생성하고, 바로 계수와 호출시점을 출력하세요.
 * (4-2) 계수를 1회 증가시키세요. 증가한 후, 증가된 계수와 호출시점을 출력하세요.
 * (4-3) 위 (4-2)를 1회 반복하세요.
 
-끝
-
-
-```python
-//SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
-contract Counter {
-    uint256 count;
-    uint256 timeCalled;
-
-    constructor() {
-        count=0;
-        timeCalled=0;
-    }
-    function add() public {
-        count++;
-        setTimeCalled();
-    }
-    function subtract() public {
-        count--;
-        setTimeCalled();
-    }
-    function getCount() public view returns (uint256) {
-        return count;
-    }
-    function setTimeCalled() internal {
-        timeCalled=block.timestamp;
-    }
-    function getTimeCalled() view public returns(uint256) {
-        return timeCalled;
-    }
-}
-```
-
-## 연습문제: 거듭제곱 컨트랙
-
-### 문제
-
+23. 거듭제곱 컨트랙을 구현하시오. 
 아래 (2) ~ (6)은 노드로 프로그램하세요.
 
-(1) 2의 거듭제곱을 계산하는 컨트랙을 프로그램하세요.
-8을 입력하면 256, 32는 4294967296을 출력합니다.
-컨트랙은 Math.sol로 저장하고, 함수는 powerOf2로 명명해서 프로그램 작성
-power를 계산하려면, 반복문으로 하지 않는다. ** 연산자로 계산합니다.
-예: 2**2로 코딩하면 4를 얻는다.
-	컴파일해서 abi, gas, bin을 화면에 출력한다.
-(2) ganache 배포
-(3) ganache 사용 (8과 32를 입력해서 결과 출력)
-(4) 웹페이지 powerOf2.html을 작성 (32를 입력하고, 결과를 화면에 출력하고 캡쳐해서 별도 제출)
-(5) 파일에서 ABI, BIN을 읽고 배포하고 사용
-(6) geth에서 배포하고 사용. geth@8446, geth@8445 가운데 선택.
+* (1) 2의 거듭제곱을 계산하는 컨트랙을 프로그램하시오.
+예를 들어, 8을 입력하면 256, 32는 4294967296을 출력하게 된다.
+컨트랙은 Math.sol로 저장하고, 함수는 powerOf2로 명명해서 프로그램 작성한다.
+power를 계산하려면, 반복문으로 하지 않는다. ** 연산자로 계산한다.
+컴파일해서 abi, gas, bin을 화면에 출력한다.
+* (2) ganache@8345 배포, 파일에서 ABI, BIN을 읽으시오.
+* (3) ganache@8345에서 8과 32를 입력해서 결과 출력하시오.
+* (4) 웹페이지 powerOf2.html을 작성 (32를 입력하고, 결과를 화면에 출력)
+* (5) geth에서 배포하고 사용. geth@8446, geth@8445 가운데 선택.
 
-
-### 결과
-uint256 e = uint256(a)**uint256(b);
-
-
-```python
-%%writefile src/Power.sol
-pragma solidity ^0.6.0;
-
-contract Math {
-   function powerOf2(uint p) public pure returns (uint) {
-      return 2 ** p;
-   }
-}
-```
-
-    Overwriting src/Power.sol
-
-
-
-```python
-!solc --optimize --combined-json abi src/Power.sol > src/PowerABI.json
-```
-
-
-```python
-!cat src/PowerABI.json
-```
-
-    {"contracts":{"src/Power.sol:Math":{"abi":"[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"p\",\"type\":\"uint256\"}],\"name\":\"powerOf2\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"pure\",\"type\":\"function\"}]"}},"version":"0.6.1+commit.e6f7d5a4.Linux.g++"}
-
-
-
-```python
-!solc --optimize --combined-json bin src/Power.sol > src/PowerBIN.json
-```
-
-
-```python
-!cat src/PowerBIN.json
-```
-
-    {"contracts":{"src/Power.sol:Math":{"bin":"6080604052348015600f57600080fd5b5060958061001e6000396000f3fe6080604052348015600f57600080fd5b506004361060285760003560e01c8063bdacc0cf14602d575b600080fd5b604760048036036020811015604157600080fd5b50356059565b60408051918252519081900360200190f35b60020a9056fea264697066735822122012bb3f261b93f67b95de6d9316162d32278824a1da1610ce402da6a4cad966cd64736f6c63430006010033"}},"version":"0.6.1+commit.e6f7d5a4.Linux.g++"}
-
-
-
-```python
-%%writefile src/PowerDeployAbiBinFromFile.js
-var Web3=require('web3');
-var _abiJson = require('./PowerABI.json');
-var _binJson = require('./PowerBIN.json');
-
-var web3;
-if (typeof web3 !== 'undefined') {
-    web3 = new Web3(web3.currentProvider);
-} else {
-    web3 = new Web3(new Web3.providers.HttpProvider("http://117.16.44.45:8345"));
-}
-
-contractName=Object.keys(_abiJson.contracts); // reading ['src//Power.sol:Power'];
-console.log("- contract name: ", contractName[0]); //or console.log(contractName);
-_abiArray=JSON.parse(_abiJson.contracts[contractName].abi);    //JSON parsing needed!!
-_bin=_binJson.contracts[contractName].bin;
-console.log("- ABI: " + _abiArray);
-console.log("- Bytecode: " + _bin);
-
-
-var _contract = new web3.eth.Contract(_abiArray);
-//unlock the account with a password provided
-//web3.personal.unlockAccount(web3.eth.accounts[0],'password');
-_contract
-    .deploy({data:"0x"+_bin})
-    .send({from: "0x73A5Abb02eA6857BAeD2CDE51e4678d6f16C9593", gas: 364124, gasPrice: '1000000000'})
-    .then(function(newContractInstance){
-        console.log("- Contract Address: "+newContractInstance.options.address) // instance with the new contract address
-    });
-```
-
-    Writing src/PowerDeployAbiBinFromFile.js
-
-
-
-```python
-!node src/PowerDeployAbiBinFromFile.js
-```
-
-
-```python
-%%writefile src/PowerUse.js
-var Web3=require('web3');
-var _abiJson = require('./PowerABI.json');
-var _binJson = require('./PowerBIN.json');
-
-var web3 = new Web3(new Web3.providers.HttpProvider("http://117.16.44.45:8345"));
-
-contractName=Object.keys(_abiJson.contracts); // reading ['src//Power.sol:Power'];
-console.log("- contract name: ", contractName[0]); //or console.log(contractName);
-_abiArray=JSON.parse(_abiJson.contracts[contractName].abi);    //JSON parsing needed!!
-//_bin=_binJson.contracts[contractName].bin;
-var power = new web3.eth.Contract(_abiArray,"0x50Ce5765E82A10aB0Fa0f3A13AacbCe0Db1D112A");
-power.methods.powerOf2(8).call().then(function(value) { console.log("2^8: "+value); });
-power.methods.powerOf2(32).call().then(function(value) { console.log("2^32: "+value); });
-```
-
-    Overwriting src/PowerUse.js
-
-
-
-```python
-!node src/PowerUse.js
-```
-
-
-
-
-```python
-
-```
-
-## 연습문제: Counter 짝수, 홀수 판별
-
-Counter 콘트랙의 계수가 홀수인지, 짝수인지 판별하는 함수 ```isEven()```을 추가하세요.
-geth 8445에서 실행하세요.
+24. Counter 콘트랙의 계수가 홀수인지, 짝수인지 판별하는 함수 ```isEven()```을 추가하세요.
+geth@8445에서 실행하세요.
 
 * Counter를 0부터 3까지 증가 (REMIX 우측 하단 함수실행 로그 붙여넣기)
 * counter가 짝수일 때, isEven()을 실행해서 결과를 출력 (timestamp 포함)
 
-## 연습문제: Counter 4 판별
+25. Counter가 4이면 알려주는 컨트랙을 구현하시오.
 
 REMIX에서 배포하고, 아래를 노드로 프로그램하세요
 * Counter를 0부터 3까지 증가
 * counter가 4일 때, isEven()을 실행해서 결과를 출력
 
+26. Counter의 다른 세션에서의 값을 확인해보시오.
+노드로 배포하고, 아래를 프로그램하세요.
 
-## 연습문제: Counter 다른 세션에서의 값 확인
-
-노드로 배포하고, 아래를 노드로 프로그램하세요.
 * counter를 조회하고, 위 REMIX에서 배포한 콘트랙의 counter의 수와 같은지 확인.
 * Counter를 0부터 3까지 증가
 * 노드 세션을 새로 열어, Counter를 하나 더 증가시키려고 할 때 0부터 시작하는지 또는 전 세션에서 끝낸 counter의 수가 남아 있는지 출력

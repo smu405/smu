@@ -79,5 +79,15 @@ https://gitter.im/smu405/e12
 ```python
 function (*int x*) {internal|external} [pure|constant|view|payable] [returns (return types)] varName;
 ```
+* 코드의 한글 - 사용자가 값을 제공해야 하는 정보
+* 커멘트 - 도움말 기호로 시작하거나 한글로 적음
 
 
+프롬프트
+geth>
+node>
+>>> python
+pjt_dir>
+
+geth@8445
+gananche
