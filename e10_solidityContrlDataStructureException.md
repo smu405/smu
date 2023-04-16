@@ -371,8 +371,6 @@ REMIX에서 다음을 하나씩 해보자.
 * 배포되고 만들어진 속성 및 함수 버튼들을 눌러 결과가 출력되는지 보자.
 * setHello() 함수 버튼을 누르면 화면 우측 하단을 잘 살펴보자. 특히 굵은 글씨 "logs"를 누르면 하단에 표가 펼쳐지고 이벤트 로그를 볼 수 있다.
 
-![alt text](figures/sol_eventREMIX.png "geth download page")
-
 ### 단계 4: 사용
 
 이벤트는 거래가 마이닝되어 블럭에 포함되어야만 발생하고, 로그에 저장이 된다. 
@@ -594,7 +592,9 @@ Event fired: {"0":"Hello World!","_s":"Hello World!"}
 
 블록체인에서 고정하지 않는 seed를 생성하기 위해서는 항상 변동하는 전역변수의 timestamp, difficulty를 활용해야 한다. 이들 값을 ```keccak256(abi.encodePacked(block.timestamp, block.difficulty))```하면, 256비트의 해시값으로 만들어 준다. abi.encodedPacked는 인코딩(encoding)방식을 말한다. 예를 들면 앞서 배웠던 ABI 인터페이스에서 자릿수에 맞춰 0으로 채우는 작업(zero padding)을 했으나 abi.encodedPacked 방식은 이를 하지 않는다.
 
-rand0and250() 함수는 0~250 사이의 무작위 수를 생성하는데, 251의 나머지 연산(%)을 이용해 그 범위의 수가 생성되도록 한다. 마찬가지로 rand0and9() 함수는 10의 나머지로 0~9, rand0and2()는 3의 나머지 연산으로 0~3 범위의 수를 생성하고 있다.
+* rand0and250() 함수는 0 - 250 사이의 무작위 수를 생성하는데, 251의 나머지 연산(%)을 이용해 그 범위의 수가 생성되도록 한다.
+* 마찬가지로 rand0and9() 함수는 10의 나머지로 0 - 9,
+* rand0and2()는 3의 나머지 연산으로 0 - 3 범위의 수를 생성하고 있다.
 
 지금까지는 무작위 수 하나를 생성하기 때문에 같은 수가 생성되는 걱정을 할 필요가 없다. 그러나 일련의 무작위 수를 생성하기 위해서는 timestamp나 difficulty 같은 전역변수 값이 짧은 시간에 바뀌지 않는다는 점에 유의해야 한다. 매 번 다른 수가 생성되도록 하려면, 약간의 트릭을 써서 카운터 값을 더해주도록 ```uint8(uint256(keccak256(abi.encodePacked(block.timestamp + i, block.difficulty)))``` 코딩하고 있다.
 
@@ -922,7 +922,7 @@ function getMathAbove70() view public returns(int[] memory) {
 
  함수 명                           | 설명                                            | 입출력
  --------------------------------- | -----------------------------------------------|--------- 
- ```getDynamicArrMemory()``` | 함수에서 동적 배열을 선언하고 데이터를 채우고 반환. 결과는 | 출력 ```[0, 1, 2]```
+ ```getDynamicArrMemory()``` | 함수에서 동적 배열을 선언하고 데이터를 채우고 반환 | 출력 ```[0, 1, 2]```
  ```getStringDynamicArrMemory()``` | ```string``` 동적 배열의 입력, 반환 | 출력 ```["Seoul", ]```
  ```setCities2()``` | storage 배열의 입력 및 반환 | 입출력 없다
  ```setCities3()``` | storage 배열의 반환 | 입력 ```["NY", "Seoul", "LA"]```
@@ -1127,8 +1127,10 @@ REMIX에서 버튼 테스트까지 모두 해보자.
 ```
 
 단순하게 하나의 값뿐만 아니라, 여러 타입의 자료구조인 struct을 가질 수도 있다.
-줄2~7은 주소 키에 대해 struct을 매핑하고 있다.
-그리고 addCustomer() 함수에서 값을 입력하고 있다. 줄11~14와 같이 하나씩 또는 줄16~17에서 보듯이 한꺼번에 입력해도 된다.
+
+- 줄2 - 7은 주소 키에 대해 struct을 매핑하고 있다.
+- 줄9 addCustomer() 함수에서 값을 입력하고 있다.
+- 줄11 - 14와 같이 하나씩 또는 줄16 - 17에서 보듯이 한꺼번에 입력해도 된다.
 
 ```python
 줄01 contract Customer {
@@ -1439,9 +1441,9 @@ try문에서 예외가 발생하면 catch에서 처리할 수 있다. division()
 
 다음과 같이 try 구문에서 발생한 예외를 포착 catch할 수 있다.
 
-- catch Error(string memory reason) { ... } : revert 나 require를 통해 생성된 에러
-- catch Panic(uint errorCode) { ... } : assert를 통해 생성된 에러 (예: 0으로 나누면 오류코드 0x12를 반환)
-- catch(bytesmemoryLowLevelData) { ... } : 로우 레벨 에러
+- catch Error(string memory reason) { ... } : ```revert``` 또는 ```require```를 통해 생성된 오류
+- catch Panic(uint errorCode) { ... } : ```assert```를 통해 생성된 오류 (예: 0으로 나누면 오류코드 0x12를 반환)
+- catch(bytesmemoryLowLevelData) { ... } : 기계 수준의 오류
 - catch {...} 
 
 ```
@@ -1676,19 +1678,19 @@ contract AttackReentrancy {
 
 REMIX에서 컴파일, 배포하면서 재진입공격을 재현해보자.
 
-- 1. 배포 B.
+- (1) 배포 B.
 
-- 2. 배포 A. A의 생성자에 배포된 B의 주소를 복사해서 붙여넣어야 한다.
+- (2) 배포 A. A의 생성자에 배포된 B의 주소를 복사해서 붙여넣어야 한다.
 
-- 3. B에 1 ether를 입금. value: 1 ether를 입력하고 deposit 버튼을 누르면 된다.
+- (3) B에 1 ether를 입금. value: 1 ether를 입력하고 deposit 버튼을 누르면 된다.
 그리고 잔고를 확인하면 1 ether를 확인할 수 있다.
 
-- 4. A에게 출금을 요청한다. withdraw() 함수는 1 ether 입금하면서 호출되니까 value: 1 ether를 잊지말자.
+- (4) A에게 출금을 요청한다. withdraw() 함수는 1 ether 입금하면서 호출되니까 value: 1 ether를 잊지말자.
 
-- 5. 그러면 잔고의 변화는 어떨까?
+- (5) 그러면 잔고의 변화는 어떨까?
 
-    - 5-1. A의 잔고는 1을 예상. A -> B -> A 의 순서로 1 ether가 입출금되니 A는 1, B도 1이어야 맞다.
-    - 5-2. 그러나 실제는 A의 잔고는 2, B의 잔고는 0. 재진입공격으로 A는 1을 입금한 후 2가 되고, B는 1을 도둑질당함.
+    - A의 잔고는 1을 예상. A -> B -> A 의 순서로 1 ether가 입출금되니 A는 1, B도 1이어야 맞다.
+    - 그러나 실제는 A의 잔고는 2, B의 잔고는 0. 재진입공격으로 A는 1을 입금한 후 2가 되고, B는 1을 도둑질당함.
 
 다음 로그를 살펴보면 어떻게 이런 결과가 나왔는지 쉽게 이해할 수 있다. 순서대로 따라가 보자.
 A의 입금 및 출금요청 ---> B의 출금 ---> A의 receive ---> B의 출금 ---> A의 receive ---> 잔고를 모두 빼가는 결과, 즉 A.receive()의 재진입으로 B의 잔고가 바닥날 때까지 빼가고 있다.

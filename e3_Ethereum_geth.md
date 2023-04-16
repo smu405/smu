@@ -99,7 +99,7 @@
 
 메인 네트워크에 접속해 보자. 그렇게 되면 자신의 CPU, 메모리 자원이 할당되어 사용되게 되고, 이로 인해 컴퓨터가 느려질 수 있다. 블록체인의 동기화와 마이닝에 컴퓨터의 자원이 소모될 수 있다. 
 
-메인 네트워크에 연결해서 블록체인에 있는 블록 정보를 내려 받아(download) 내 컴퓨터에 저장하는 것을 동기화(synchronization)라고 한다. 메인 네트워크의 블록체인 규모가 커서 동기화하려면 시간이 꽤 걸릴 수 있다. 그래서 전체 또는 일부만 동기화시키는 방법을 지정할 수 있다. 동기화 방식은 스위치 ```--syncmode```로 full, fast, snap, light 방식 중 선택해서 지정할 수 있다. 
+메인 네트워크에 연결해서 블록체인에 있는 블록 정보를 내려받아 자신의 컴퓨터에 저장하는 것을 동기화(synchronization)라고 한다. 메인 네트워크의 블록체인 규모가 커서 동기화하려면 시간이 꽤 걸릴 수 있다. 그래서 전체 또는 일부만 동기화시키는 방법을 지정할 수 있다. 동기화 방식은 스위치 ```--syncmode```로 full, fast, snap, light 방식 중 선택해서 지정할 수 있다. 
 
 * full 옵션(full sync)
 블록체인에서 가장 첫 번째로 생성되는 genesis block부터 시작해서 모든 거래를 내려받고 검증하는 것을 full sync라고 한다.
@@ -571,19 +571,20 @@ geth 사설망이 시작된 후에 사설망에 접속해본다.
 
 ip, rpc, ws에 다음과 같이 연결할 수 있다. 
 ```python
-geth attach ipc:/some/custom/path 
-geth attach http://localhost:8445
+geth attach ipc:/some/custom/path
+geth attach http://localhost:8445  <--- 책에서는 주로 http 연결을 한다
 geth attach ws://localhost:8446
 ```
+
+여기서는 잘 쓰지 않지만, 다음 화면은 ipc로 연결하고 있다.
+
+![alt text](figures/1_gethIPC.png "geth IPC")
 
 geth console에서는 다음에 보인 것처럼 실행해도 된다.
 
 ```python
 geth> admin.startRPC("ip.address",8445,"*","web3,db,net,eth")
 ```
-
-![alt text](figures/1_gethIPC.png "geth IPC")
-
 
 접속이 올바르게 되었는지 geth 콘솔 프롬프트에서 확인할 수 있다.
 ```python

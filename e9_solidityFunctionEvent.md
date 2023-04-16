@@ -509,8 +509,8 @@ function fireEvent() {
 
 1) 클라이언트, 즉 노드에서 이벤트를 생성하고 이벤트 발생을 리스닝한다.
 
-```python
-node> var myEvent = myInstance.events.PrintLog({from: web3.eth.accounts[0]}, {
+```javascript
+var myEvent = myInstance.events.PrintLog({from: web3.eth.accounts[0]}, {
     fromBlock: 0,     //시작 블록 수
     toBlock: 'latest' //끝 블록 수
   });
@@ -524,7 +524,7 @@ node> var myEvent = myInstance.events.PrintLog({from: web3.eth.accounts[0]}, {
 
 2) 또는 한 명령어로 합쳐서 다음과 같이 이벤트 발생을 확인할 수 있다.
 
-```
+```javascript
 var myEvent = myInstance.events.PrintLog({fromBlock: 0}, fromfunction(error, event) {
     if (!error)
         console.log(event);
@@ -538,7 +538,7 @@ var myEvent = myInstance.events.PrintLog({fromBlock: 0}, fromfunction(error, eve
 지금까지 우리가 해왔던 것과 다를 것이 없다. 보통 컨트랙의 함수를 호출하는 식으로 ```_instance.MyFunction()``` 이렇게 하면 된다.
 
 ```python
-node> myInstance.fireEvent(); // 이벤트를 발생시킴
+myInstance.fireEvent(); // 이벤트를 발생시킴
 ```
 
 ### 단계 5. 이벤트 발생 확인(watch) 중지
@@ -547,7 +547,7 @@ node> myInstance.fireEvent(); // 이벤트를 발생시킴
 리스닝을 중단하려면 다음과 같이 한다.
 
 ```python
-node> myEvent.stopWatching();
+myEvent.stopWatching();
 ```
 
 생각해 보면, 대화식에만 중단이 의미가 있고, 일괄 실행하는 경우에는 그렇지 않다. 일괄실행은 한 프로그램에 이벤트의 리스닝과 중단 명령어가 모두 포함되어 있으니, 리스닝하다 곧 이어 중단하는 명령이 실행되어 본래의 의도가 무색하게 된다.
@@ -850,7 +850,7 @@ async function doIt() {
     const balanceAfter = await web3.eth.getBalance(accounts[0]);
     console.log("Balance after: " + balanceAfter);
     console.log("Balance diff: " + (balanceBefore - balanceAfter));
-    process.exit(1); //force exit to disconnect websocket
+    //process.exit(1); //강제로 웹소켓을 종료한다
 }
 
 doIt()
@@ -1037,7 +1037,7 @@ async function doIt() {
     const balanceAfter = await web3.eth.getBalance(accounts[0]);
     console.log("Balance after: " + balanceAfter);
     console.log("Balance diff: " + (balanceBefore - balanceAfter));    
-    process.exit(1); //force exit to disconnect websocket
+    //process.exit(1); //강제로 웹소켓을 종료한다
 }
 
 doIt()
@@ -1203,7 +1203,7 @@ async function doIt() {
     const balanceAfter = await web3.eth.getBalance(accounts[0]);
     console.log("Balance after: " + balanceAfter);
     console.log("Balance diff: " + (balanceBefore - balanceAfter));
-    process.exit(1); //force exit to end waiting
+    //process.exit(1); //force exit to end waiting
 }
 
 doIt()
@@ -1353,8 +1353,9 @@ REMIX에서 실행해보자. 실행하는 순서는:
 - 잔고 버튼으로 Receiving의 잔고가 11, Sending의 잔고는 100을 확인한다.
 
 아래 코드 (1)과 (2)를 보자. 이를 번갈아 가며 실행해서 작동하는 방식을 이해하도록 하자.
-(1)은 msg.data가 비어있다. 이 경우 Receving의 어느 함수가 호출될까 receive()일까, fallback()일까? receive()가 호출된다.
-(2)는 msg.data가 비어있지 않다. 존재하지 않는 함수 nonExistingFn()을 호출하고 있다. 즉 데이터는 있다는 뜻이다. 이 경우에는 fallback()이 호출된다.
+
+- (1)은 msg.data가 비어있다. 이 경우 Receving의 어느 함수가 호출될까 receive()일까, fallback()일까? receive()가 호출된다.
+- (2)는 msg.data가 비어있지 않다. 존재하지 않는 함수 nonExistingFn()을 호출하고 있다. 즉 데이터는 있다는 뜻이다. 이 경우에는 fallback()이 호출된다.
 
 ```
 [파일명: src/FallbackTest3.sol]
