@@ -49,14 +49,22 @@ NFT는 tokenURI가 있어야 한다. 디지털 자산에 대한 JSON 메타데�
 
 # 3. IERC721
 
-NFT를 만들려면 ERC721 표준을 따라야 한다. IERC721는 인터페이스로서 ERC721 구현에 필요한 함수와 이벤트를 가지고 있다. ERC721 코드는 IERC721을 상속하여 코딩하면 쉽게 안전한 코드를 작성할 수 있다. 여기서는 함수명만 적고, 설명은 인터페이스를 구현한 ERC721에서 곧 이어진다. 
+NFT를 생성하기 위한 표준은 ERC-721에 정의되어 있고, ERC721은 이를 준수하는 스마트 계약을 말한다.
+
+인터페이스 "I"가 붙은 IERC721은 ERC721 구현에 필요한 함수와 이벤트를 선언하고 있다. ERC721는 IERC721을 상속하면 쉽게 안전한 코드를 작성할 수 있다.
+
+주요 기능은 다음과 같고, 설명은 인터페이스를 구현한 ERC721에서 곧 이어진다. 
+
+- **토큰 발행**: 새로운 토큰을 발행
+- **토큰 소유**: 특정 토큰의 소유자, 보유한 특정 토큰의 개수, 메타데이터(예: 이름, 설명, 이미지 등)를 조회
+- **토큰 소유권 이전**: 특정 토큰을 소유한 사용자가 해당 토큰을 다른 사용자에게 이전
 
 ## 3.1 소유
 
 * ```function balanceOf(address owner) external view returns (uint256 balance)```
 * ```function ownerOf(uint256 tokenId) external view returns (address owner)```
 
-## 3.2 이체
+## 3.2 이전
 
 * ```event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)```
 * ```function safeTransferFrom(address from, address to, uint256 tokenId) external```
@@ -74,21 +82,23 @@ NFT를 만들려면 ERC721 표준을 따라야 한다. IERC721는 인터페이�
 
 # 4. ERC721
 
-NFT 관련 표준 EIP-721에서는 ERC721 토큰을 생성할 경우 따라야 하는 기본 내용을 정하고 있다. 물론 이더와 같은 화폐도 토큰으로 볼 수 있지만, 해당이 없다. 여기서는 사용자가 직접 만들어서 토큰의 명칭을 붙일 수 있는 그런 Non-Fungible 토큰을 말한다.
+EIP-721에서는 ERC721 토큰을 생성할 경우 따라야 하는 기본 내용을 정하고 있다. 물론 이더와 같은 화폐도 토큰으로 볼 수 있지만, 해당이 없다. 여기서는 사용자가 직접 만들어서 토큰의 명칭을 붙일 수 있는 대체 불가능 토큰을 말한다.
 
 객체 지향의 상속을 활용하고 있는데, 아래와 같은 상위 컨트랙 또는 인터페이스를 구현하고 있다.
 
 - IERC721 - 앞서 설명하고 있다.
-- Context - 위 ERC20에서 사용하는 Context와 동일하게 msgSender, msgData를 정의한다.
-- ERC165 - supportsInterface(bytes4 interfaceId)
-- IERC721Metadata - name, symbol, tokenURI를 선언한다.
+- Context - 위 ERC20에서 사용하는 Context와 동일하게 ```msgSender, msgData```를 정의한다.
+- ERC165 - ```supportsInterface(bytes4 interfaceId)``` 함수를 통해 해당 스마트 계약이 특정 인터페이스를 지원하는지 확인하는 데 사용한다.
+- IERC721Metadata - ERC721의 메타데이터(이름, 심볼, tokenURI) 관련 인터페이스이다.
 
-## 4.1 매핑
+## 4.1 내부 매핑 변수
+
+아래 매핑 변수들은 내부에서만 사용하기 때문에 모두 ```private```으로선언되고 있다.
 
 - ```mapping(uint256 => address) private _owners``` token ID의 소유자 주소
 - ```mapping(address => uint256) private _balances``` 주소가 소유한 토큰 개수
 - ```mapping(uint256 => address) private _tokenApprovals``` token ID의 승인된주소
-- ```mapping(address => mapping(address => bool)) private _operatorApprovals``` Mapping from owner to operator approvals
+- ```mapping(address => mapping(address => bool)) private _operatorApprovals```  두 개의 주소를 키로 가지는 2차원 매핑이다. 주소(```address```)를 키로 사용하여 다시 한 번 주소를 키로 하는 불리언 값(```bool```)에 매핑된다.  (1) 내부 매핑은 대리인(주소)의 승인여부를 매핑하고, (2) 외부 매핑은 소유자(주소)를 내부 매핑에 매핑한다. 특정 소유자가 특정 대리인에 대한 토큰의 전송 권한을 부여하거나 철회하는 데 사용된다.
 
 ## 4.2 생성자
 
@@ -108,11 +118,11 @@ token의 symbol을 반환하는 함수이고, virtual함수라서 재정의할 �
 몇 개의 NFT를 소유하고 있는지 확인하는 함수 ```balanceOf()```와 NFT 일련번호의 소유주를 알아보는 ```ownerOf()``` 함수이다.
 
 * ```function balanceOf(address owner) public view virtual override returns (uint256)```
-IERC721-balanceOf를 재정의한 함수이며, 동시에 virtual로 자식이 재정의하는 것이 가능하다.
-```_balances[owner]```, owner가 소유한 NFT의 개수를 반환한다. 잔고로 착각하기 쉽다.
+IERC721-balanceOf를 재정의(override)한 함수이며, 동시에 virtual이므로 또 재정의하는 것이 가능하다.
+```_balances[owner]```, owner가 소유한 NFT의 개수를 반환한다. 보통 balance라고 하면 잔고로 오인할 수  있으니 주의하자.
 
 * ```function ownerOf(uint256 tokenId) public view virtual override returns (address)```
-IERC721-ownerOf를 재정의한 함수이며, 동시에 virtual로 자식이 재정의할 수 있다.
+IERC721-ownerOf를 재정의(override)한 함수이며, 동시에 virtual이므로 또 재정의할 수 있다.
 tokenId의 NFT를 소유한 owner 주소를 반환한다.
 
 * ```function tokenURI(uint256 tokenId) public view virtual override returns (string memory)```
@@ -128,16 +138,15 @@ tokenId의 NFT를 소유한 owner 주소를 반환한다.
 다음은 허가와 관련된 함수들이다.
 
 * ```function approve(address to, uint256 tokenId) public virtual override```
-IERC721의 approve 함수를 재정의하고, 
-tokenId의 owner가 token을 to에게 양도 허용한다.
+IERC721의 approve 함수를 재정의하고, tokenId의 owner가 token을 to에게 양도 허용한다.
 내부 함수 ```_approve(to, tokenId)```를 호출하면, ```_tokenApprovals[tokenId] = to```로 변경한다.
 
 * ```function getApproved(uint256 tokenId) public view virtual override returns (address)```
 tokenId의 owner주소 ```_tokenApprovals[tokenId]```를 반환한다.
-* ```function setApprovalForAll(address operator, bool approved) public virtual override```
-* ```function isApprovedForAll(address owner, address operator) public view virtual override returns (bool)```
+* ```function setApprovalForAll(address operator, bool approved) public virtual override``` 특정 소유자가 특정 오퍼레이터에 대한 모든 토큰의 전송 권한을 부여하거나 철회할 수 있다.
+* ```function isApprovedForAll(address owner, address operator) public view virtual override returns (bool)``` 특정 소유자가 특정 오퍼레이터에 대한 모든 토큰의 전송 권한을 부여했는지 여부를 확인한다.
 
-## 4.6 이체
+## 4.6 이전
 
 소유권 이전과 관련한 함수들이다.
 
@@ -146,44 +155,50 @@ tokenId의 owner주소 ```_tokenApprovals[tokenId]```를 반환한다.
 NFT 소유권을 이전한다. **함수 호출자가 from이 아니면, 허가를 받고 나서** 해야 한다 (```approve``` 또는 ```setApprovalForAll```). 토큰 소유자 또는 허가된 사용자가 아니면 오류가 발생한다.
 
 * ```function safeTransferFrom(address from, address to, uint256 tokenId) public virtual override```
-```safeTransferFrom()```은 to가 받을 수 있는지 확인하고 transfer하게 된다. 
-아래 코드에서 보듯이, 받는 측이 컨트랙일 경우 ```IERC721Receiver```를 구현해서 받을 수 있게 하고, 그래야 NFT를 보냈을 때 전달되지 못하고 유실되지 않도록 안전하게 이전된다. 
+	- ```_transferFrom``` 함수를 호출하여 토큰을 ```from```에서 ```to```로 이전한다.
+	- 단, safe함수라서 ```to```가 받을 수 있는지 확인하고 이전하게 된다. 
+	- 아래 코드에서 보듯이 수신측 ```to```가  스마트 계약인 경우, 해당 계약이 ERC-721 토큰을 수신할 수 있는지 확인하기 위해 ```onERC721Received``` 함수를 호출한다. 이런 방식으로 유실되지 않도록 안전하게 이전하고 있다.
+	-  수신자가 스마트 계약이 아니거나 ```onERC721Received ``` 호출이 실패한 경우, 이전 상태로 롤백하고 오류가 발생한다.
 
 ```
-if (to.isContract()) 
-    IERC721Receiver(to).onERC721Received(_msgSender(), from, tokenId, data) returns (bytes4 retval) {
-        return retval == IERC721Receiver.onERC721Received.selector;
-       }
-else return true
+줄1: if (to.isContract())
+줄2:    IERC721Receiver(to).onERC721Received(_msgSender(), from, tokenId, data) returns (bytes4 retval) {
+줄3:        return retval == IERC721Receiver.onERC721Received.selector;
+줄4:       }
+줄5: else return true
 ```
+
+    - 줄1: if문은 수신자 주소(```to```)가 스마트 계약인지(```.isContract()```)확인한다.
+    - 줄2: 수신자가 스마트 계약인 경우, 해당 스마트 계약이 ERC-721 토큰을 수신할 수 있는지 확인한다. 토큰을 성공적으로 수신한 경우(```.onERC721Received()```), ```retval```을 반환한다.
+    - 줄3: 반환된 값이 ```.onERC721Received.selector```와 일치하는지 확인한다. 이는 스마트 계약이 ERC-721 토큰을 수신할 준비가 되어 있는지 확인한다.
+
 
 * ```function safeTransferFrom(address from, address to, uint256 tokenId, bytes data) public virtual override```
 위와 동일하지만 전달할 추가 데이터가 았는 경우에 사용한다
 
 ## 4.7 내부 함수들
 
-컨트랙 내부에서만 호출될 수 있는 함수들로 공통적으로 ```_```로 시작하고 있다.
+컨트랙 내부에서만 호출될 수 있는 함수들로 공통적으로 ```_```로 시작하고 ```internal```로 선언하고 있다.
 
 * ```function _baseURI() internal view virtual returns (string memory)```
-token URI를 설정
+token URI를 설정한다.
 
 * ```function _transfer(address from, address to, uint256 tokenId) internal virtual```
-tokenId NFT를 from에서 to로 소유권을 양도. from은 owner이거나 approved된 경우에만 가능
+tokenId NFT를 from에서 to로 소유권을 양도. from은 소유주(owner)이거나 허락된 사용자(approve)가 가능하다
 
-* ```function _safeTransfer(address from,address to,uint256 tokenId,bytes memory _data) internal virtual```
-* ```function _exists(uint256 tokenId) internal view virtual returns (bool)```
-* ```function _isApprovedOrOwner(address spender, uint256 tokenId) internal view virtual returns (bool)```
-* ```function _safeMint(address to, uint256 tokenId) internal virtual```
-* ```function _safeMint(address to, uint256 tokenId, bytes memory _data) internal virtual```
-* ```function _mint(address to, uint256 tokenId) internal virtual```
-```_mint()```는 과금이 있을 경우 사용한다. _safemint()는 임의의 금액을 과금하는 함수라서 적합하지 않다.
-```function _burn(uint256 tokenId) internal virtual```
+* ```function _safeTransfer(address from,address to,uint256 tokenId,bytes memory _data) internal virtual``` 내부에서 `_safeTransferFrom` 함수를 호출한다.
 
-* ```function _approve(address to, uint256 tokenId) internal virtual```
-* ```function _setApprovalForAll(address owner, address operator, bool approved) internal virtual```
-* ```function _beforeTokenTransfer(address from, address to, uint256 tokenId) internal virtual```
-* ```function _afterTokenTransfer(address from, address to, uint256 tokenId) internal virtual```
-* ```function _checkOnERC721Received(address from, address to, uint256 tokenId, bytes memory _data) private returns (bool)```
+* ```function _exists(uint256 tokenId) internal view virtual returns (bool)``` 주어진 토큰 ID가 존재하는지 여부를 확인한다.
+* ```function _isApprovedOrOwner(address spender, uint256 tokenId) internal view virtual returns (bool)``` 주어진 주소가 특정 토큰에 대한 승인을 받았는지 또는 해당 토큰을 소유하고 있는지를 확인한다.
+* ```function _safeMint(address to, uint256 tokenId) internal virtual``` 주어진 수신자에게 특정 토큰 ID를 가진 ERC-721 토큰을 안전하게 생성하고 이전한다.
+* ```function _safeMint(address to, uint256 tokenId, bytes memory _data) internal virtual``` 위 함수와 동일하지만 `_data` 인자가 추가되고 있다. 수신자(스마트 계약)가 이 데이터를 사용하여 어떤 작업을 수행할 수 있다.
+* ```function _mint(address to, uint256 tokenId) internal virtual``` ```tokenId```를 가진 ERC-721 토큰을 생성하고, 지정된 주소에 할당한다. ```_mint()```는 단순히 토큰을 생성하고 할당하는 반면, ```_safemint()```는 안전성 검사를 먼저 하고 생성한다.
+* ```function _burn(uint256 tokenId) internal virtual``` ERC-721 토큰을 소멸한다.
+* ```function _approve(address to, uint256 tokenId) internal virtual``` tokenId를 to에 대해 승인한다. to에게 tokenId를 전송할 권한을 부여하는 작용을 한다.
+* ```function _setApprovalForAll(address owner, address operator, bool approved) internal virtual``` owner는 자신의 모든 토큰을 operator가 전송할 권한을 가지게 하거나, 이 권한을 취소할 수 있게 된다.
+* ```function _beforeTokenTransfer(address from, address to, uint256 tokenId) internal virtual```  특정 토큰이 성공적으로 전송되기 전 추가 작업을 수행하기 위해 사용된다.
+* ```function _afterTokenTransfer(address from, address to, uint256 tokenId) internal virtual``` 특정 토큰이 성공적으로 전송된 후  추가 작업을 수행하기 위해 사용된다 (예: 보유자의 토큰 보유량).
+* ```function _checkOnERC721Received(address from, address to, uint256 tokenId, bytes memory _data) private returns (bool)``` 토큰을 전송할 때 `_data`와 함께 `to` 주소에 있는 스마트 계약이 ERC-721 토큰을 수신할 수 있는지 확인한다.
 
 # 5. IPFS
 
@@ -199,7 +214,7 @@ IPFS에 NFT와 메타데이터를 저장하여 보자.
 
 ## 5.1 이미지 올리기
 
-Pinata(https://www.pinata.cloud)는 1G 용량까지 무료로 제공하는 IPFS 서비스이다. Pinata에 파일을 직접 올리거나, API를 사용해서 올릴 수 있다. 이미지는 직접 올리면 결과 이미지의 해시를 획득할 수 있다. 예를 들어 획득한 해시가 'QmZSMw1PARg1dDxaN2CoNbskraRXJo7trUsoUickrRgrTn'라고 가정하자. 해시 값을 url에 붙여주면:
+Pinata(https://www.pinata.cloud)는 1G 용량까지 무료로 제공하는 IPFS 서비스이다. Pinata에 파일을 직접 올리거나, API를 사용해서 올릴 수 있다. 이미지는 직접 올리면 결과 이미지의 해시를 획득할 수 있다. 예를 들어 획득한 해시가 ```QmZSMw1PARg1dDxaN2CoNbskraRXJo7trUsoUickrRgrTn```라고 가정하자. 해시 값을 url에 붙여주면:
 ```https://ipfs.io/ipfs/QmZSMw1PARg1dDxaN2CoNbskraRXJo7trUsoUickrRgrTn``` 업로드한 파일에 접근할 수 있다. 
 
 웹브라우저에 이 페이지를 로딩해보자. 시간이 어느 정도 소요가 된다.
@@ -259,7 +274,6 @@ pip install pinatapy-vourhey
 
 {'count': 0, 'rows': []}
 ```
-
 
 ```python
 >>> # Total data in use
@@ -834,13 +848,11 @@ faucet.ropsten.be는 10초에 0.3 Ether를 흘려보내고 있다. 보통 많은
 
 ## 제 3자 서비스 Infura 에 연결
 
-지금까지 우리가 해왔던 방식으로 스크립트를 작성해서 배포하려면, 제3자 서비스 Infura, QuickNode, Alchemy 등을 이용하면 된다.
-URL만 적어주면 별도의 작업없이 쉽게 연결된다.
+지금까지 우리가 해왔던 방식으로 스크립트를 작성해서 배포하려면, 제3자 서비스 Infura, QuickNode, Alchemy 등을 이용하면 된다. URL만 적어주면 별도의 작업없이 쉽게 연결된다.
 
-웹브라우저에서는 브라우저 확장앱인 MetaMask에서 직접 읽어올 수 있지만, 노드에서는 그렇게 하지 못한다.
-따라서 제3자 서비스제공자에서 키를 읽어올 수 없으므로 키를 하드코딩해야 한다.
+일반적으로 MetaMask와 같은 웹지갑을 사용하면, 사용자의 개인 키를 직접 읽고 서명을 생성하는 작업을 브라우저가 담당할 수 있게 된다. 사용자의 개인 키는 안전한 장소에 보관되어야 하며 외부로 노출되어서는 안 된다. 서버 측에서 직접 사용자의 개인 키를 읽어오거나 하드코딩하는 것은 매우 위험하며 보안상 좋지 않다. 
 
-Infura는 블록체인 노드 provider이고,블록체인과 IPFS에 대한 API를 제공한다. Web3 서비스를 제공한다. Infura를 사용하지 않으면, 자신의 컴퓨터에 블록체인을 항상 동기화 해야 하는데, 시간이 오래 걸릴 뿐만 아니라, 컴퓨터에 부하가 걸릴 수 있다.
+Infura는 Web3 서비스를 제공할 뿐아니라 블록체인과 IPFS에 대한 API를 제공한다. Infura를 사용하지 않으면, 자신의 컴퓨터에 블록체인을 항상 동기화 해야 하는데, 시간이 오래 걸릴 뿐만 아니라, 컴퓨터에 부하가 걸릴 수 있다.
 
 Infura (https://infura.io) 에 접속한 후, 먼저 회원가입을 한다. 처음에는 아무 프로젝트도 없는 상태이고, 새 프로젝트를 만들어주어야 한다. 예를 들어, TEST라는 이름의 프로젝트를 만들면, 바로 API KEY를 생성해준다.
 
@@ -916,13 +928,15 @@ NFT를 제작하고 나서 이대로 끝내기에는 뭔가 미진하다. 이제
 
 ## 8.2 공중망에 등록
 
+NFT를 공중망에 등록하면 해당 NFT의 고유한 식별자, 소유자, 소유권 이력 등의 정보가 블록체인에 저장된다는 의미이다. 그 후에는 해당 NFT를 마켓플레이스에 등록하여 판매할 수 있다.
+
 Rinkeby 테스트망에 배포하면 etherscan에서 볼 수 있다.
 오픈씨에서도 확인할 수 있다 (https://testnets.opensea.io/)
 
 ERC721을 이더리움 메인넷에 배포하면, 바로 오픈씨에서 매매가능하다 (https://opensea.io/get-listed).
 
-ERC721을 작성해서 공중망에 배포하면, 바로 NFT시장에서는 신규토큰의 생성 이벤트의 발생을 금세 알아챈다.
-이 이벤트는 로그를 모니터링하면 알게 된다. 그 로그는 누구나 볼 수 있기 때문에 오픈씨에서는 NFT의 소유자 주소, 토큰번호 등을 알게 된다. 
+ERC721을 작성해서 공중망에 배포하면, 바로 NFT시장에서는 신규토큰의 생성 이벤트의 발생을 금세 알아챈다. 이 이벤트는 로그를 모니터링하면 알게 된다. 그 로그는 누구나 볼 수 있기 때문에 오픈씨에서는 NFT의 소유자 주소, 토큰번호 등을 알게 된다.
+
 ERC721이 공중망에 배포되면 오픈씨나 Rarible이 알게 되는 이치이다.
 
 ## 8.3 코드 없이 등록

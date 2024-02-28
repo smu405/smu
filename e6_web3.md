@@ -6,7 +6,7 @@
 
 블록체인에 스마트 컨트랙을 만든다고 하자. 그렇다면 웹 클라이언트에서 블록체인과 상호작용할 수 있는 자바스크립트 web3.js 라이브러리가 필요하다.
 
-```web3.js```는 그 명칭에서 대략 무엇인지 느낌이 오겠지만, 웹에서 이더리움 노드에 **HTTP, WebSocket**로 연결해서, 통신하기 위한 **자바스크립트 라이브러리**이다.
+```web3.js```는 그 명칭만 봐도 대략 무엇인지 느낌이 오겠는데, 웹에서 이더리움 노드에 **HTTP, WebSocket**로 연결해서, 통신하기 위한 **자바스크립트 라이브러리**이다.
 
 분산앱 dApp을 웹에서 구현한 것을 웹디앱이라고 한다. 웹디앱에서는 블록체인에 업로드된 스마트 컨트랙의 API를 자바스크립트 ```Web3.js```에서 호출하면서 그 결과를 화면단에서 받아서 처리하게 된다.
 
@@ -16,7 +16,7 @@
  -------------------                            ----------------
 ```
 
-자바스크립트 언어는 **비동기** 프로그래밍을 지원하는데, 어떤 작업을 실행한 후 완성될 때까지 대기하지 않고 다른 작업을 하는 것이다.
+자바스크립트 언어는 **비동기** 프로그래밍을 지원하는데, 어떤 작업을 실행한 후 완성될 때까지 대기하지 않고 다른 작업을 할 수 있다.
 
 동기적 프로그램에서는 함수를 호출하면, 그 작업이 끝날 때까지 무조건 기다려야 한다. 그 작업이 완성되고 나서야 다음 작업을 실행할 수 있다. 웹 사용자에게는 이러한 대기가 몹시 불편하기 마련이다. 비동기 프로그래밍 방식에서는 함수를 실행시키는 작업을 시작한 후, 그 함수가 실행되고 있는 것과 관계없이 다음 작업을 수행할 수 있다.
 
@@ -42,9 +42,7 @@
 
 ![alt text](figures/6_nodeInstall.png "node install")
 
-node.js의 경로를 설정한다. node.js를 설치한 경로를 등록하여, 명령창에서 실행이 바로 가능하도록 한다. 
-
-![alt text](figures/6_nodePath.png "node path")
+그리고 앞서 한 바와 같이 제어판의 '환경 변수 편집' 창을 열어  node.js의 설치 경로 ```C:\Program Files\node.js```를 추가하여, 명령창에서 실행이 바로 가능하도록 한다.
 
 ### npm
 
@@ -56,9 +54,10 @@ npm은 노드 패키지 관리자 Node Package Manager로서, 자바스크립트
 
 리눅스는 ```apt install npm```으로 설치, ```which npm```으로 설치여부를 확인한다.
 
-### package.json 생성
+### ```package.json``` 생성
+npm과 같은 패키지 매니저는 ```package.json``` 파일을 기반으로 프로젝트의 종속성을 설치, 관리한다.
 
-Node.js 프로젝트를 시작할 때 필요한 기본 설정을 만들어 보자. 명령창을 열고, 프로젝트 디렉토리로 이동한 후 ```npm init``` 명령을 입력한다. 이 명령어를 실행하지 않아도 패키지를 설치할 수 있기는 하지만, package.json 파일을 생성하기 위해 필요하다.
+명령창을 열고, 프로젝트 디렉토리로 이동한 후 (여기에 생성되기 때문에 그렇다) ```npm init``` 명령을 입력한다. 이 명령어를 실행하지 않아도 패키지를 설치할 수 있기는 하지만, package.json 파일을 생성한다.
 
 ```python
 pjt_dir> npm init
@@ -70,7 +69,7 @@ npm을 사용하다 보면, ```package-lock.json```이 생성되어 있곤 한�
 
 > 더 알아보기: ```package-lock.json```
 
-> 개발자들이 동일한 ```node_module``` 트리를 생성해서 동일한 의존성에 따른 설치를 보장하는 장치이다. ```package.json```에는 버전 범위가 넓게 "^1.2.3 또는 1.2.*" 으로 적혀있지만, ```package-lock.json``` 에는 정확한 버전명이 적혀있다. 예를 들어, package.json의 ^1.2.3에 따라 의존성도 결정되었다면, npm install이 동일한 버전을 선택하여 설치한다는 보장이 없다. npm update는 package-lock.json에서, npm install은 package.json에서 설치한다.
+> 개발자들이 동일한 ```node_module``` 트리를 생성해서 패키지 의존성을 정확하게 재현하기 위한 장치이다. ```package.json```에는 버전 범위가 넓게 "^1.2.3 또는 1.2.*" 으로 적혀있지만, ```package-lock.json``` 에는 정확한 버전명이 적혀있다. 예를 들어, package.json의 ^1.2.3에 따라 의존성이 넓게 결정되었다면, npm install이 동일한 버전을 선택하여 설치한다는 보장이 없다. npm install 명령을 실행할 때 package-lock.json 파일에는 기록된 동일한 버전을 선택하여 설치한다.
 
 ## 1.2 web3 설치
 
@@ -108,6 +107,7 @@ pjt_dir> npm install -g web3@^0.20
 
 > 더 알아보기: **gyp 오류**
 
+> 빌드 시스템인 gyp(Google's `gn` 구현)에 관련된 문제로 발생하는데, 주로 C/C++ 코드를 포함하는 Node.js 패키지를 설치할 때 나타납니다.
 > gyp는 C 또는 C++ 언어로 씌여진 node.js로 만든 모듈을 컴파일하는 명령어 도구이다. 오류의 원인이 하나가 아니라서 몇 가지 시도를 해봐야 한다.
 
 > (1) 버전이 높은 경우, 오류가 발생할 수 있다.
@@ -149,7 +149,7 @@ pjt_dir> npm list --depth=0  (글로벌을 보려면 -g를 넣는다 npm -g list
 
 > 더 알아보기: npm **ERR! extraneous**
 
-> 패키지가 설치되었지만 package.json에 등록이 되지 않았다는 의미이다. ```npm init``` 초기화를 하였는지 확인하고, 당분간 무시하고 사용해도 된다.
+> 프로젝트에 필요하지 않은 패키지 (extraneous)를 설치하는 경우 발생하는 경고 메시지이다. 패키지가 설치되었지만 package.json에 등록이 되지 않았다는 의미이다. ```npm init``` 초기화를 하였는지 확인하고, 당분간 무시하고 사용해도 된다.
 
 ### web3 테스트 실행
 
@@ -559,16 +559,16 @@ hello
 
 ```python
 [파일명: src/web3account0.js]
-줄01 var Web3 = require('web3');
-줄02 var web3 = new Web3('http://localhost:8345');
-줄03 var account0;
-줄04 async function getAccount0() {
-줄05     accounts = await web3.eth.getAccounts(); # 비동기 함수인 getAccounts()가 끝날 때까지 기다림
-줄06     account0=accounts[0];
-줄07     console.log("local account0: " + account0);
-줄08 }
-줄09 getAccount0()
-줄10 console.log("global account0: " + account0);
+var Web3 = require('web3');
+var web3 = new Web3('http://localhost:8345');
+var account0;
+async function getAccount0() {
+    accounts = await web3.eth.getAccounts(); # 비동기 함수인 getAccounts()가 끝날 때까지 기다림
+    account0=accounts[0];
+    console.log("local account0: " + account0);
+}
+getAccount0()
+console.log("global account0: " + account0);
 ```
 
 저장된 파일을 실행한다.
@@ -600,13 +600,13 @@ local account0: 0xbdC3f3ddBd068E0e739b926aaA527BF1D1Eb7EF0
 
 ```python
 [파일명: src/web3utils.js]
-줄1 var Web3 = require('web3');
-줄2 var web3 = new Web3('http://localhosst:8345');
-줄3 console.log("random hex: ", web3.utils.randomHex(32));    //generate random 32 byte hex
-줄4 console.log("234 hash: ", web3.utils.keccak256('234'));  //calculate keccak256 for '234'
-줄5 console.log("is address?: ",web3.utils.isAddress('0xf2a4f09c903a0a7b3450d9d16bbca14dea36aee1'));  //check if the input is a valid address
-줄6 console.log("안녕 in Hex: "+web3.utils.utf8ToHex('안녕'));
-줄7 console.log("wei of 1 ether: "+web3.utils.toWei('1', 'ether'));
+var Web3 = require('web3');
+var web3 = new Web3('http://localhosst:8345');
+console.log("random hex: ", web3.utils.randomHex(32));    //generate random 32 byte hex
+console.log("234 hash: ", web3.utils.keccak256('234'));  //calculate keccak256 for '234'
+console.log("is address?: ",web3.utils.isAddress('0xf2a4f09c903a0a7b3450d9d16bbca14dea36aee1'));  //check if the input is a valid address
+console.log("안녕 in Hex: "+web3.utils.utf8ToHex('안녕'));
+console.log("wei of 1 ether: "+web3.utils.toWei('1', 'ether'));
 ```
 
 명령창에서 유니코드를 지원한다면 console.log() 함수의 한글은 깨지지 않고 출력된다.
@@ -626,12 +626,13 @@ wei of 1 ether: 1000000000000000000
 
 간단한 Web3 페이지를 만들어보자.
 
-잠깐 생각해 보자. 지금까지 우리가 알고 있는 웹은 서버가 필요하다. 웹 페이지를 보는 것 부터 서버에 접속해서 웹페이지의 내용을 받아와서 브라우저가 화면에 보여준다. 웹페이지에서 버튼을 누르거나 클릭을 하거나 서비스를 요청하고, 그 요청을 받아 처리하는 것도 모두 서버가 필요하다. 
+이제 웹이 없다면 일상 생활도 힘들게 되어버렸다. 웹이 무엇인가 서비스를 제공하려면 서버가 없으면 곤란하다.
 
-여기서 만드는 것은 웹서버를 요구하는 일반적인 웹 페이지가 아니라는 점을 명심하자. 블록체인에 결과를 받아오는, 그러니까 블록체인이 서버가 되는 웹페이지를 만든다. 이런 페이지를 Web3로 만든다.
+웹 페이지는 HTTP 통신을 통해 서버에 접속하고 HTML을 가져와서 웹브라우저가 화면에 보여준다. 웹페이지에서 입력을 하거나, 버튼을 클릭하거나 서비스를 요청하고, 그 결과를 받아 처리하는 것도 모두 서버가 담당해서 처리해야 가능한 일이다. 
+
+여기서 웹페이지를 제작하려고 하는데, 웹서버에 뭔가 변화가 있다는 점에 주목해서 배워야 한다. 블록체인에 결과를 받아오는, 그러니까 블록체인이 서버가 되는 웹페이지를 만든다. 이런 페이지를 Web3로 만든다.
 
 프로젝트 디렉토리 아래 scripts 폴더를 만든다. html을 편집기를 이용해서, 파일을 scripts폴더에 저장한다.
-
 
 ```python
 [파일명: scripts/simpleCoinbase.html]
@@ -666,6 +667,13 @@ wei of 1 ether: 1000000000000000000
 </body>
 </html>
 ```
+
+- 줄4: ```web3@1.2.5```를 사용하고 있다.
+- 줄5: 버전 1.0이하를 사용하기 위해 ```web3@0.20.5```를 적고 있다. 현재는 주석으로 되어있고, 이를 제거하려면 앞 줄의 ```web3@1.2.5```를 주석으로 만들고, 아래 코드의 해당 부분도 역시 동일하게 주석으로 처리해야 한다.
+- 줄6: ```require('web3')```는 필요하지 않아 주석으로 적었다.
+- 줄7: ```http://localhost:8345```에서 HTTP를 제공하기로 한다.
+- 줄11~13: ```web3@0.20.x``` 버전을 쓴다면 주석을 제거하면 된다. ```coinbase```를 비동기 방식으로 읽어오기 때문에 1.0 이상의 ```.then()``` 방식과 비교하면 다르다.
+- 줄:15~16: ```.then()``` 방식으로 값을 읽어서 ```.getElementById(ID항목).innerText``` 명령으로 출력하고 있다.
 
 ## 서버 올리기
 

@@ -1,28 +1,30 @@
 ﻿# Chapter 12. DeFi
 
-DeFi는 어떤 중개없이 수요자와 공급자가 직접 금융거래가 가능한 탈중화금융이다. 이를 위해 제안된 이더리움 표준 ERC20을 구현해보게 된다. ERC20 코인을 유통하는 증권시장과 같은 거래소에 대해 배우게 된다.
+DeFi는 어떤 중개없이 수요자와 공급자가 직접 금융거래가 가능한 탈중화금융이다. 이를 위해 제안된 이더리움 표준 ERC20을 구현해보게 된다. ERC20 코인을 유통하는 증권시장과 같은 거래소에 대해 배운다.
 
 # 1. 디파이는 대체 무엇일까?
 
-DeFi는 Decentralized Finance의 줄여서 쓰는 말로, **탈중앙화금융**이라고 한다. 탈중앙화라고 이름이 붙는다고 하니, 필시 이전의 중앙화된 금융서비스와는 상반된다는 의미일 것이다.
+DeFi는 Decentralized Finance의 줄여서 쓰는 말로, **탈중앙화금융**이라고 한다. 탈중앙화라고 이름이 붙는다고 하니, 필시 이전의 중앙화된 금융서비스와는 상반된다는 의미일 것이다. 자금을 관리하고 사용자 간의 자동화된 금융 서비스를 제공하는 개념은 동일하지만, 탈중앙화 방식이라는 점에서 차이가 있다.
 
 탈중앙의 대척점에 있는 중앙화 금융을 이름 붙이면 CeFi (Centralized Finance)가 되겠다. 이는 지금까지 우리가 사용해왔던 입금, 출금, 계좌 이체, 보험 계약 등의 금융 서비스를 말한다. 이 모든 금융 서비스는 은행, 증권사, 카드사, 보험사와 같은 모두 중앙의 중개처를 통해서 거래가 이루어지고 있으며, 이를 CeFi라고 구분할 수 있다.
 
-식사를 하고 지급을 한다고 해보자. 카드를 제시하고 지급한다면, 이 지급은 카드 회사는 신용에 따라 결제의 승인이 필요하다. 전형적인 CeFi 거래이다. 대출하는 것 또한 중앙의 은행을 통한 CeFi의 예이다.
+식사를 하고 카드 결제를 한다고 해보자. 카드 회사는 신용에 따라 결제를 승인하는데, 전형적인 CeFi 거래이다. 대출 또한 중앙의 은행을 통한 CeFi의 예이다.
 
-반면에 DeFi는 탈중앙이라고 하는데, 중앙의 중개처가 없어 이러한 제3자의 승인이나 허락없이 직거래한다는 의미이다. 그렇다면 누가 승인을 하고, 지급이 허위가 아니라는 것을 증명할 것인가? 직거래를 생각해보자. 과연 모르는 사람을 신뢰하고 덥석 송금을 할 수 있겠는가? 
+반면에 DeFi는 탈중앙이라고 하는데, 뭔가 중앙의 승인이나 허락없이 직거래한다는 의미이다. 그렇다면 누가 승인을 하고, 지급이 허위가 아니라는 것을 증명할 것인가? 직거래를 생각해보자. 과연 모르는 사람을 신뢰하고 덥석 송금할 수 있겠는가? 
 
-블록체인은 매우 혁신적인 틀바뀜이다. 블록체인은 탈중앙을 가능하게 한다고 했으며, 예를 들어 송금을 한다면 블록체인에 참여하는 모두가 이를 승인하는 형식이어서 허위가 발생할 까닭이 없다. 이런 거래가 승인되고, 결제되고, 기록되는 절차가 중앙에서 일어나는 것이 아니라 참여자(시스템)에 의해서 처리된다. 
+블록체인은 매우 혁신적인 틀바뀜이다. 블록체인은 탈중앙을 가능하게 한다고 했으며, 예를 들어 송금을 한다면 블록체인에 참여하는 모두가 이를 승인하는 형식이어서 허위가 발생할 까닭이 없다. 이런 거래가 중앙에서 승인, 결제, 기록되는 것이 아니라 참여자(시스템)에 의해서 처리된다. 
 
 DeFi는 이러한 블록체인 상에서 운용되는 금융 상품 및 서비스를 말한다. DeFi는 늘상 일어나는 입출금뿐만 아니라, 암호화폐 대출, 대여, 토큰 교환, 코인을 맡기고, 이자를 코인으로 받는 이자농사 (Yield Farming) 또는 다른 가상자산과 거래하거나 인터넷으로 연결만 될 수 있으면 어느 누구나 사용할 수 있다.
 
 DeFi는 2020년 이전까지만 해도 존재가 무색할 정도였지만, 암호화폐의 인기에 따라 자금의 규모가 급등하고 있다 (https://www.statista.com/statistics/1237821/defi-market-size-value-crypto-locked-usd/). 그렇다고 해서 은행을 대체할 규모는 아니지만, 적다고 무시할 수준은 아니다.
 
-현금을 대체할 수 있어서 함부로 누구나 편한대로 만들도록 방치한다면 큰 혼란이 발생할 수 있다. 그래서 ERC20(Ethereum Request for Comments 20) 표준이 필요한 이유이며, 이를 준수해서 제작해야 한다. 
+현금을 대체할 수 있어서 함부로 누구나 편한대로 만들도록 방치한다면 큰 혼란이 발생할 수 있다. 그래서 ERC (Ethereum Request for Comments) 표준이 필요한 이유이며, 이를 준수해서 제작하면 금융서비스에 대한 신뢰와 상호운용성을 확보할 수 있다.
+
+ERC(Ethereum Request for Comment)는 이더리움 기술적인 요구사항을 표준화하는 방안이고, 뒤에 특정 방안에 해당하는 일련번호가 붙는다. 몇 가지 ERC를 예를 들면, ERC-20은 토큰 표준으로 여기서 구현하고, ERC-721은 NFT(Non-Fungible Token) 표준으로 다음 장에서 배우고, ERC-1155는 다중 자산 토큰 표준으로 널리 사용된다.
 
 DeFi는 꼭 이더리움일 필요는 없지만, ERC20의 앞글자 Ethereum이 의미하듯 그 환경에서 제작한다. 현재 이더리움 메인넷에는 수십만개의 ERC20 코인이 존재한다 (https://etherscan.io/tokens). ERC20 코인의 가장 좋은 예는 현금을 담보하고 발행하는 Stable 코인을 꼽을 수 있다. Stable 코인은 실제 가치와 연동이 되어 있어, 가격의 변동이 없도록 설계된 암호화폐를 말한다. 현재 매우 많은 코인, 예를 들면 Chainlink (LINK), Tether (USDT), Shiba Inu (SHIB), Wrapped Bitcoin (WBTC), OmiseGO (OMG), 0x (ZRX), Maker (MKR), Augur (REP), Golem (GNT), Loopring (LRC), Basic Attention Token (BAT) 등이 발행되어 있다.
 
-그렇다면 누구나 ERC토큰을 만들 수 있는 것일까? 우리도 예를 들어 시가 1억원 규모의 디파이를 제작할 수 있는 것일까? 한국 은행에서 화폐를 발행하는 것처럼 우리가 화폐를 만들 수 있다는 건가? 그렇게만 된다면 누구나 쉽게 부자가 될 수 있겠지만, 현실적으로 그렇지는 않다. 충분히 신뢰할 수 없다면, 디파이는 화폐로서 저장, 교환 가치가 있을 수 없다. 가격 변동이 심해서 투자 차익을 노리기만 할 뿐 실생활에서 쓰이지 않는다면 화폐라고 보기 힘들다.
+그렇다면 누구나 ERC토큰을 만들 수 있는 것일까? 우리도 예를 들어 시가 수 억원 규모의 디파이를 제작할 수 있는 것일까? 한국 은행에서 화폐를 발행하는 것처럼 우리가 화폐를 만들 수 있다는 건가? 그렇게만 된다면 누구나 쉽게 부자가 될 수 있겠지만, 현실적으로 그렇지는 않다. 충분히 신뢰할 수 없다면, 디파이는 화폐로서 저장, 교환 가치가 있을 수 없다. 가격 변동이 심해서 투자 차익을 노리기만 할 뿐 실생활에서 쓰이지 않는다면 화폐라고 보기 힘들다.
 
 ## STO
 
@@ -31,43 +33,47 @@ DeFi는 꼭 이더리움일 필요는 없지만, ERC20의 앞글자 Ethereum이 
 지금까지의 실물 증권, 전자증권과는 다른 새로운 형태의 블록체인 상의 증권이다.
 
 - 실물 증권은 증서에 기재되어 보관되고,
-- 전자증권은 증권회사와 같은 기관에 중앙 집중식으로 기재,
-- 토큰 증권은 블록체인에 분산 기재되어 존재한다는 점이 차이가 있다. 다만 공중망이 아니라, 허가형 또는 사적망의 블록체인을 적용하면 누구나 거래한다는 본래 취지가 제한될 수 있다.
+- 전자증권은 증권회사와 같은 중앙기관에 기재,
+- 토큰 증권은 블록체인에 분산 기재되어 존재한다는 차이가 있다. 다만 공중망이 아니라, 허가형 또는 사적망의 블록체인을 적용하면 누구나 거래한다는 본래 취지가 제한될 수 있다.
 
-STO는 주로 미술품, 부동산, 저작권 등을 대상으로 제작되고 있어 NFT와의 경계는 모호하다. 가장 큰 차이는 STO는 법, 우리나라는 자본 시장법의 규제와 감시를 받아야 한다. 부동산에 대해 STO를 만든다고 하자. 그러면 주식과 같이, 실물 부동산을 토큰 주식화하고, 공모하고 등록하고 상장을 해야 한다. 투자자는 증권회사나 허가받은 투자회사에 등록된 실물 부동산에 대해 쪼개기 투자를 하게 된다. 물론 STO를 대상으로 ERC 1400이 제시되고 있다.
+STO는 주로 미술품, 부동산, 저작권 등을 대상으로 제작되고 있어 NFT와의 경계는 모호하다. 가장 큰 차이는 STO는 법의 적용인데, 우리나라는 자본 시장법의 규제와 감시를 받아야 한다. 부동산에 대해 STO를 만든다고 하자. 그러면 주식과 같이, 실물 부동산을 토큰 주식화하고, 공모하고 등록하고 상장을 해야 한다. 투자자는 증권회사나 허가받은 투자회사에 등록된 실물 부동산에 대해 쪼개기 투자를 하게 된다.
 
-ERC20와 달리 토큰에 대한 법적 기준을 받는다는 점에서 큰 차이가 있다. 또한 블록체인의 익명성이 문제가 될 수 있다. 블록체인에서는 계정주소에 대해 토큰이 귀속된다. 그러나 키를 유실했다고 하면 토큰의 소유권 또한 실권된다. 기존 증권은 키를 잃어버려도 소유를 증명할 방법이 있다. 블록체인의 계정주소는 익명이라서, 유실되면 재발행할 수 있어야 한다.
+STO를 위한 ERC 표준은 ERC1400과 ERC1410이 제시되고 있다. STO는 자산 소유권이 부여되고, 그 에 따른 이익 배당이나 투표 권한 등의 권리가 되는 등 법적 강제가 있다는 점에서 ERC20와 큰 차이가 있다.
+
+또한 블록체인의 익명성이 문제가 될 수 있다. 블록체인에서는 계정주소에 대해 토큰이 귀속된다. 그러나 키를 유실했다고 하면 토큰의 소유권 또한 실권된다. 기존 증권은 키를 잃어버려도 소유를 증명할 방법이 있다. 블록체인의 계정주소는 익명이라서, 유실되면 재발행할 수 있어야 한다.
 
 # 2. 제작하는 방법
 
-블록체인은 금융서비스에 특화된 플랫폼이고, 따라서 디파이는 매우 자연스러운 디앱이 된다. 
+블록체인은 금융서비스에 특화된 플랫폼이고, 따라서 디파이는 매우 자연스러운 후보일 수 밖에 없다.
 
-쉽게 말하면, 디파이는 ERC20을 구현해서 제작하게 된다. 프로그래밍 용어로 말하면, ERC20를 상속하는 기법을 통해 구현을 해야 한다.
+디파이는 ERC20을 구현해서 제작하게 된다. 프로그래밍 관점에서 보면, ERC20를 상속하는 기법을 통해 구현한다.
 
-ERC(Ethereum Request for Comment)는 이더리움 기술적인 요구사항을 표준화하는 방안이고, 뒤에 20과 같이 특정 방안에 일련번호가 붙는다. ERC20는 토큰(Token)을 만들기 위한 기술 표준으로, 이 요구사항을 지키면서 코딩하면 된다. 2015년 처음 Fabian Vogelsteller가 처음 표준화에 필요한 기능을 제안한 것으로 알려져 있다 (https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md). 이 표준을 준수하지 않으면 ERC20 토큰이라고 볼 수 없다.
+ERC20는 이더리움 토큰을 생성하고 관리하기 위한 가장 일반적인 표준으로, 대부분의 토큰은 이 요구사항을 지키면서 코딩하면 된다. 2015년 처음 Fabian Vogelsteller가 처음 표준화에 필요한 기능을 제안한 것으로 알려져 있다 (https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md). 이 표준을 준수하지 않으면 ERC20 토큰이라고 볼 수 없다.
 
 # 3. 표준 인터페이스 IERC20
 
-인터페이스 IERC20는  잔고, 허가, 이체와 관련하여 다음 6개의 함수를 정의하고 있다.
+IERC20는 ERC20 표준을 준수하는 토큰을 다루기 위한 인터페이스이다.
+
+IERC20는  잔고, 허가, 이체와 관련하여 다음 6개의 함수를 정의하고 있다.
 
 ## 3.1 잔고
-- ```totalSupply() external view returns (uint)``` 전체 잔고를 출력한다.
+
+- ```totalSupply() external view returns (uint)``` 토큰의 총 잔고를 출력한다.
 - ```balanceOf(address account) external view returns (uint)``` account주소의 잔고를 출력한다.
 
 ## 3.2 허가 
 
-- ```allowance(address owner, address spender) external view returns (uint)```
-owner가 spender에게 권리가 부여되어 허가된 금액을 출력한다. 
-
 - ```approve(address spender, uint amount) external returns (bool)```
 spender에게 amount를 허용하고, 성공 여부를 출력한다. 권리가 부여되고 나면, 그 금액은 owner의 소유일지라도 owner의 사적키(private key)가 없어도 거래를 수행할 수 있다. 그러고 나면, spender는 ```transferFrom```으로 금액 한도 내에서 전송할 수 있다.
+
+- ```allowance(address owner, address spender) external view returns (uint)```
+owner가 spender에게 지출 허가한 금액을 반환한다. 
 
 - ```event Approval(address indexed owner, address indexed spender, uint value)``` 허가 함수가 호출되면 발생할 수 있도록 고안된 이벤트이다.
 
 ## 3.3 이체
 
-- ```transfer(address recipient, uint amount) external returns (bool)```
-approve는 허용만 하지만, transfer는 실제 잔고의 차감이 발생한다. 따라서 자신의 잔고가 금액의 잔고가 정해진 금액 이상 이체되지 않도록 통제해야 한다.
+- ```transfer(address recipient, uint amount) external returns (bool)``` ```recipient```로 토큰```amount``` 잔고를 전송한다. 앞서 설명한 approve는 허용만 하지만, transfer는 실제 잔고의 차감이 발생한다. 따라서 자신의 잔고가 금액의 잔고가 정해진 금액 이상 이체되지 않도록 통제해야 한다.
 
 - ```transferFrom(address sender, address recipient, uint amount) external returns (bool)```
 transfer와 유사한 기능을 수행하지만, sender를 지정한다는 점이 다르다. 따라서 sender는 사전의 허가가 반드시 필요하다.
@@ -76,7 +82,9 @@ transfer와 유사한 기능을 수행하지만, sender를 지정한다는 점�
 
 # 4. ERC20
 
-ERC20에 필요한 코드는 스스로 작성해도 된다. 외부에 안전하고 튼튼한 코드가 있다면 사용하는 것이 좋겠다. 여기서는 많이 쓰이고 있는 Openzeppelin에서 제공하고 있는 ERC20을 살펴보자.
+ERC20은 표준을 준수하는 스마트 계약을 직접 작성해도 된다.
+
+안전하고 튼튼한 코드가 이미 존재한다면 이를 사용해도 좋다. 많이 쓰이고 있는 오픈 소스 라이브러리의 하나인 OpenZeppelin은 ERC20을 비롯한 여러 가지 표준 및 기능을 구현하는 Solidity 라이브러리를 제공하고 있다. 여기서는 Openzeppelin에서 제공하고 있는 ERC20을 살펴보자.
 
 프로그래밍으로 ERC20을 제작하려면, 객체 지향 프로그래밍 개념을 이해해야 한다. ERC20을 구현하려면 상위 컨트랙을 필요로 한다. 앞서 설명한 IERC20 인터페이스는 당연히 필요하고, 그 외에도 상위의 Context, IERC20Metadata을 구현하고 있다.
 
@@ -87,7 +95,7 @@ ERC20에 필요한 코드는 스스로 작성해도 된다. 외부에 안전하�
 ERC20는 통화이기 때문에 필연적으로 잔고가 있기 마련이다. 잔고와 통화의 명칭과 관련한 멤버 변수가 다음과 같이 선언되어 있다.
 
 - ```mapping(address => uint256) private _balances``` 각 주소의 잔고를 저장한다.
-- ```mapping(address => mapping(address => uint256)) private _allowances``` 소유자가 제3자에게 허용한 잔고를 저장한다.
+- ```mapping(address => mapping(address => uint256)) private _allowances``` 소유자가 제3자에게 허용한 인출금액을 저장한다. 첫 번째는 소유자의 ```address```, 두 번째는 제3자 `address`이고 여기에 `uint256` 유형의 값은 소유자가 제3자에 대해 허용한 인출 금액이다.
 - ```uint256 private - _totalSupply``` 총잔고를 저장한다.
 - ```string private _name``` DeFi 명칭
 - ```string private _symbol``` DeFi 심볼
@@ -122,11 +130,10 @@ ERC20 객체를 생성하려면 생성자가 필요하고, 명칭과 심볼을 �
 
 - ```function allowance(address owner, address spender)``` 허용금액 ```_allowances[owner][spender]``` 출력
 - ```function approve(address spender, uint256 amount)``` 내부함수 ```_approve(owner, spender, amount)``` 호출 (아래 설명 참조)
-
 - ```function increaseAllowance(address spender, uint256 addedValue)```
 내부함수 ```_approve(owner, spender, allowance(owner, spender) + addedValue)``` 호출 (아래 설명 참조)
 - ```function decreaseAllowance(address spender, uint256 subtractedValue)```
-increaseAllowance의 반대 기능, 내부함수 ```_approve(owner, spender, currentAllowance - subtractedValue)```
+increaseAllowance의 반대 기능, 내부함수 ```_approve(owner, spender, currentAllowance - subtractedValue)``` 호출  (아래 설명 참조)
 - ```function _approve(address owner, address spender, uint256 amount)```
 매핑변수 ```_allowances[owner][spender] = amount```를 설정, 즉 소유자 owner가 제3자 spender에게 해당 금액의 권한을 부여하는 함수이다.
 - ```function _spendAllowance(address owner, address spender, uint256 amount)```
@@ -171,7 +178,7 @@ A를 소유권자라고 하자. B가 A의 100 토큰을 C로 보내려고 하면
 
 ### 줄3 OpenZeppelin 라이브러리
 
-OpenZeppelin에서는 ERC 표준을 지켜서 작성해 놓은 라이브러리를 제공한다. NPM에서 설치하거나 github에서 직접 가져올 수 있다.
+OpenZeppelin에서 표준을 지켜서 작성해 놓은 ERC20.sol 라이브러리를 가져온다. NPM에서 설치하거나 github에서 직접 가져올 수 있다.
 
 #### 방법 1: npm에서 OpenZeppelin 설치
 
@@ -188,14 +195,14 @@ pjt_dir> dir node_modules\@openzeppelin
 02/18/2022  05:40 PM    <DIR>          contracts
 ```
 
-@기호는 NPM 패키지 그룹을 동일 명칭으로 사용할 수 있게 해준다. @openzeppelin/<package_name>이라고 적어주면 된다. 
+```@```기호는 NPM 패키지 그룹을 동일 명칭으로 사용할 수 있게 해준다. @openzeppelin/<package_name>이라고 적어주면 된다. 
 
-> 더 알아보기: 자바스크립트 @기호
+> 더 알아보기: 자바스크립트의 경로 재지정
 
-> 자바스크립트에서 @기호는 경로를 재지정하는 module-alias 기능을 의미한다. import할 때 디렉토리가 있는 곳을 상대적으로 나타내면 길어질 수 밖에 없다. @를 사용하면 경로를 그 라이브러리가 있는 시작점으로 재지정하게 된다.
+> 자바스크립트에서 ```@```기호는 경로를 재지정하는 module-alias 기능을 의미한다. import할 때 디렉토리가 있는 곳을 상대적으로 나타내면 길어질 수 밖에 없다. @를 사용하면 경로를 그 라이브러리가 있는 시작점으로 재지정하게 된다.
 따라서 예를 들면
-```import MyLib from '../../../../MyLib'```
-을 줄여서 ```import MyLib from '@/MyLib'```로 쓰게 된다.
+```import MyLib from '../../../my/MyLib'```
+을 줄여서 ```import MyLib from '@my/MyLib'```로 경로를 재지정할 수 있다.
 
 #### 방법 2: Github에서 OpenZeppelin 가져오기
 
@@ -339,7 +346,7 @@ contractName은 4개의 컨트랙, import한 모든 컨트랙의 명칭을 가�
 우리가 필요한 것은 5번째 MyToken이므로, 인덱스로 contractName[4]을 가져온다.
 
 ```python
-[파일명: src/MyTokenTest.js]
+[파일명: src/MyTokenTest1.js]
 var _abiJson = require('./MyToken.json');
 contractName=Object.keys(_abiJson.contracts);
 console.log("- contract name: ", contractName[4]);
@@ -352,18 +359,19 @@ console.log("- Bytecode: ", _bin);
 
 abi, 바이트 코드가 잘 읽혀졌는지 다음을 실행해서 확인해보자.
 ```
-pjt_dir> node src/MyTokenTest.js
+pjt_dir> node src/MyTokenTest1.js
 ```
 
 ## Unexpected token o in JSON at position 1 Error
 
-JSON.parse 함수의 첫 인자는 String이어야 한다. Javascript Object인 경우에는 오류가 발생한다.
-이 경우 문자열로 변환해서 인자로 넘겨주어야 한다.
+이 오류는 일반적으로 JSON 문자열이 잘못되었거나 유효하지 않은 형식을 가지고 있을 때 발생한다. "Unexpected token o"는 JSON 문자열이 "{" 또는 "["로 시작해야 하는데 "o"로 시작했다는 의미이다.
+
+JSON.parse 함수는 문자열(string)을 인자로 받고, 이를 Javascript 객체(object)로 변환한다.  객체를 전달하면 오류가 발생한다. 반드시 문자열로 변환해서 인자로 넘겨주어야 한다.
 
 ```
 node> new Object().toString()
 '[object Object]'  --> Object를 생성해서 문자열로 출력한다.
-> JSON.parse(new Object())
+> JSON.parse(new Object()) 문자열이 아니라 객체를 인자로 전달하고 있다. 오류가 발생하게 된다.
 SyntaxError: Unexpected token o in JSON at position 1
 --> Object를 파싱하면 첫 글자가 기대하는 토큰이 아니고 [object Object]이라서 오류가 발생한다
 > JSON.parse(JSON.stringify(new Object()))
@@ -578,10 +586,14 @@ Balance diff: 135418999996416
 
 ## 토큰을 거래소에 상장하자.
 
-코인거래가 가능한 해외거래소는 코인베이스, 바이낸스 (Biance) 등이 있다. 국내는 빗썸, 업비트 등이 있다.
+ERC20 토큰을 상장하려면 중앙화된 거래소나 탈중앙화 거래소에 등록해야 한다. 상장 과정은 거래소마다 다를 수 있으므로, 각 거래소의 공식 웹사이트나 문서를 참고하는 것이 좋다.
+
+(1) 중앙화 거래소
+코인거래가 가능한 해외거래소는 코인베이스, 바이낸스 (Binance) 등이 있다. 국내는 빗썸, 업비트 등이 있다.
 이들은 중앙화 거래소 (Cex, Centralized Exchange)에는 신청서를 제출한후, 적격성을 심사해야 상장이 된다.
 
-이러한 중앙화 거래소는 중앙에서 거래가 이루어지는데 반해, 탈중앙화 거래소 DEX(Distrbuted Exchange)는 기존의 암호화폐 거래소와 달리, 분산거래소이다.
+(2) 탈중앙화 거래소
+중앙화 거래소는 중앙에서 거래가 이루어지는데 반해, 탈중앙화 거래소 DEX(Distrbuted Exchange)는 기존의 암호화폐 거래소와 달리, 분산거래소이다.
 
 국내에서도 많은 코인들이 탈중화화 거래소에 상장하고 있다. 중앙화 거래소와는 달리, 적격성 심사와 같은 절차가 생략되고 아무나 상장할 수 있다.
 

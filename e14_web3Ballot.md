@@ -1,14 +1,14 @@
 ﻿# Chapter 14 웹3 디앱
 
-웹3 디앱은 블록체인과 상호작용하는 분산형 애플리케이션으로 웹에서 작동한다. 블록체인에서 계정 주소와 잔고를 읽고, 이벤트를 통해 잔고의 변화를 관찰하는 작업을 웹에서 구현해보자. 웹지갑을 연결하여, 주소를 읽고 그 주소에서 원격에서 블록체인과 통신할 수 있게 한다. 또한 블록체인에서 투표하는 웹3 디앱을 구현하게 된다.
+웹3 디앱은 웹에서 작동하는 블록체인 기반 애플리케이션이다. 블록체인에서 계정 주소와 잔고를 읽고, 이벤트를 통해 잔고의 변화를 관찰하는 작업을 웹에서 구현해보자. 웹지갑을 연결하여, 주소를 읽고 그 주소에서 원격에서 블록체인과 통신할 수 있게 한다. 또한 블록체인에서 투표하는 웹3 디앱을 구현하게 된다.
 
 # 1. 웹에서 블록체인 연결하기
 
-웹디앱 (Web DApp)은 웹에서 작동하는 분산형 애플리케이션이다. 먼저 웹에 연결이 되어야겠다. 웹은 요청이 있으면, 중앙에서 처리하는 방식을 따른다. 데이터도 중앙에서 제공되고, 처리도 중앙에서 이루어진다. 이러한 중앙 중심적인 웹에 변화가 있다. 분산이 그것이다. 이른바 'Web 3.0' 또는 Web3으로 명명되고, 기존의 웹과는 달리 데이터, 처리능력을 어느 한 중앙에 두지 않고 분산하는 것이다.
+웹디앱 (Web DApp)은 웹에서 작동하는 블록체인 기반의 분산형 애플리케이션이다. 먼저 웹에 연결이 되어야겠다. 웹은 요청이 있으면, 중앙에서 처리하는 방식을 따른다. 데이터도 중앙에서 제공되고, 처리도 중앙에서 이루어진다. 이러한 중앙 중심적인 웹에 변화가 있다. 분산이 그것이다. 이른바 'Web 3.0' 또는 Web3으로 명명되고, 기존의 웹과는 달리 데이터, 처리능력을 어느 한 중앙에 두지 않고 분산하는 것이다.
 
 > 더 알아보기: **Web3**
 
-> Web 3.0은 블록체인에 기반을 둔 월드와이드웹 World Wide Web을 말한다. 
+> Web 3.0은 블록체인에 기반을 둔 차세대 월드와이드웹 World Wide Web을 말한다. 
 Web 3.0이 아직 명확히 정의된 것은 물론 아니다. 웹을 처음 소개한 팀 버너스리는 시맨틱웹을 제안하기도 한다.
 Web 2.0은 중앙처리모델에 따라 작동되고, 사용자가 직접 참여하는 특징을 가진다.
 SNS에 글을 쓰고, YouTube에 영상을 올리고 하지만, 이런 서비스가 소수의 '빅 테크' 기업들에 의해 제공되고 장악되고 있다.
@@ -25,26 +25,28 @@ Web3은 반대의 모델을 따르고 있다. 중앙에서 처리하는 그래�
 
 ### Web3 provider를 준비
 
-이더리움 노드가 되어야 블록체인과 상호작용할 수 없다.
-provider는 이들을 중간에서 이어주는 다리 역할을 한다. 웹3에서 블록체인에 데이터를 provider에게 요청해야 한다. 그러면 provider가 블록체인에 대신해서 요청을 전달한다. provider가 없으면, 이더리움 노드와 블록체인이 직접 상호작용할 수 없다. 
+Web3 provider는 이더리움 또는 다른 블록체인 네트워크와 상호 작용하기 위한 인터페이스를 제공하는 객체이다.
 
-Web3.js 라이브러리를 사용하려면, 먼저 provider 객체를 인식해야 한다. 이를 통해 원격 웹에서 블록체인의 계정 주소를 읽거나 스마트 컨트랙을 호출하는 등의 여러 후속 작업을 수행할 수 있기 때문이다.
+Web3 provider는 이들을 중간에서 이어주는 다리 역할을 한다. 웹3에서 블록체인에 데이터를 provider에게 요청해야 한다. 그러면 provider가 블록체인에 대신해서 요청을 전달한다. provider가 없으면, 이더리움 노드와 블록체인이 직접 상호작용할 수 없다. 
+
+Web3.js 라이브러리를 사용하려면, 먼저 provider 객체를 인식해야 한다. 이를 통해 원격 웹에서 블록체인의 계정 주소를 읽거나 스마트 컨트랙을 호출거나 거래를 전송하는 등의 여러 후속 작업을 수행할 수 있기 때문이다.
 
 provider 객체는 로컬 또는 제3자에게서 제공될 수 있다.
 
 - 자신이 준비한 로컬의 provider를 사용할 수 있다. 이를 위해서는 geth 네트워크를 실행하고, HTTP 또는 Websocket provider를 설정해야 한다. 자신이 사용하게 될 provider를 제공하는 노드 ganache@8345 또는 geth@8445를 띄어놓자.
-- 자신만의 provider 대신 ConsenSys에서 제공하는 Infura provider같은 제 3자 네트워크를 사용할 수 있다. Infura는 테스트망, 공중망에 대해 블록체인 네트워크 기능을 제공하고 있다. 
+- 가장 널리 사용되는 MetaMask 또는 ConsenSys에서 제공하는 Infura provider같은 제 3자 네트워크를 사용할 수 있다. Infura는 테스트망, 공중망에 대해 블록체인 네트워크 기능을 제공하고 있다. 
 
 ## 1.2 웹서버
 
-웹에서 블록체인을 사용하기 위해서는 웹서버가 필요하다. 웹디엡도 웹서버가 필요하다는 점이 의아하게 들릴 수 있다.
-분명하게 알아두자. 웹페이지를 띄우기 위해 웹서버가 필요한 것이고, 웹페이지에서 버튼을 클릭하는 등의 블록체인과의 통신은 분명 분산처리된다.
+웹에서 블록체인을 사용하기 위해서는 웹서버가 필요하다. 혹시 의아하게 들릴 수 있다.
+
+분명하게 알아두자. 웹페이지를 띄우기 위해 중앙집중형 웹서버가 필요한 것이고, 웹페이지에서 버튼을 클릭하는 등의 거래는 블록체인이 웹서버 역할을 하면서 분명 분산처리된다.
 
 웹서버는 보통 80번 포트에서, 서비스의 요청 http requests을 받고, 이를 처리한 후 요청한 측에 responses를 돌려주는 기능을 한다. 여기서는 가벼운 Python의 웹서버를 띄워서 사용하기로 한다.
 
 Python의 웹서버를 띄우기 위해서는 ```python -m http.server``` 명령을 한다.
 
-명령어를 실행하는 위치는 프로젝트 디렉토리로 한다. 프로젝트 디렉토리 기준으로 상대적 경로로 html을 읽기 위해서 그렇다.
+명령어를 실행하는 위치는 프로젝트 디렉토리로 한다. 프로젝트 디렉토리 기준으로 상대 경로의 html을 읽기 위해서 그렇다.
 
 * 기본 포트는 8000번을 사용하지만, 보안이 걱정되면 다른 포트를 사용해도 된다. 이더리움에서 사용하는 포트는 45로 끝나고 있으니 맞추어 8045를 사용해도 좋다.
 * IP 주소는 127.0.0.1 또는 고정 IP를 쓴다.
@@ -109,21 +111,23 @@ Hello Blockchain!
 ```
 
 웹브라우저에 띄우려면, 입력할 url은 ```http://localhost:8045/scripts/testAccount.html``` 이다.
-페이지를 만들고 나서는, 웹브라우저에 url을 입력하여 올바르게 뜨는지 확인해야 한다.
+페이지를 만들고 나서는, 웹브라우에 url을 입력하여 올바르게 뜨는지 확인해야 한다.
 
 위 코드에서 이해가 필요한 필요한 부분에 대해 설명을 해보자.
 
-### 줄1 <!DOCTYPE>
+### 줄1: <!DOCTYPE>
 
-모든 HTML 문서는 ```<!DOCTYPE>```으로 어떤 페이지인지 선언을 한다. DOCTYPE은 문서 형식 선언 (Document Type Declaration)이다.
+모든 HTML 문서는 ```<!DOCTYPE html>``` 선언을 한다. 웹 브라우저에게 해당 문서가 HTML5 버전의 HTML 문서임을 알려주는 문서 형식 선언 (Document Type Declaration)이다.
 
-\<!DOCTYPE\>은 HTML의 태그는 아니다. 웹 브라우저에서 인식해서 어떤 문서인지 파악하고 브라우저가 적절하게 맞춰 화면에 보이도록 만드는 태그라고 이해하자. 
+```<!DOCTYPE>```은 HTML의 태그는 아니다. 웹 브라우저에서 인식해서 어떤 문서인지 파악하고 브라우저가 적절하게 맞춰 화면에 보이도록 만드는 태그라고 이해하자. 
 
 HTML5부터는 html문서는 ```<!DOCTYPE html>```이라고 선언하며, 대소문자 무관하다.
 
-> 잠깐 ```<!DOCTYPE>```이라고만 해주면, window.ethereum 객체가 생성이 되지 않는다! 이 간단한 오류를 바로 잡기 위해 많은 시간이 필요했다고 고백하니 주의한다!
+> 더 알아보기: ```<!DOCTYPE html>```
+>
+> 잠깐 ```<!DOCTYPE>```이라고만 해주면, window.ethereum 객체가 생성이 되지 않는다! 이 간단한 오류를 바로 잡기 위해 많은 시간이 필요했다고 고백하니 주의한다! HTML 문서가 브라우저에서 제대로 작동하지 않거나 예상대로 표시되지 않는다면, 이 선언부를 누락한 것이 원인 중 하나일 수 있으니, HTML 문서의 첫 부분에 ```<!DOCTYPE html>```을 추가하여 문제를 해결하자!
 
-### 줄4 web3js 라이브러리
+### 줄4: web3js 라이브러리
 
 우리가 만드는 웹페이지는 블록체인과 연결하고 사용하기 위해 ```web3.js``` 라이브러리를 사용한다.
 
@@ -163,8 +167,7 @@ web3.js 라이브러리는 **현재 HTML파일을 기준으로 상대 경로**�
 
 (2) CDN을 적어도 된다.
 
-web3.js를 직접 저장하지 않고, 외부 사이트로부터 가져와 사용할 수 있다. 몇 개의 CDN Content Delivery Network에서 제공하고 있고, jsdelvr를 사용할 수 있는데, 버전은 정해서 적어주면 된다.
-(참조 https://github.com/ChainSafe/web3.js)
+web3.js를 직접 저장하지 않고, 외부 사이트로부터 가져와 사용할 수 있다. 자바스크립트의 CDN Content Delivery Network은 대표적으로 Google CDN, Cloudflare CDN, jsDelivr 등이 있으며, 버전은 정해서 적어주면 된다 (참조 https://github.com/ChainSafe/web3.js).
 
 ```python
 <script src="https://cdn.jsdelivr.net/npm/web3@0.20.5/dist/web3.min.js"></script>
@@ -178,13 +181,13 @@ https://cdnjs.cloudflare.com/ajax/libs/web3/1.2.7/web3.min.js
 web3.js는 1.0 이전과 그 이후로 API가 많이 변화했다. 줄5에 주석 처리 했지만, 옛 버전인 0.20을 사용하려면, 
 ```<script src="https://cdn.jsdelivr.net/npm/web3@0.20.5/dist/web3.min.js"></script>``` 를 적는다.
 
-버전을 교체하려면, 간단히 그 부분만 바꿔쓰면 된다.
+현재는 웹3 버전 1.2.5을 사용한다. 버전을 교체하여 이전 0.20.x를 적용하려면 줄4를 주석으로 하고 대신 줄5의 주석을 제거하면 된다.
 
 ```
 <script src="https://cdn.jsdelivr.net/npm/web3@1.2.5/dist/web3.min.js"></script>
 ```
 
-### 줄11 HttpProvider
+### 줄11: 로컬 Web provider를 사용한다
 
 HttpProvider("http://127.0.0.1:8345")를 사용한다. 이를 위해 ganache@8345를 미리 띄워놓아야 한다.
 
@@ -215,7 +218,9 @@ var options = {
 Web3.providers.HttpProvider("http://127.0.0.1:8345", options)
 ```
 
-### 줄12 async/awit
+### 줄12 ~ 15: 비동기 함수로 myFunction()을 클릭하면 호출된다.
+
+줄8의 버튼을 클릭하면 myFunction()을 호출한다.
 
 web3.js 버전이 1.0으로 올라가면서, 명령어에 변화가 있다. 전과 달리, 명령어를 비동기적으로 처리해야 한다. 0.2 버전에서는 계정을 단순하게 호출하면 되었다.
 
@@ -254,7 +259,7 @@ javascript> console.log("hello");
 간단한 명령어 몇가지를 연습해보자.
 ```
 javascript> window.web3 (또는 web3라고 입력해도 동일한 기능을 한다)
-> Proxy(Object) {currentProvider: Proxy(l), __isMetaMaskShim__: true}
+> Proxy(Object) {currentProvider: Proxy(l), __isMetaMaskShim__: true}
 > web3.version (버전을 확인한다)
 1.2.5
 ```
@@ -277,15 +282,23 @@ length: 5
 
 > 더 알아보기: **window object**
 
-> window object는 어느 브라우저에서나 지원하는 객체이고, 브라우저의 윈도우를 의미한다. 모든 자바 객체, 함수, 변수 모두 window객체의 멤버가 된다.예를 들어, console은 window에서 열린 console을 말하며, 'window.console' 또는 그냥 'console'이라고 해도 된다.
+> window object는 웹 브라우저에서 전역 객체이고, 브라우저의 윈도우를 의미한다. 모든 자바 객체, 함수, 변수 모두 window객체의 멤버가 된다.예를 들어, console은 window에서 열린 console을 말하며, 'window.console' 또는 그냥 'console'이라고 해도 된다.
 로그를 쓰려면```window.console.log()``` 또는 ```console.log()``이라고 한다.
-HTML문서가 브라우저에서 열리면 document 객체가 되는데, 이도 마찬가지이다.
+HTML문서가 브라우저에서 열리면 document 객체 (DOM, Document Object Model)가 되는데, 이도 마찬가지이다.
 window.document 또는 그냥 document 같은 의미이다.
 window.document.getElementById("header")는 document.getElementById("header")와 같은 의미이다.
 
 ## 1.5 웹에서 잔고 출력
 
-wei는 $10^{-18}$ ether이다. 자바스크립트에서 wei를 표현하면서 문제가 발생할 수 있다. toWei(), fromWei() 함수는 String 또는 BN을 인자로 받지만, 숫자를 넘겨주면 ```pass numbers as strings or BN objects to avoid precision errors.``` 이런 오류를 만나게 된다.
+```web3.js``` 라이브러리에서는 보통 Wei를 `BigNumber` 객체로 반환한다.
+
+wei는 $10^{-18}$ ether이다. 자바스크립트에서 wei를 표현하면서 문제가 발생할 수 있다.
+
+예를 들어, ```web3.eth.getBalance``` 함수를 사용하여 계정의 잔고를 가져오는 경우, 해당 잔고는 `BigNumber` 객체로 반환된다. `BigNumber` 객체를 사용하여 원하는 형식으로 변환하거나 계산할 수 있다.
+
+web3.eth.getBalance(coinbase)는 wei를 (eth가 아니다), 문자열로 출력한다. BigNumber로 출력하려면 toBN() 함수를 사용한다. 큰 숫자로 연산을 해보자. 100 ETH를 Wei로 변환하면 $100 \times 10^{18}$ 이므로 1e+20이다.
+
+```toWei(), fromWei()``` 함수는 String 또는 BN을 인자로 받지만, 숫자를 넘겨주면 ```pass numbers as strings or BN objects to avoid precision errors.``` 이런 오류를 만나게 된다.
 
 ```
 > web3.utils.toWei(10, 'ether')
@@ -295,14 +308,7 @@ Error: Please pass numbers as strings or BN objects to avoid precision errors.
 '10000000000000000000' 문자열로 출력한다
 ```
 
-web3.eth.getBalance(coinbase)는 wei를 (eth가 아니다), 문자열로 출력한다. BigNumber로 출력하려면 toBN() 함수를 사용한다. 큰 숫자로 연산을 해보자. 100 ETH를 Wei로 변환하면 $100 \times 10^{18}$ 이므로 1e+20이다.
-
 아래 프로그램을 웹에서 로딩해 출력을 확인해보자.
-
-- 줄21 coinbase는 geth@8445에서는 설정되지만, gananche@8345에서는 0으로 설정된다.
-- 줄23 ganache@8345는 10개의 계정주소를 제공한다. 줄24에서 그 배열의 0번째를 coinbase로 설정한다.
-- 줄26 잔고를 출력한다.
-- 줄30 일부러 아주 큰 값,  또한 10^100^을 더 곱해주면 1e+120, 자릿수가 큰 숫자가 된다.
 
 ```python
 [파일명: scripts/testBigNumber.html]
@@ -336,12 +342,12 @@ web3.eth.getBalance(coinbase)는 wei를 (eth가 아니다), 문자열로 출력�
 줄24     coinbase = account[0];
 줄25     document.getElementById("coin0").innerHTML = "coinbase now from account0: " + coinbase;
 
-줄26     var balanceWei = await web3.eth.getBalance(coinbase);   //already string
+줄26     var balanceWei = await web3.eth.getBalance(coinbase);   //BigNumber 객체를 반환
 줄27     console.log(balanceWei * (10**10));
 줄28     var balanceWeiBN = web3.utils.toBN(balanceWei);
 줄29     document.getElementById("wei").innerHTML = "wei: " + balanceWei;
 줄30     document.getElementById("weiBN").innerHTML = "wei BN: " + balanceWeiBN*(10**100);
-줄31     document.getElementById("weiBigNumber").innerHTML = "wei BigNumber: " + BigNumber(balanceWeiBN*(10**100));  //already string
+줄31     document.getElementById("weiBigNumber").innerHTML = "wei BigNumber: " + BigNumber(balanceWeiBN*(10**100));
 줄32     document.getElementById("weiString").innerHTML = "wei in string: " + balanceWei.toString(); //no need toString
 줄33     var balanceEth = web3.utils.fromWei(balanceWei, 'ether');
 줄34     document.getElementById("eth").innerHTML = "eth: " + balanceEth;
@@ -353,34 +359,25 @@ web3.eth.getBalance(coinbase)는 wei를 (eth가 아니다), 문자열로 출력�
 줄39 </html>
 ```
 
+- 줄21 비동기적으로 실행되어 coinbase를 가져온다. coinbase는 geth@8445에서는 올바르게 설정되지만, gananche@8345에서는 0으로 설정된다.
+- 줄23 ganache@8345는 10개의 계정주소를 제공한다. 줄24에서 그 배열의 0번째를 coinbase로 설정한다.
+- 줄26 비동기적으로 실행되어 지갑의 잔액을 가져와 콘솔에 출력한다.
+- 줄28 특정 주소(coinbase)의 잔고를 BigNumber 객체로 변환한다. 이렇게 하면 잔고를 안전하게 다룰 수 있다.
+- 줄30 일부러 아주 큰 값, 또한 10의 100 제곱을 더 곱해주면 1e+120, 자릿수가 큰 숫자가 된다.
+
 # 2. 메타마스크(MetaMask)
 
-블록체인의 거래는 완성되려면 디지털사인을 해야 하고, 키를 필요로 한다. 원격 웹에서의 거래, 송금을 하거나 투표를 하는 경우에는 자신의 키를 어디에서 가져올 것인지 생각해봐야 한다. 지금까지 사용해오던 로컬의 지갑을 사용하기 보다는 웹 지갑이 편리하다.
+블록체인의 거래를 완성하기 위해서는 디지털사인이 필요하고, 사용자의 키 또한 필요하다. 원격 웹에서의 거래, 송금을 하거나 투표를 하는 경우에는 자신의 키를 어디에서 가져올 것인지 생각해봐야 한다. 지금까지 사용해오던 로컬지갑보다는 웹 지갑이 편리하고, 보안을 위해서는 마땅히 그래야 한다.
+ 
+웹 지갑은 사용자가 편리하게 블록체인 거래를 할 수 있도록 도와주지만, 이 과정에서 보안 문제가 발생할 수 있다. 예를 들어, 웹브라우저에서 키를 읽어 온다고 하자. 웹서버가 온라인 상태라면 사용자의 개인 키가 서버에 저장되거나 노출될 수 있는 위험이 있다.
 
-많이 사용되는 지갑으로는 MetaMask Wallet, Trust Wallet을 꼽을 수 있다.
-
-Trust Wallet은 iOS, Android에서 사용하는 반면 메타마스크는 모바일과 웹브라우저 확장으로 제공된다. 메타마스크는 웹브라우저에 설치하는 지갑으로 블록체인에 연결하기 위해 필요하다.
-
-이들 웹지갑을 사용하면, 웹브라우저에서 키를 읽어 오기때문에, **웹서버가 떠 있어야 기능**할 수 있다.
-이 키를 가지고 블록체인 거래를 사인하고, 사적키를 안전하게 관리해서, 쉽게 노출되는 것을 막을 수있다.
-
-잠깐 생각해보자. http provider를 통하면 자신의 키로 사인해야 하는 경우가 발생하기 마련이다 (http provider는 로컬이든 고정 IP이든 거기 내장된 키를 가지고 있다는 것을 기억하자). 이 경우 메타마스크(MetaMask)에 연결하면, 지갑에 저장된 키를 가져와 사인할 수도 있다.
-
-사적키는 덜 하지만 공적키는 보안이 엄중하게 지켜져야 하므로, 다른 사람의 키를 알아내거나 이를 다른 웹페이지에서 오용하도록 하면 곤란하다. MetaMask RPC 방법을 이용하여 안전하게 사인을 하거나 암호화를 할 수 있게 된다.
-
-> 암호화폐 지갑
-
-> 암호화폐를 거래하려면 보관할 곳이 있어야 한다. 비트코인이나 이더리움도 마찬가지이며, 이런 보관할 장소를 지갑 wallet이라고 한다.
-우리가 가지고 다니는 지갑과 같은 용도이지만, 소프트웨어로 구현되었다는 차이가 있다.
-(1) 종이, (2) 데스크탑, (3) 모바일, (4) 웹, (5) 하드웨어 다양한 형태로 제공된다.
-특히 Ledger Nano X와 같은 하드웨어 지갑은 소프트웨어가 아니라서, 해킹의 위험이 없어 매우 안전하다고 하겠다.
-MyEtherWallet이나 우리가 사용하는 메타마스크는 웹에서 사용될 수 있다.
-한국의 웹지갑도 사용할 수 있다. 카카오에서 제공하는 클레이튼 블록체인의 카이카스 지갑을 예로 들 수 있다.
+메타마스크와 같은 웹 지갑은 사용자의 개인 키를 안전하게 관리하고, 거래를 사인하고 암호화하는 과정은 사용자의 승인이 있어야 가능하고 로컬 컴퓨터에서만 이루어져서, 외부로 노출되는 위험이 줄어든다.
 
 ## 2.1 메타마스크 설치
 
-자신의 이더리움 노드가 필요없다. 즉 로컬에 이더리움을 설치하고, 블록체인을 동기화할 필요가 없다.
-크롬 또는 Edge의 확장팩으로 설치한다.
+메타마스크는 자신의 이더리움 노드가 필요없어 로컬에 이더리움을 설치하거나 동기화할 필요가 없다.
+
+간단히 크롬이나 Edge 브라우저의 확장 프로그램으로 설치하여 사용할 수 있다.
 
 이 때 12 단어를 입력해야 한다. 이 구문은 시드(seed)로 이를 암호화하여 키를 생성하게 된다. 이 구문은 키 복구 구문(Secret Recovery Phrase)으로, 메타마스크를 삭제했거나 문제가 있어서 키를 복구할 때 사용될 수 있다.
 
@@ -440,11 +437,11 @@ pjt_dir> geth account import metakey.prv (MetaMask에서 내보낸 키)
 
 ### 메타마스크는 ethereum 객체를 만들어 준다
 
-메타마스크가 설치되었으면, 웹페이지가 뜨면서, ethereum 객체를 생성해서 'window' 객체에 하위로 밀어 넣어주어 'window.ethereum'을 생성하게 된다.
+메타마스크가 설치되었으면, 웹페이지가 뜨면서, ethereum 객체를 생성해서 'window' 객체에 하위로 할당하여 ```window.ethereum```을 생성하게 된다.
 
-코드에서 보듯이 설치 여부는 ```if (ethereum)``` 또는 ```if (typeof window.ethereum !== 'undefined')```, 즉 ethereum 객체가 이미 있는지 그렇다면 메타마스크가 설치되어 있다는 의미인 것이다.
+설치 여부를 확인하기 위해서는 ```if (ethereum)``` 또는 ```if (typeof window.ethereum !== 'undefined')```, 즉 ethereum 객체가 이미 있는지 그렇다면 메타마스크가 설치되어 있다는 의미인 것이다.
 
-ethereum.isMetaMask는 메타마스크가 떠 있는지 여부를 알려준다. 혹시 연결이 안되면 메타마스크 여우 아이콘에 마우스 오른쪽 버튼을 눌러 "This can read and change site data" > "On all sites"를 선택하여 권한을 해제한다.
+```ethereum.isMetaMask```는 메타마스크가 떠 있는지 여부를 알려준다. 혹시 연결이 안되면 메타마스크 여우 아이콘에 마우스 오른쪽 버튼을 눌러 "This can read and change site data" > "On all sites"를 선택하여 권한을 해제한다.
 
 주의: ```<p id="metamaskInstall">```가 먼저 위치해야, 다음에 따라오는 script가 실행될 때 그 id명을 인식한다.
 
@@ -460,10 +457,10 @@ ethereum.isMetaMask는 메타마스크가 떠 있는지 여부를 알려준다. 
 <body>
     <p id="metamaskInstall"></p>
     <script>
-        if (ethereum) {
+        if (ethereum) { --> 설치되어 있다면
             document.getElementById("metamaskInstall").innerHTML = "MetaMask is installed... " + ethereum.isMetaMask;
         }
-        else {
+        else { --> 설치되어 있지 않다면
             document.getElementById("metamaskInstall").innerHTML = "MetaMask is not installed..." + ethereum.isMetaMask;
         }
     </script>
@@ -482,7 +479,9 @@ Proxy {_events: {…}, _eventsCount: 1, _maxListeners: 100, _log: u, _state: {�
 
 ### window.onload로 해도 된다
 
-이번에는 이벤트를 잡아서 해보자. ```window.onload``` 윈도우가 뜨는 시점에 설치여부를 판단하는 것이다.
+이번에는 윈도우가 뜨는 시점에 설치여부를 판단할 수 있다.
+
+window.onload 이벤트 핸들러는 웹 페이지의 모든 리소스가 로드되고 브라우저가 준비되었을 때 실행되어, 이 시점에 메타마스크가 설치되었는지 확인한다.
 
 ```python
 [파일명: scripts/metamaskEthereumOnLoad.html]
@@ -510,13 +509,15 @@ Proxy {_events: {…}, _eventsCount: 1, _maxListeners: 100, _log: u, _state: {�
 
 # 3. 웹지갑의 활용
 
-## 3.1 provider를 인식
+## 3.1 provider 인식
 
-### 메타마스크의 ethereum 객체
+### 이전에는 window.web3 객체가 자동으로 주입된다 
 
-이전 방식은 ```if(window.web3)``` 명령어로 ```window.web3```가 만들어졌는지에 따라 설치 여부를 확인한다. 설치되었으면, 만들어진 window.web3를 새롭게 new Web3(window.web3.currentProvider)로 재설정한다.
+이전에는 Web3 provider나 MetaMask를 통해 window.web3 객체가 자동으로 웹 페이지에 주입되었다. 
 
-currentProvider는 말 그대로 Web3.js에서 초기화하면서 적용된 현재 프로바이더를 말한다.
+```if(window.web3)``` 명령어로 ```window.web3```가 만들어졌는지에 따라 설치 여부를 확인하는 절차가 필요하다. 설치되었으면, 만들어진 window.web3를 새롭게 new Web3(window.web3.currentProvider)로 재설정한다.
+
+이전에 사용되던 방식에 따라 window.web3 객체를 사용하는 코드는 다음과 같다.
 
 ```
 const Web3 = require("web3");
@@ -526,10 +527,17 @@ if (window.web3) { // window.web3가 자동으로 inject되었는지
 }
 ```
 
-앞으로는 이렇게 한다.  EIP-1102, EIP-1193에 따라 MetaMask, Status 또는 Ethereum 호환 브라우저와 같은 Ethereum providers가 공통적으로 따라야 하는 표준을 정하였다. 모두 window.ethereum를 inject해주어야 하고, window.ethereum이 provider가 된다. 따라서 더 이상 currentProvider를 확인할 필요가 없다.
+### 현재는 window.web3 대신 window.ethereum가 주입된다.
 
-웹페이지가 열리면서 MetaMask는 window.ethereum 객체를 생성하게 되고 이를 통해 web3를 생성하면 된다.
-ethereum.enable()도 더 이상 지원되지 않는다.
+EIP-1102, EIP-1193에 따라 MetaMask, Status 또는 Ethereum 호환 브라우저와 같은 Ethereum providers가 공통적으로 따라야 하는 Ethereum 계정에 대한 접근을 관리하는 방식을 표준화하여 편의성을 높이고 보안을 강화하고 있다.
+
+최신의 방식은 window.web3가 주입되지 않고 window.ethereum를 주입해주어야 하고, window.ethereum이 provider가 되고 이로부터 사용자가 직접 web3 객체를 생성한다.
+
+따라서 자동 주입되기 때문에 이더리움 연결을 활성화하기 위한 ethereum.enable()도 필요한 경우에만 호출한다. 사용자는 필요한 경우 MetaMask나 기타 Ethereum 지갑에서 직접 권한 부여를 승인한다.
+
+currentProvider는 말 그대로 Web3.js의 초기화 과정에서 브라우저나 Node.js 환경에서 현재 설정된 프로바이더를 말하는데, 이도 더 이상 확인하지 않아도 된다.
+
+아래 코드는 최신 표준을 준수하여, window.ethereum을 통해 이더리움 프로바이더에 접근하여 Web3 객체를 생성하고 있다.
 
 ```
 const Web3 = require("web3");
@@ -538,7 +546,15 @@ if (window.ethereum) { // window.ethereum이 provider이므로 currentProvider�
 }
 ```
 
-### 13.3.2 provider에 따른 계정주소
+>   더 알아보기: EIP-1102와 EIP-1193
+
+> 이 두 EIP (이더리움 개선 제안)는 이더리움 애플리케이션과 브라우저 확장 프로그램 간의 통합을 향상시키기 위해 만들어진 표준화 개선 제안이다.
+
+> EIP-1102는 이제 ```window.ethereum```을 통해 현재 연결된 Ethereum providers를 확인할 수 있게 된다.
+> EIP-1193는 자바스크립트로 이더리움과 상호 작용하기 위한 표준 인터페이스를 정의한다.
+> 따라서 EIP-1102와 EIP-1193는 Ethereum providers와 애플리케이션이 상호 작용하는 방식을 표준화하고 개선하기 위한 노력의 일환이고, 그에 따라서 `currentProvider`를 확인하는 것은 더 이상 필요하지 않을 수 있고 대신 `window.ethereum`을 통해 현재 연결된 Ethereum 프로바이더에 액세스할 수 있다.
+
+## 3.2 provider에 따른 계정주소
 
 다음 코드는 provider를 경우의 수에 따라 설정하고 있다.
 
@@ -570,12 +586,15 @@ ethereum에서는 ```ethereum.request(({ method: 'eth_requestAccounts' })```라�
 <p id="coin"></p>
 
 <script>
+    // window.ethereum이 생성되어 있는 경우 (MetaMask가 설치되어 있는 경우)
     if (window.ethereum) {
         window.web3 = new Web3(window.ethereum); //window.ethereum is a provider itself
         document.getElementById("conn").innerHTML = "connected to MetaMask!";
+    // window.web3가 생성되어 있는 경우 (기존에 web3가 밀어 넣어져 있는 경우)
     } else if (typeof window.web3 !== 'undefined') {
         window.web3 = new Web3(web3.currentProvider);
         document.getElementById("conn").innerHTML = "connected to currentProvider";
+    // 로컬 provider에서 web3를 생성하는 경우
     } else {
         window.web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:8345"));
         document.getElementById("conn").innerHTML = "connected to Local Host";
@@ -644,6 +663,7 @@ const options = {
 ```
 
 이러한 설정을 넣어서, 물론 생략할 수도 있지만, 웹소켓을 연결할 수 있다.
+
 ```
 const ws = new Web3.providers.WebsocketProvider('ws://localhost:8546', options);
 ```
@@ -656,10 +676,15 @@ logs에서 이벤트를 읽을 때 web3 버전 1.x에서는 ```web3.eth.subscrib
 
 이전에는 이벤트가 발생했는지 계속 확인하는 방식이었으나, web3 1.x에서는 push방식으로 이벤트가 발생하면 구독한 채널에 알려주면 된다.
 
-### newBlockHeaders를 리스닝
-현재는 계정에 대해 발생하는 이벤트는 logs에서 구독하지 못한다. 따라서 'newBlockHeaders'에 대해 이벤트를 구독한다.
+HttpProvider는 이벤트를 실시간으로 추적하는데 적합하지 않다. HTTP 프로토콜은 단방향 통신을 지원하기 때문에, 클라이언트는 서버에서 응답을 받는 것만 가능하다.
 
-"newBlockHeaders"는 block header가 추가되는지 구독할 경우. 블록이 추가될 때 시간을 읽어낼 수도 있다.
+이와는 달리, 웹 소켓(WebSocket)은 이벤트를 실시간으로 감지하고 처리할 수 있다.
+
+### ```newBlockHeaders```를 리스닝
+
+현재는 계정에 대해 발생하는 이벤트는 logs에서 구독하지 못한다. 따라서 ```newBlockHeaders```에 대해 이벤트를 구독한다.
+
+```newBlockHeaders```는 새로운 블록이 생성될 때마다 발생하는 이벤트이다. 새로운 블록의 헤더 정보를 포함하고 있으며, 블록의 높이, 해시, 시간 정보 등을 제공한다.
 
 ### 이벤트 발생
 
@@ -755,6 +780,7 @@ balanceSubscription.html이 열려 있는 상태에서 나란히 MetaMask를 열
 
 
 웹서버 단말로 가서 balanceSubscription.html이 200 코드로 성공적으로 실행되었는지 확인한다.
+
 ```python
 pjt_dir> python -m http.server 8000
 Serving HTTP on 0.0.0.0 port 8000 ...
@@ -787,18 +813,20 @@ connected: 0x1
 
 # 5. 투표 웹디앱
 
-현장 인증과 투표 용지의 기표와 달리, 블록체인 투표에서는 본인의 개인키로 인증하고 온라인으로 기표하여 기록된다. 그 과정은 누구나 선관위 뿐만 아니라, 권한이 허용되면 후보자이든 참관인이든 공개될 수 있다.
+블록체인을 활용한 온라인 투표 시스템은 실제 투표 방식과 몇 가지 다른 점이 있다.
 
-전자투표하고 무엇이 다를까? 블록체인을 적용한 투표는 개인정보가 보호되고, 해킹으로부터 안전하고, 위변조 가능성이 거의 없다.
+- 개인 키를 사용하여 투표를 인증하므로 투표자의 신원은 보호되고,
+- 블록체인은 분산된 데이터베이스로 구성되어 있어 한 곳에 집중된 공격으로부터 안전하고,
+- 거래 기록을 불변하게 기록하므로 데이터의 위변조가 거의 불가능하고,
+- 투표 과정은 선관위 뿐만 아니라, 권한이 허용되면 후보자이든 참관인이든 공개될 수 있다.
 
 블록체인을 적용한 투표가 시행되고 있고, 그런 사례가 이미 오래 전부터 여러 차례 보고되고 있다 (2016년 8월 30일 Forbes 기사 "Block The Vote: Could Blockchain Technology Cybersecure Elections?"). 한국에서도 정부가 2019년 시범서비스를 시행하고, 그 후 주민 투표 시스템을 도입하고 있다.
 
-그럼에도 불구하고, 실물투표가 아닌 온라인 투표라는 점에서 '심리적 신뢰'를 완전하게 얻은 대안이 되려면 도전적인 시행과 평가가 선행되어야 할 것이다.
+그럼에도 불구하고, 실물투표가 아닌 온라인 투표라는 점에서 '심리적 신뢰'를 완전하게 얻은 대안이 되려면 도전적인 시행과 평가가 선행되어야 한다.
 
 ## 5.1 투표 컨트랙 개발
 
-투표와 관련 ERC1202이라는 표준이 제안되고 있고 적용될 수 있다.
-여기서는 Solidity의 샘플 코드를 수정해서 제작해보자.  
+투표와 관련 ERC1202이라는 표준이 제안되고 있지만, 여기서는 Solidity의 샘플 코드를 수정해서 제작해보자.
 
 투표 컨트랙에는 다음 함수를 구현한다.
 
@@ -810,10 +838,10 @@ connected: 0x1
 
 블록체인을 적용한 웹 투표가 매력적이지만, 구현에 앞서 몇 가지 문제를 생각해 볼 필요가 있다.
 
-* 투표 비용 gas를 투표자 또는 선관위 누구의 부담으로 할지 기준이 필요하다.
+* 투표 및 투표 결과 기록에는 gas비용이 발생하고, 투표자 또는 투표 시스템 운영자 누구의 부담으로 할지 기준이 필요하다. 일반적으로는 투표 시스템 운영자가 gas 비용을 부담하는 경우가 많다.
 * 온라인 투표 과정을 사진으로 찍고 공유하는 문제에 대한 기준이 필요하다.
-* 1인 1표의 원칙에 따라 유권자가 복수 계정을 발급받아 투표하는 것을 막을 수 있어야 한다.
-* 유권자 검증을 위해, 개인정보, 시간 및 위치정보 등을 보관이 필요할 수 있다.
+* 1인 1표의 원칙을 준수하는 방안이 있어야 한다. 유권자의 신원확인을 위한 고유한 식별자가 필요하고 또한 복수 계정을 발급받아 투표하는 것을 막을 수 있어야 한다.
+* 유권자 검증을 위해, 개인정보, 시간 및 위치정보 등을 저장할 필요할 수 있다. 단 개인정보보호를 위한 암호화 및 보안이 필요하다.
 
 ```python
 [파일명: src/Ballot.sol]
@@ -1054,6 +1082,7 @@ hash: 0x0c1f073b4357d8f7c5bb3ef24228d837047a2b4adea3316926d81a8b52c81450
 앞서 만든 컨트랙을 배포하고, 이제 그 API를 호출해서 출력을 확인해보자.
 
 줄2~3 이벤트를 포착하려면 웹소켓이 필요하다.
+
 - WebSocket은 ws://로 해야 한다. ```http://``` 로 하지 않도록 한다.
 - 웹소켓 연결은 이벤트를 무한 대기하기 때문에, 단말이 흡사 작동되지 않는 것처럼 보일 수 있다. 불편하면 http provider를 사용하면서 출력을 확인해도 좋다.
 이벤트 발생은 다음 웹 앱에서는 페이지에 출력이 잘 되고 있다.
@@ -1136,6 +1165,7 @@ doIt()
 ```
 
 ### 마이닝이 끝나면 결과가 출력된다.
+
 ganache가 아니면, 마이닝이 반드시 필요하다.
 트랜잭션이 3회 발생하므로, 계정 해제가 건별로 이루어진 경우 오류가 발생할 수 있다.
 
