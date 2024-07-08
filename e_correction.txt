@@ -1,0 +1,1131 @@
+
+블록체인 프로그래밍 교정 2024-07-09 07:00
+
+----------전체
+- 본문에서도 코드는 회색으로 해주세요
+- 실습문제가 모두 회색입니다. 코드를 구분하기 어려워요 ==> 코드는 회색으로 변경해 주세요.
+- 코드 - 라인번호를 넣어주세요 (일련번호로)
+- 코드의 줄 설명 부분의 형식이 (1) 표 (예 표8-2) 또는 (2) 그냥 텍스트로 작성되어 있어요. 일괄적으로 읽기 좋은 표로 하거나 다른 스타일을 적용해서 작성할 수 있나요?
+- 코드의 주석부분이 보기 불편해요 (특히 주석이 줄바꿈하면 더 그래요). 스타일을 적용해 정돈된 느낌으로 변경해 주세요.
+- 스타일이 깨져 있는 부분 (특히 코드 부분). 오히려 원본보다 읽기 불편한 부분이 많아요.
+	- https://github.com/smu405/smu 웹페이지를 열어보면 원본의 마크다운파일(확장자 .md)이 저장되어 있어요. 파일은 숫자로 시작는데 챕터입니다.
+	- 원본 마크다운은 그냥 클릭하면 웹페이지로 열립니다. 열어서 스타일을 참조하면 됩니다.
+
+----------1장
+
+- 4 그림 1-1: Note 수직선 2개 제거
+- 5: 2.1 블록체인이란? 블록체인은 거래 데이터와 해시값으로 구성된 블록들의 연결
+	==> 2.1 블록체인이란?
+		블록체인은 거래 데이터와 해시값으로 구성된 블록들의 연결
+- 8:‘마이닝(mining)한다.’는 말이 ==> ‘마이닝(mining)’이라는 말이
+- 12 밑4줄: 이더리움(ethereum) ==> 이더리움
+- 13: 최근 CBDC(Central Bank Digital Currency) 중앙은행이 발행한 디지털 화폐에 대해
+	==> 최근 중앙은행이 발행한 디지털 화폐 CBDC (Central Bank Digital Currency)에 대해
+- 22: 그림 1-5 이더리움 거래건수
+- 23: 그림 1-6 이더리움 블록체인 규모 (단위: GB)
+
+----------2장
+- 31 밑7: 금액을 지급하고 받을 수 있게 된다 ==> 입출금이 가능하게 된다.
+- 32 줄4: 삭제
+- 32 그림2-1 삭제 (조교수님 교정에 동의합니다)
+- 33 줄8~10: 블록체인이 적용되면, 농장에서 커피를 원장에 매물로 올려 놓는다. 공급망 기록은 단계별로 진행된다. 원 ==> 삭제
+
+- 38 표 2-3 삭제
+
+- 41 밑13:
+
+	Geth는 이더리움(Ethereum)을 Go 언어로 구현하며, 맥에서는 패키지 설치 관리자의
+	brew를 이용해 설치하면 편리하다.
+
+	==>
+
+	책에서는 Ethereum v1.8 버전을 설치하고 있으나, v1.10까지도 문제가 없다. PoW에서 PoS로 이행하면서 v1.11부터는 지원 서비스의 변화가 있거나 (예: Personal API 제거), 테스트망이 교체되고 있다 (예: Ropsten이 제거).
+
+	맥에서는 패키지 설치 관리자의 brew를 이용해 설치하면 편리하다.
+
+- 43 줄7 다음에 새로운 문단 추가:
+	것이므로 설치해보자.
+	==>
+	것이므로 설치해보자.
+	
+	이 책에서는 0.8.x 대의 버전을 사용하고 있다. 아직 솔리디티 언어는 발전하고 있다. 최신 버전을 설치하면 명령어에 차이가 있을 수 있으니 주의해야 한다. 경우에 따라서는 안정성 문제로 낮은 버전 0.5 또는 0.4.25를 설치하여 사용하기도 한다.
+
+- 43 줄8:
+	입력해서 Solidity를 설치한다.
+	==>
+	입력해서 Solidity를 설치한다. 뒤에 이런 식으로 solc=0.8 특정 버전을 붙여 명시할 수 있다.
+
+- 43 줄11:
+	과 같이 Solidity를 설치한다.
+	brew install solidity(@4 특정 버전을 정해서 설치하려면 solidity@4)
+	==>
+	과 같이 Solidity를 설치한다. 뒤에 이런 식으로 solidity@0.8 특정 버전을 붙여 명시할 수 있다.
+	brew install solidity
+
+- 43 밑2: 이 책에서는 0.8 이상의 버전을 사용하고 있다. ==> 삭제
+
+- 44 줄4: 아직 솔리디티 언어는 발전하고 있다. 최신 버전을 설치하면 명령어에 차이가 있을 수
+있으니 주의해야 한다. 경우에 따라서는 안정성 문제로 낮은 버전 0.5 또는 0.4.25를
+설치하여 사용하기도 한다. ==> 삭제
+
+----------3장
+
+52 표3-2:
+- 1 Frontier main 칸:
+	2016년 3월 Homestead로 업그레이드
+	==> 
+	2016년 3월 Homestead로 업그레이드, 2023년 10월 PoW 지원이 종료되고, Clique PoA로 업그레이드
+
+- 3 Ropsten 칸:
+	Homestead의 테스트 네트워크. 2016년 발표. 스위치를 –testnet으로 주면 접속할 수 있다(최신 버전에서는
+	--ropsten으로 그냥 명칭을 적어준다).
+	==> 
+	2016년 발표된 Homestead의 테스트 네트워크. 접속하는 스위치를 버전에 따라 --testnet, --ropsten으로 적어주었으나, 여러 공격으로 불안정해져서 결국 2022년 말 지원이 중단되고 2023년 2월 발표된 v1.11에서 --ropsten 스위치가 제거되었다. PoW 테스트네트워크는 --sepolia로 접속한다 (네트워크 ID: 11155111)
+
+- 4 Rinkeby 칸
+	PoA(Proof of Authority) 방식을 적용하고, --rinkeby 스위치로 접속할 수 있다.
+	==>
+	PoA (Proof of Authority) 방식을 적용하고, 2023Q2에 제거되고 대신 --goerli를 사용한다 (네트워크 ID는 5번)
+
+53 밑10: ‘획득할 수도’라고 했을까 ==> ‘획득할 수도 있다’라고 했을까
+
+54 줄13: https://ethstats.net/ ==> https://ethstats.dev/
+
+56 밑5: 
+	현재 운영되는 메인 네트워크 Homestead에 대응되는 테스트 네트워크는 Ropsten이다.
+	앞서 보듯이, 현재 사용할 수 있는 테스트 네트워크는 Ropsten 외에도 Kovan, Rinkeby가 있다.
+	==>
+	PoW를 적용한 메인 네트워크 Homestead에 대응되는 테스트망은 Ropsten (v1.11에서 제거), Sepolia가 있다. 
+	PoA를 적용한 Serenity의 테스트망은 Goerli (Rinkeby를 대체)가 있다.
+
+57 줄2:
+
+	최신 버전에서는 geth --ropsten이라고 해야 한다.
+	==>
+	버전에 따라 스위치를 선택하면 되는데, geth --ropsten (ropsten이 제거되면 sepolia)이라고 적어준다.
+
+57 줄7: ```geth --ropsten``` ==> geth --ropsten)
+
+59 밑5:
+	faucet에서 Robsten 계정을 충전하는 것은 어렵지 않다. 말 그대로 수도꼭지를 틀어달라고 요청하면 된다.
+	https://faucet.ropsten.be/에 접속하여 자신의 계정으로 충전을 요청할 수 있다.
+	==>
+	faucet에서 충전하는 것은 어렵지 않다. 말 그대로 수도꼭지를 틀어달라고 요청하면 된다. 사용하는 테스트망의 faucet을 인터넷 검색, 접속하여 자신의 계정으로 충전을 요청할 수 있다.
+
+- 62 밑3: 마이닝 난이도로서 당연히 높으며, 마이닝하려면 오래 걸린다. ==> 마이닝 난이도로서 클수록 오래 걸린다.
+
+- 63 줄2: Alloc ==> alloc
+
+- 64 줄5: ‘#’ 이후의 문자열은 모두 삭제한다. ==> ‘#’ 기호 이후부터 줄 끝까지의 내용은 삭제한다.
+- 64 줄6~7:
+	예를 들어, “chainId”: 412, # 5 이상의 숫자만 사용하는 이 문장은 # 이후의 주석을
+	제거하고 ---> “chainId”: 412, 이렇게 저장하자.
+	==> 삭제 (조교수님 의견도 삭제)
+
+68 줄3:
+	원격접속을 허용하려면 rpc 옵션을 명시해 주어야 한다. 그 방식을 rpc 또는
+	websocket으로 설정할 수 있다. 원격에서 온라인으로 연결할 때 사용하는 방법인데,
+	웹 페이지에서 geth를 사용하는 것이 좋은 예이다.
+	==>
+	원격접속을 허용하려면 rpc 또는websocket으로 설정할 수 있다.
+	웹 페이지에서 geth를 사용하는 것이 원격접속의 예이다.
+
+68 밑6: 1.10 버전에서는 ==> 버전 1.10에서는
+
+70 밑11: 코드 분리 (코드니까 회색을 유지)
+	--http --http.addr "xxx.xxx.xxx.xxx" --http.port "8445" --http.corsdomain "*" \
+	--http.api "admin,db,eth,debug,miner,net,shh,txpool,personal,web3" \
+	
+	==> 
+	
+	--http --http.addr "xxx.xxx.xxx.xxx" --http.port "8445" --http.corsdomain "*" \
+	--http.api "admin,db,eth,debug,miner,net,shh,txpool,personal,web3" \
+
+	리눅스 쉘스크립트 파일 _gethNow.sh로 저장한다. 실행하기 위해 확장자 .sh를 사용한다.
+
+71 줄7:
+	리눅스는 쉘로 만들어서 다음과 같이 실행한다. 파일의 확장자가 .sh로 끝나고 있고, 이런 쉘 파일을 실행하기 위해서는 sh라고 앞에 적어준다.
+	==>
+	파일의 확장자가 .sh로 끝나는 쉘 파일은 sh라고 앞에 적어주어 다음과 같이 실행한다.
+
+72 줄6:
+	매 거래마다 계정을 풀어놓을 수 있지만, 아예 풀어 놓으면 위험하기는 하겠지만(사설망에서는 가치를 가지고 있지 않으니 굳이 위험하지도 않겠다), 간편하므로 이렇게 해제해 놓으면 편리하다.
+	==>
+	매 거래마다 잠금을 풀면 보다 안전하겠지만, 사설망에서는 화폐가치가 없으니 이런 식으로 아예 해제해 놓으면 편리하다.
+
+72 줄7: 
+	이런 계정해제 스위치는 rpc 또는 ws를 활성화하면 사용할 수 없다. unlock을 시도하면 “Fatal:
+	Account unlock with HTTP access is forbidden!” 오류 메시지가 발생한다. 대신
+	에 --allow-insecure-unlock을 사용하자.
+
+	==>
+
+	unlock하면서 “Fatal:Account unlock with HTTP access is forbidden!” 오류 메시지가 발생할 수 있다.
+	--allow-insecure-unlock을 사용하여 잠금해제를 허용해주자. 이런 잠금해제는 원격 rpc 또는 ws의 접근을 감안하여 보안에 주의한다.
+
+74 밑2: eth/keystore 디렉토리에는 사적키가 저장되어 있다. ==> 이 부분을 흰색 본문으로 해주세요.
+
+75 줄1~9: 9줄 (아래 내용) 중복이므로 삭제하세요.
+
+	-rwxr-xr-x 1 jsl jsl 8538 3월 11 22:30 transactions.rlp 거래 목록이 저장된다.
+	eth/keystore 디렉토리에는 사적키가 저장되어 있다.
+	pjt_dir> ls -l ./eth/keystore/
+	total 8
+	-rw------- 1 jsl jsl 491 1월 4 06:57 UTC--2019-01-03T21-57-03.966937024Z--21c704354d07f804bab01894e8b4eb4e0eba7451
+	-rw------- 1 jsl jsl 491 1월 4 10:40 UTC--2019-01-04T01-40-01.674920065Z--778ea91cb0d0879c22ca20c5aea6fbf8cbeed480
+
+75 밑9: (조교수님 수정 반영하지 않아도 돼요)
+	사설망에서는 굳이 충전하기 위해 무료로 테스트용 이더리움을 받을 수 있는 faucet 서비스를 이용할 필요가 없다.
+	==> 
+	사설망에서는 굳이 충전을 위한 faucet 서비스를 이용할 필요가 없다.
+
+76 줄1: 그림 3-3 ==> 그림 3-3: 마이닝 로그(좌측), 마이닝 하고 나서의 잔고 변화 (우측)
+
+77: 그림 3-4 제목추가, 그리고 위치 이동 (72쪽 줄5 이후 쯤으로 'geth 사설망 접속' 다음으로 이동)
+	그림 3-4: geth 접속과 잠금해제 화면 (아래를 보라. Unlocking account 0 Attempt 1/3 잠금해제 시도 1회 메시지, 다음 줄 Passphrase: 이 부분에 비밀번호를 입력한다)
+
+81 줄 3: 맨 뒤 다음 내용 추가하세요 (조교수님 수정 내용 반영한 후)
+	(참고: 버전 v1.11부터 static-nodes.json 파일을 이용한 설정은 없어진다)
+
+----------4장
+
+- 88 줄7: 이해가 쉬울 수 있다. ==> 이해하기 쉽다.
+
+- 88 밑1~89 줄27: 줄 맞추어서 컬럼3개로 맞추어 주세요 (보기 좋게) (92 밑12~의 부분, 96 줄10~ 부분. 97 밑8~ 부분도 동일)
+
+- 92 줄4~5: pjt_dir> 이 부분은 코드 (코드 스타일로 해주세요.)
+
+- 95 밑10:
+	(2) /static-nodes.json 파일에 enode를 적어서 저장해두거나.
+	==>
+	(2) static-nodes.json 파일에 enode를 적어서 저장해두거나 (v1.11부터는 이런 설정이 효과가 없다),
+
+- 97 밑10: 
+	필요하다.
+	==>
+	필요하다. 이러한 위험을 막기 위하여 v1.11 버전에서 personal API가 공식적으로 제거된다.
+
+99 줄7:
+	내부 계정은 외부에서 직접적으로 접근할 수 없으며, 외부 계정과 달리 고유한 주소키를 가지지 않는다.
+ 	==>
+ 	외부계정과 달리 내부계정은 고유한 사적키를 가지지 않는다. 외부에서는 내부 계정의 주소나 키를 직접적으로 알 수 없다.
+
+101 줄7:
+	개인키는 16진수로 저장되어 있다. hexadecimal 16진수 64자리, 즉 32바이트 길이로 생성된다.
+	==>
+	개인키는 16진수 64자리, 즉 32바이트 길이로 생성된다.
+
+101 줄13: 아래와 같이 위치 조정 그리고 줄8로 이동 ("64자리, 즉 32바이트 길이로 생성된다." 이 문장 다음에 위치하도록)
+	"   1   2   3   4   5   6" 10자리마다 숫자를 넣었어요. 10자리마다 위치하도록 조정해주세요.
+
+103 줄5:
+	3072비트 RSA key는 대략 256비트 ECDSA이면 같은 수준의 보안을 지켜낼 수 있다.
+	==>
+	일반적으로 256 비트 ECDSA 키는 3072 비트 RSA 키와 비슷한 수준의 보안이다.
+
+103 줄12: hashing해서 ==> 해싱해서
+
+103 밑8: "   1   2   3   4   " 10자리마다 숫자를 넣었어요. 10자리마다 위치하도록 조정해주세요.
+
+106 줄6: 그림4-1 위에 (줄6 다음 단락으로) 다음 문장을 추가해 주세요.
+	그림에서 보듯이, Storage Trie는 어느 계약이나 자신의 상태정보를 KV(키-값) 형식으로 저장한다. 루트해시는 State Trie에 저장된다.
+
+106 그림 4-1: 제목을 아래와 같이 넣어주세요.
+	그림 4-1: State Trie와 Storage Trie (State Trie는 Storage Trie의 루트해시를 통해 참조, 연결된다)
+
+106 그림 4-1: 그림 화살표 수정, 쉼표 추가
+	그림에서 화살표가 storageRoot를 가리키도록 수정해 주세요. 그리고 storageRoot codeHash ==> storageRoot, codeHash)
+
+- 107 줄4:
+	계약 계정 역시 nonce를 가진다. 그러나 다른 컨트랙의 기능을 호출하는 경우에는 증가하지 않고, 다른 컨트랙을 생성하는 경우에만 증가한다.
+	==> 스마트계약의 nonce는 자산에게서 발생한 트랜잭션의 수를 기록한다. 다른 컨트랙의 기능을 호출하는 경우에는 nonce가 증가하지 않는다. 그러나 새로운 스마트 계약을 생성하는 경우에는 nonce가 증가한다.
+
+- 108 줄2~4:
+	StorageRoot는 계정이 저장된 해시 값이다. Storage trie는 컨트랙의 상태가 저장된다.
+모든 계정은 각각 자신의 Storage trie를 가지고 있다. 그 Storage trie 루트의 256비트
+해시 값을 storageRoot라고 한다.
+	==>
+	컨트랙의 계정은 각각 자신의 Storage trie를 가지고 있고, 자신의 상태를 저장하고 있다. 
+	그 Storage trie 루트의 256 비트 해시 값을 storageRoot라고 한다.
+
+115 밑2:
+	_x = xa.ravel()[i] # 2차원을 1차원 배열로 변환후 순서대로 선택
+	==>
+	_x = xa.ravel()[i]  # 1차원배열로 변환후, 인덱스 순서대로 선택 ==> 2차원 단어를 제거
+
+116 줄12: 점을 구하면 덧셈이 된다. 즉, R의 대칭점이다. ==> 대칭점을 구하면 덧셈이 된다.
+116 줄16:
+	P, Q가 동일해서 한 점이 되는 경우이고 이 점에서 접선(tangent line)을 그려서 만난 R의 대칭점이다.
+	그 결과는 P+P=2P, 즉 2를 곱해서 얻은 값이다.
+	==>
+	a, b가 동일해서 한 점이 되는 경우이고 이 점에서 접선(tangent line)을 그려서 만난 교차점의 대칭점이다.
+	그 결과는 a(동일한 값이므로 b라고 해도 마찬가지)의 2배인 a+a=2a이다.
+
+119 줄4~30: 삭제
+	줄4 pycoin이 잘 설치 되었으면, 명령창에서 ku (key utility, 키를 관리하는 명령어)를 입
+	줄30 ...생략...
+	(여기까지 삭제해 주세요)
+	줄31 유한체
+
+120 줄7:  한 칸 공백 추가
+	>>> print(e.p(), e.a(),e.b())  ==> >>> print(e.p(), e.a(), e.b())
+
+----------5장
+- 134 줄3: 이더리움의 거래는 네트워크에서 발생하는 정보의 전송을 나타낸다. 거래는 블록에 포
+함되어 블록체인에 기록되며, 이더리움의 상태를 변경하는 데 사용된다. ==> 삭제
+
+- 134 표5-1: 페이지로 표가 나뉘어져 분리되어 있슴 ==> 분리되지 않게 해주세요.
+
+- 135 표5-2: Call ==> call
+
+- 137 줄3: 그럴 때 지정된 로그 파일에 발생하거나 ==> 그럴 때 발생하거나
+
+138 줄2: 
+	컨트랙의 함수를 호출하고 호출 결과를 처리하기 위해 사용하는 방식이다.
+	==> 
+	컨트랙의 함수나 이벤트를 호출하고 결과를 돌려받기 위한 설정이다.
+
+146 줄9:
+	역시 모든 계정이 하나씩 가지고 있다.
+	==> 각 컨트랙은 자신의 저장소를 트라이 구조로 가지며, 여기에는 자신의 상태 변수가 키-값 쌍으로 저장된다.
+
+146 줄11:
+	Account Storage Trie는 블록에 대해 변경된다.
+	==> Account Storage Trie는 각 컨트랙의 (로컬과 같은) 내부 상태 변수를 저장한다. 
+
+147 그림 5-1:
+	그림 5-1 ==> 그림 5-1: 블록의 구조
+	영문을 한글로 대체
+	- 가장 좌측 박스: (Block ==> 블록 Header ==> 헤더 Body ==> 바디)
+	- 둘째 박스: World State trie ==> 상태 트리
+	- Receipts trie ==> 거래 수령 트리
+	- Transactions trie ==> 거래 트리
+	- Account State ==> 계정 상태
+	- Account Storage trie ==> 컨트랙 계정 트리
+	- List of Transactions ==> 거래 목록, List of Ommers ==> Ommers 목록
+
+	Block, transaction, account state objects and Ethereum tries ==> 삭제
+	Source: Block Structure ==> 삭제
+
+147 밑6: confirmation이라고 하는데 confirmation이 늘어날수록 ==> confirmation이라고 하는데 늘어날수록
+
+149 표5-6: 분리되지 않게 합쳐주세요.
+	줄2 Nounce ==> nonce
+
+150: ommers들의 ==> ommers (조교수님 수정은 무시)
+
+151 회색부분(TxA부터~hDswap까지)이 깨져 있는 것처럼 보임 (e5_gethTrans.md 여기의 스타일을 참조해서 줄맞추고 예쁘게 해주세요)
+	다시 그리지 않을 생각이면 최소 화면캡쳐해서 교체해주세요 (e5_gethTrans.md의 그 부분을 화면캡쳐)
+
+	그림제목을 넣어주세요 ==> 거래를 묶어 머클루트를 계산하는 과정
+
+158 줄8: sha256(sha256(data+nonce)) ==> sha256(sha256(거래데이터, nonce))
+
+158 줄13: Nonce ==> nonce
+
+158 줄15: sha256(sha256(data+nonce)) ==> sha256(sha256(거래데이터, nonce))
+
+160 줄1: 난이도 변경 범위(bound divisor of the difficulty)이다
+160 줄2: 회색이 아니라 본문 흰색으로 해주세요. 블릿으로 만들고, ```기호, ** 기호 ==> 삭제 (아래와 같이 변경해주세요)
+	* 10초 이하: 난이도 상향, parent_diff // 2048 * 1 만큼 증가
+	* 10~19초: 난이도 변동 없다
+	* 20초 이상: 난이도 하향 (timestamp 차이에 따라) 최소 (parent_diff //2048 * -1) ~ 최대 (parent_diff // 2048 * -99)
+
+164 줄5: 1gwei를 ==> 1 Gwei를
+
+165 줄2: 9,994,671gas ==> 9,994,671 gas
+
+166 줄10~19: 줄10~13는 변경하고, 줄14~19 삭제
+	예를 들어, 스택에 2 3 ADD라고 저장되어 있고(push), 하나씩 꺼내(pull) 2 + 3 연산을 한다.
+	•2 3 OP_ADD 5 OP_EQUAL
+	•2 3 OP_ADD 2 OP_MUL 1 OP_ADD 11 OP_EQUAL
+
+	비트코인도 이러한 스크립트 언어를 사용하는데, 서명과 관련된 다음 스크립트도 Opcode로 실행된다.
+	•scriptPubKey는 공개키로 잠그는 opcode 명령문은 DUP HASH160 <PubHash> EQAULVERIFY CHECKSIG
+	• scriptSig는 반대로 공개키로 푸는 명령문은 <sig> <PubK>. 이들 코드 scriptSig, scriptPubKey를 합쳐서 실행하면
+	•P2PKH Pay-to-Public-Key-> Hash:
+	•OP_DUP OP_HASH160 OP_EQUALVERIFY OP_CHECKSIG
+
+	==>
+
+	Opcode의 예를 들어보자.
+	• 2 3 OP_ADD 5 OP_EQUAL (2 + 3 == 5이라는 의미. 즉 스택에 2 3 ADD라고 저장되어 있고(push), 하나씩 꺼내(pull) 2 + 3 연산을 하고 5와 비교하면 true가 된다)
+	•2 3 OP_ADD 2 OP_MUL 1 OP_ADD 11 OP_EQUAL (2 + 3 * 2 + 1 == 11 이라는 의미).
+
+169 줄2~4:
+	실제의 거래에 대해 gas가 얼마나 필요하고 처리 비용이 어떻게 계산되는지 살펴보자
+	(참조: https://etherscan.io/tx/0xcb1e3530950cf2c43a307bcb5645ae71a12c76a60831617badd04aea3efe68aa).
+
+	==>
+
+	그림에서 보듯이, 실제 거래의 예를 들어 gas가 얼마나 필요하고 처리 비용이 어떻게 계산되는지 살펴보자.
+
+169 그림 5-2:
+	그림 5-2 ==> 그림 5-2: 거래명세 (https://etherscan.io/tx/0xcb1e3530950cf2c43a307bcb5645ae71a12c76a60831617badd04aea3efe68aa 웹페이지를 열어보자)
+
+170 줄3: Nonce는 ==> nonce는
+
+173 그림 5-3
+	그림 5-3 ==> 그림 5-3: geth@8445에서 잠금해제, 거래 발생, 거래 대기 조회, 마이닝 실행, 잔고 조회의 예시
+
+177 밑4: 16 Nonce는 ==> 16 nonce는
+
+179 줄7~10: 변경하고, 코드 회색으로 만들어 주세요.
+	※ 참조: random 함수 random()은 0 ~ 1 사이의 무작위 수를 생성한다. 이 함수에 100을 곱하
+	면 0 ~ 100 사이의 수를 생성한다(100은 제외). print문의 end는 출력을 이어서 하게 만든다
+
+	from random import randint
+	for i in range(1,20):
+	print(int(random.random()*100), end=” “)
+	83 18 99 61 2 74 4 51 12 63 46 64 67 72 7 70 73 49 86
+
+	==>
+
+	>>> import random
+	>>> for i in range(1,20):
+	...     print(int(random.random()*100), end=" ")
+
+	[출력]
+	91 31 45 53 20 83 56 91 44 93 46 74 79 56 19 7 58 56 81
+
+	줄3 설명: random()은 0 ~ 1 사이의 무작위 수를 생성한다. 100을 곱해서 0 ~ 100 사이의 수를 생성한다 (100은 제외).
+	end=" "는 출력마다 공백(" ")을 연결해서 출력한다.
+
+180 28번:
+	geth 서버를 포트번호 8446에 하나 더 띄우시오(이하 geth@8446이라고 함). geth@8446의
+	nteworkid는 36번으로 설정한다. geth@8446에서 계정을 2개 만들고(이하 계정 A, 계정 B라고
+	함) 충전을 해 놓는다. 다음 문제는 eth 스크립트로 작성하여 풀고 geth --exec ‘loadScript()’
+	로 실행한다. 스크립트 파일은 하나 이상 작성해도 된다. 다음 문제는 모두 geth@8446에서 실
+	행한다. 참고로 JSON 형식이라서 ‘Object’ 내용을 볼 수 없는 경우 JSON.stringify() 함수를 사
+	용하면 문자열로 변환되어 출력된다.
+
+	==> 
+
+	geth 서버를 networkid 36, 포트 8446에 설정하여 띄우시오(이하 geth@8446).
+	geth@8446에서 계정을 2개 만들고(이하 계정 A, 계정 B라고함) 충전을 해 놓는다.
+	문제는 eth 스크립트로 작성하여 풀고 geth --exec ‘loadScript()’로 실행한다.
+
+----------6장
+- 184: 웹디앱 - web3.js..이더리움 노드 ==> 박스 안 깨지게 그림 선으로 교체
+- 185: 그림 6-1 삭제
+- 186: 그림 6-2 삭제
+- 188: 2023년 3월 1.9.0까지 나와있다. ==> 그 후 4.x로 크게 버전 업이 되고 있다.
+- 188: npm으로 web3.js를 프로젝트 디렉토리..pjt_dir> npm install web3@1.10
+  ==> web3.js를 프로젝트 디렉토리 (C:\Users\jsl\Code\20171111)에서 설치하면 node_modules 디렉토리에 저장된다.
+책에서는 1.x를 사용하고 있으니 다음 명령어 npm install <package>@<version>에 설치할 버전을 적어준다.
+pjt_dir> npm install web3@1.10 (1.10.x를 설치한다. 버전을 명시하지 않으면 최신이 설치된다.)
+
+- 188: 하위 버전을 명시하여 npm install <package>@<version>으로 한다.
+다음과 같이 @^0.20 버전을 명시하고, 캐럿기호(```^```)를용해서 최신 버전으로 설치할 수 있다.
+pjt_dir> npm install -g web3@^0.20
+  ==> 다음과 같이 npm install web3@^0.20 하위 버전을 적어준다 (캐럿기호(^)는 그 버전의 최신을 설치한다).
+
+- 190: 다음 화면은 web3.js를.. 그림 6-3 ==> 삭제
+- 190: eb3.modules.라고 적고 을 누르면 ==> Web3.modules.라고 적고 <TAB>을 누르면
+- 197: 다음과 같이 을 누르면 ==> 다음과 같이 <TAB>을 누르면 
+- 200: 더 알아보기 박스의 줄5~줄8 (Promise에...확인할 수 있다)
+  ==> 삭제
+- 205: <script src="https://cdn.jsdelivr.net/npm/web3@1.2.5/dist/web3.min.js"></
+script> ==버전교체==> <script src="https://cdn.jsdelivr.net/npm/web3@1.10.4/dist/web3.min.js"></
+script>
+- 205 밑 2줄 위: //web3@1.2.x ==> //web3@1.x.x
+- 206: 줄4: web3@1.2.5를 사용하고 있다 ==> 삭제
+- 206: 줄5...앞 줄의 web3@1.2.5를 ==> 줄5...앞 줄의 web3@1.x를
+- 210: 연습문제 14 삭제
+
+----------7장
+- 215: (메뉴에 보이는 ‘External
+http server’를 클릭하면, REMIX에서 팝업으로 설명을 띄우고 있으니 주의해서 읽어
+보자). ==> 삭제
+- 215: 온라인에서 사용하는 것이.. 내려받아 설치할 수 있다. ==> 삭제
+과거에는 constant, payable이 사용되었지만 지금은 제거되어 stateMutability로 대체된다. ==> 삭제
+- 218: 다른 언어나 도구들에 내장된 컴파일러.. 이책에서는 다루지 않는다 ==> 삭제
+- 223 줄8 줄9: gwei ==> Gwei
+- 223 줄8: 0.000000001Ether에 해당한다 ==> 0.000000001 Ether에 해당한다
+- 223: 높고 변동된다(참고: https://ethgasstation.info/). 대략 ==> 높고 변동된다. 대략
+- 228: 그렇게 하려면: * 먼저 컨트랙의 객체를 생성하고 * 함수(API)를 호출한다.
+	==> 그렇게 하려면 (1) 먼저 컨트랙의 객체를 생성하고, (2) 함수(API)를 호출한다.
+- 228: myContract.methods.myStateChangingMethod('param1'...;
+	==> myContract.methods.myMethod('param1',...
+- 229 밑2줄: URL과 포트 번호를 적절하게 지정하면 된다.
+- 229 맨끝: 실행해 보자. ==> 떨어져 있지 않게 위치 조정해 주세요.
+- 233 단, 데이터를 저장하면, 그 크기에 따라 gas가 더 필요하다는 것을 주의해야 한다.
+256비트당 20,000gas가 필요하다. ==> 단, 데이터를 저장하면, 그 크기에 따라 gas가 더 필요할 수 있다는 것을 주의해야 한다.
+- 237: web3 1.20으로 배포해 보자. ==> web3 1.x 버전을 적용해 배포해 보자.
+- 241 [파일명: src/greeterUse.js] 줄10: constructor"}];var greeter ==> constructor"}]; 여기 줄바꿈 var greeter
+
+- 251 파일명: src\TimerUse.js 줄2: //importing... file ==> 다음 줄의 file을 올려서 한 줄로 (아니면 //부터 삭제해버림)
+- 251 파일명: src\TimerUse.js 줄6: //reading... ==> 다음 줄과 합치거나 // 이후 삭제해버림.
+- 253 줄1: doIt() ==> doIt() 코드 회색으로 처리 (앞 페이지 252의 코드와 합쳐져야 해요)
+
+----------8장
+- 261 학습목표 줄3,6 두곳: 스마트 컨트랙트는 ==> 스마트 컨트랙은
+- 266:
+	•줄16: 상속 관계의 Parent, SimpleChild를 선언하다.
+	•두 번째 컨트랙에서...
+
+	==한문장으로=>
+
+	•줄16: 상속 관계의 Parent, SimpleChild를 선언하다. 두 번째 컨트랙에서
+
+- 266: 컨트랙, Event, enum, Struct는 대문자로 시작하고 낙타 표기법(camel case)을 따라 단어의 첫 글자는 대문자로 작성한다.
+	==> 컨트랙, event, enum, struct은 낙타 표기법(camel case)을 따라 작성하지만, 단어의 첫 글자는 대문자로 한다.
+
+- 269 표8-1: Bool ==> bool
+- 269 표8-1: Unit ==> uint
+- 269 표8-1: M은 0 ~ 256비트까지 ==> 크기 M은 0 ~ 256비트까지
+- 269 표8-1: M은 32바이트까지 ==> 크기 M은 32바이트까지
+- 271: 주석문을 풀어본다 ==> 주석문을 해제해본다
+- 272: 0.8.0에서 ==> 0.8.0부터
+- 273: 이해서 ==> 이용해서
+- 281: 위 프로그램을 컴파일해 보자.
+pjt_dir> solc-windows.exe src/ArrayTest.sol ==> 두 줄을 회색박스에서 (흰색)본문으로 꺼냄
+- 282: Wei ==> wei
+- 284: bool success: 함수 호출이 성공인지 ==> bool success: 함수 호출이 성공, 실패인지의 여부,
+- 284: bytes memory data: 함수가 실제로 반환하는 결과 이전 코딩은 .call.value(20)
+	=줄바꿈=>
+	bytes memory data: 함수가 실제로 반환하는 결과. (여기에 줄바꿈해주세요)
+
+	이전 코딩은 .call.value(20)
+- 288: 대괄호(‘['와 ‘]’) =따옴표 모양을 일치하게=> 대괄호('['와 ']')
+- 302 밑5줄: 동일한 변환한다 ==> 동일한 변환이다
+- 305 위6줄:
+	숫자 뒤에 붙는 시간 단위는 weeks, days, hours, minutes, seconds이다. * years는
+	윤년인 경우에 365일이 아닐 수 있으므로 0.5.0버전 이후부터 삭제되었다. * now도
+	0.7.0 버전 이후부터 제거되었다. 현재 시각을 나타내는 block.timestamp를 사용해
+	야 한다.
+
+	=줄바꿈 (불릿으로)=>
+
+	숫자 뒤에 붙는 시간 단위는 weeks, days, hours, minutes, seconds이다.
+	* years는 윤년인 경우에 365일이 아닐 수 있으므로 0.5.0버전 이후부터 삭제되었다.
+	* now도 0.7.0 버전 이후부터 제거되었다. 현재 시각을 나타내는 block.timestamp를 사용해
+	야 한다.
+
+- 305: (bytes 값으로 표현) ==> (바이트코드 형식으로 표현)
+- 305 맨아래: tx.origin 트랜잭션에 사인한 계정 =세미콜론=> tx.origin" 트랜잭션에 사인한 계정
+- 306 맨위: tx.gasprice 트랜잭션 호출자가 명시한 gas price =세미콜론=> tx.gasprice: 트랜잭션 호출자가 명시한 gas price
+- 306 줄4: call 데이터 (bytes 값으로 표현) ==> call 데이터 (바이트코드 형식으로 표현)
+- 309 줄6:
+	이러한 오류는 컴파일하거나 테스트 과정에서 변수값 등을 확인하면서 코드를 수정해
+	나가는 방법을 택한다. 우리도 지금까지 이 정도 수준으로 디버깅을 해오고 있다.
+	==> 이러한 오류는 컴파일, 테스트 과정에서 변수값 등을 확인하면서 코드를 수정해
+	나가는 방법으로 디버깅을 해오고 있다.
+
+- 312 밑 6줄: 단 2줄, 줄2와 줄4로 ==> 줄2와 줄4로
+- 313 줄10: 이런 간단한 이벤트의 알림도 간단치 않다 ==> 이런 단순한 이벤트의 알림도 간단치 않다
+- 314: gas비 또는 마이닝 보상 등이 결제된다. 따라서 증감분이 정확히 반영되지 않는다.
+	==> gas 또는 마이닝 보상에 따라 가감된다. 따라서 입출금으로 인한 증감분이 정확히 반영되지 않는다.
+- 314 줄8: 다음 장에서 배우게 된다. 미리 해보기하자. ==> 다음 장에서 배우게 되지만, 미리 해보자.
+- 315 밑에서 줄4: REMIX에서 버튼 테스트까지 마치고, 컴파일도 성공한다면 컴파일 오류는 없다는 의미이다.
+	==> REMIX에서 버튼 테스트까지 마치면, 컴파일이나 논리오류는 없다는 의미이다.
+- 316 줄2: 컴파일러 버전 0.5가 설치되지 않았다면,
+	==> 로컬에 원하는 버전이 설치되지 않았더라도,
+- 316 밑에서 줄6: 다음 작업 contract을 생성하거나 하면서, 계정 주소를 가져오면 그 때 읽을 수 있게 된다.
+	==> 다음 작업을 하면서, 계정 주소를 비순차적으로 읽을 수 있게 된다.
+- 318 줄1: 우선 이벤트를 발생하지 ... 코드들 작성해 보자.
+	==> 우선 이벤트가 발생하지 ... 코드를 작성해 보자.
+- 318 줄2: 배포를 ganache@8345에서 했으므로 일관성 있게 ganache@8345에서 사용하는 코드를 작성해보자
+	==> 배포한 포트와 동일하게, ganache@8345에서 컨트랙을 호출, 사용하는 코드를 작성해보자
+- 318 줄6: 위 코드 줄3과 줄4 가운데 하나는 주석으로 만들고 있다. 줄3을 HttpProvider로 활성화하고 실행하면
+	==> 아래 코드의 줄3을 HttpProvider로 활성화하고 (주석을 제거하고) 실행하면, 
+- 320 밑 줄3: Out of Gas 오류가 발생하기 마련이다. "Out of Gas" 오류는
+	==> Out of Gas 오류가 발생하기 마련이다. 이 오류는
+
+----------9장
+336 밑10:
+	transaction이 발생하므로 Transaction hash가 반환된다.
+	==>
+	transaction이 발생하므로 hash가 반환된다.
+
+337 밑6: value: 필드에 ==> 'value' 필드에
+
+336 밑8: 확인하는 방법은 이벤트(event)를 사용해서만 ==> 확인하려면 이벤트(event)를 통해야만
+
+346 밑7: ```BankV3Use.js``` ==> BankV3Use.js
+
+351 밑에서 줄6: > myEvent.watch(function ==맨앞 기호 하나만 제거=> myEvent.watch(function
+352 줄3: fromfunction(error, event) ==> function(error, event)
+
+353 줄6:
+	이벤트는 상속할 수 있어서, 부모가 정의한 이벤트를 자식이 물려받아 발생시킬 수 있
+	다. 상속은 나중에 배우게 된다. 여기서는 컨트랙이 여러 이벤트를 가질 수 있는지, 즉 이
+	벤트의 오버로딩이 가능한지 실습문제에서 해본다(참고: ‘실습문제: 이벤트 오버로딩’)
+
+	==>
+
+	오버로딩은 여러 이벤트가 동일한 명칭이지만, 서로 다른 매개변수를 가지는 것을 의미하는데, 곧 이어 실습문제에서 해보자 (참고: ‘실습문제: 이벤트 오버로딩’)
+
+	이벤트는 상속할 수 있어서, 부모가 정의한 이벤트를 자식이 물려받아 발생시킬 수 있다. 상속은 나중에 배우게 된다.
+
+
+367 줄14: param3는 ==> param3은
+369 밑8: 결과 ```result```를 출력한다. ==> result의 returnValues를 출력한다.
+
+369 밑7~4: 
+	실패는 물론 내부에서나(컨트랙 간에 호출하는 경우), 외부에서도 발생할 수 있다. 외부에서 실
+	패하는 경우를 대비해서 external로 선언한다. 다음 실습에서는 클라이언트, 즉 외부
+	에서 fallback이 호출되도록 하고 있다.
+
+	==>
+
+	fallback은 보안을 해칠 수 있는 의도하지 않은 내부의 호출을 막기 위해, 외부에서의 호출만 가능하도록 설계되어 있다.
+
+383 줄15~18:
+	앞서 존재하지 않는 함수를 호출하는 경우, fallback함수가 호출되었다. 또한, 금액 없이 송금을 하여
+	도 fallback함수가 호출된다.
+	송금을 하면서 실패하였다고 하자. 이 경우 fallback이 호출된다 하더라도 그 송금액은 수취할 수 없
+	다. 단 fallback() payable로 선언하면 가능해진다.
+
+	==>
+
+	송금을 하면서 실패하였다고 하자. 이 경우 fallback이 호출된다 하더라도 그 송금액은 수취할 수 없다.
+	단 fallback() payable로 선언하면 가능하게 되는데, 프로그램을 작성해보자.
+
+383 줄20: web3.js 측에서가 ==> 웹화면(web3.js) 측에서가
+
+----------10장 ~ 416 수정 없어요
+
+422 줄14: 건수를 미리 알 수는 없다는 문제가 있다. 그 건수를 사전에 모른다면 동적 배열이 답이다.
+	==> 건수를 미리 알 수 없는데, 동적 배열이 해결책이다.
+
+427 줄11: 찾는 struct가 나왔다고 하더라도 반환을 그대로 하지 않고 
+	==> struct을 검색하더라도 그대로가 아니라, 
+
+427 줄12: 왜 struct로 하지 않고 ==> 왜 struct 구조가 아니라
+
+427 줄12:
+	이 함수를 호출하는 언어가 Solidity가 아니고 노드(node. js)일 수 있으므로 이를 감안하여 struct으로
+	하지 않기로 한다.
+	==> 
+	블록체인 프로그램은 멀티언어로 제작되기 때문에, Solidity의 struct을 노드(node. js)가 받는다는 점을  감안하여야 한다.
+
+429 밑18: struct를 ==> struct을
+430 줄3: struct를 ==> struct을
+439 줄3:
+	overflow/underflow assert(age > 20)
+	==> 
+	상한, 하한을 확인하거나 assert(age > 20), 0으로 나누는지 확인한다 assert(x != 0)
+
+
+451 12번: 코드 줄 바꿈 수정
+contrat ArrayTest {
+    int[5] mathMarks;
+    function setMathMarks() public {
+        mathMarks = [100, 60, 95, 50, 80];
+	}
+}
+451 13번: 코드 줄 바꿈 수정
+function setArr() pure public {
+    uint[] memory myArr;
+    myArr[0]=11;
+}
+
+451 14번: 코드 줄 바꿈 수정
+function getDynamicArrMemory() pure public {
+    uint[] memory num = new uint[](3);
+    num.push(11);
+}
+
+452 17번: 코드 줄 바꿈 수정
+function setLocalDynamicArr() view public returns(uint) {
+	(1) uint[] myArr;
+	(2) uint[] storage myArr;
+	(3) uint[] memory myArr;
+	(4) uint[] myArr = new uint[](3);
+	(5) uint[] storage myArr = new uint[](3);
+	(6) uint[] memory myArr = new uint[](3);
+	(7) myArr.push(11);
+	(8) myArr[0]=11;
+	(9) myArr[5]=15;
+    return myArr.length;
+}
+
+453 18번: 코드 줄 바꿈 수정
+contract ArrayTest2 {
+    string[] cities2 = new string[](2);
+    function setCities2() public {
+        cities2[0]="New York";
+        cities2.push("Bangkok");
+        string[] storage _cities2 = cities2;
+        _cities2.push("Kuala lumpur");
+    }
+    function getCities2() view public returns(string[] memory){
+        return cities2;
+    }
+}
+
+455 28번 줄6:
+	- 계정 주소에 대한 mapping
+	•그 외 필요하면 추가
+
+	==> 
+
+	- 계정 주소에 대한 mapping 등 그 외 필요하면 추가
+
+458 30번 줄7: -  환불 ==한칸앞으로=> - 환불불
+
+458 30번 줄9: "주의: " 문장 앞의 별표 삭제하고 한 칸 넣으세요.
+
+			일리지도 차감하고, 그에 따라 잔고도 감해준다.
+	* 주의: 거래가 호출자U1 → 컨트랙C1 → 컨트랙C2의 순서대로 완성이 될 경우:
+	• C2에서 msg.sender는 바로 직전의 호출자C1을 말한다. 
+
+	==>
+
+		  일리지도 차감하고, 그에 따라 잔고도 감해준다.
+
+	주의: 거래가 호출자U1 → 컨트랙C1 → 컨트랙C2의 순서대로 완성이 될 경우:
+	• C2에서 msg.sender는 바로 직전의 호출자C1을 말한다.
+
+458 30번 줄12~20: 불릿으로 만들고 코드 줄바꿈 수정정
+
+	다음 프로그램을 보자. 주소 0x69e9a...0c102에서 Order의 getTxOriginMsgSender() 함수를 호출하
+	면: * Customer의 tx.origin 은 0x69e9a...0c102 (Order 컨트랙 함수호출자인 msg.sender의 주소와
+	동일) * Customer의 msg.sender는 0x0b878...E7cD4, 즉 Order 컨트랙 배포 주소와 동일하다.
+
+	==>
+
+	다음 프로그램을 보자. 주소 0x69e9a...0c102에서 Order의 getTxOriginMsgSender() 함수를 호출하면:
+	* Customer의 tx.origin 은 0x69e9a...0c102 (Order 컨트랙 함수호출자인 msg.sender의 주소와 동일)
+	* Customer의 msg.sender는 0x0b878...E7cD4, 즉 Order 컨트랙 배포 주소와 동일하다
+
+	pragma solidity ^0.6.0;
+
+	contract Customer {
+			function getTxOriginMsgSender() view public returns(address, address) {
+					return(tx.origin, msg.sender);
+			}
+	}
+
+	contract Order {
+			Customer c;
+			constructor() public {
+					c = new Customer();
+			}
+			function getTxOriginMsgSender() view public returns(address, address) {
+					return c.getTxOriginMsgSender();
+			}
+	}
+
+
+---------11장
+462 줄3: 객체 지향에서의 has-a는
+	==> has-a는
+462 줄5: is-a는 상속 관계로 설명할 수 있는데 뒤에서 설명한다.
+	==> is-a는 상속 관계인데, 나중에 설명한다.
+
+463 줄8: 줄4의 배송 등 ==> 줄5의 배송 등
+
+484 줄2: Solidity에서도 상속하면 ==> 삭제
+
+484 줄11: this는 다른 용도로 사용되며, ==> this는
+
+485 줄10: 생성자는 좌표와 너비, 높이를 가진다. ==> 생성자는 좌표와 너비, 높이 인자들을 가진다.
+
+485 줄11: Solidity에서 부모의 생성자를 호출하는 것은 ==> Solidity에서는
+
+488 줄18: 
+	* 너비는 2 * (10 + 20) = 60 * XOpposite는 30 + 10 = 
+	40 * YOpposite는 40 + 20 = 60
+	==블릿으로표현=>
+	* 너비는 2 * (10 + 20) = 60
+	* XOpposite는 30 + 10 = 40
+	* YOpposite는 40 + 20 = 60
+
+487 줄11~12: 줄 한 칸 넣으세요.
+	deploy()
+	pjt_dir> node src/RectangleDeploy.js
+	==>
+	deploy()
+
+	pjt_dir> node src/RectangleDeploy.js
+
+488 밑3: 추상 컨트랙은 멤버 함수를 구현하지 않은 추상 함수
+	==> 추상 컨트랙은 구현하지 않은 추상 함수
+
+491 : 그러나 다른 컨트랙에 속해 있기 때문에 서로 충돌하지는 않을 때, 이들 함수를 오버라이딩
+(overriding) 함수라고 한다.
+	==> 그러나 상속 관계로 맺어져 서로 충돌하지 않는데, 이를 오버라이딩(overriding)이라고 한다.
+
+493 줄3: Hello[2] memory hellos; // no dynamic Hello[] 
+	==> Hello[2] memory hellos; // NOT dynamic Hello[]
+
+494 줄19: 줄3~5는 ==> 줄3~7은
+
+497 줄3: 줄3에서 ==> 줄3:
+
+497 줄8:
+	의미이다.
+	• 이에 따라
+	==위 문장으로 붙임=>
+	의미이다. 이에 따라
+
+502 줄4~20: 코드 줄 바꿈해야 해요.
+[파일명: src/myLibDeploy.js]
+var Web3 = require('web3');
+var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8345"));
+var fs = require('fs');
+var _str = fs.readFileSync("src/LibraryTestPublic.json");
+var _json = JSON.parse(_str)
+//var _abiArray = JSON.parse(_json.contracts.sHello2.abi);
+// var _abiArray = JSON.parse(_json.contracts["src/myLib.sol:myLib"].abi);
+var _abiArray = _json.contracts["src/myLib.sol:myLib"].abi;
+// var _bin = _json.contracts.sHello2.bin;
+var _bin = "0x" + _json.contracts["src/myLib.sol:myLib"].bin;
+async function deploy() {
+  const accounts = await web3.eth.getAccounts();
+  console.log("Deploying the contract from " + accounts[0]); 
+  var deployed = await new web3.eth.Contract(_abiArray) 
+	.deploy({data: _bin, arguments: ["Hello from web3"]}) 
+	.send({from: accounts[0], gas: 1000000}, function(err, transactionHash) {
+		if(!err) console.log("hash: " + transactionHash); 
+	})
+  console.log("---> The contract deployed to: " + deployed.options.address)
+}
+
+deploy()
+
+502 밑13: 줄 서식 맞추세요.
+
+	!node src/myLibDeploy.jsDeploying the contract from 0x9357f478d86D
+	9222f4413bFd91C8adb0F4c728b7hash: 0x100335e84a7dafb3c5b31253b1e775
+	e694aa9301ce987cc6e71e3afb04f269cf---> The contract deployed to: 
+	0x19307aB5C14062A109C8cb91B2e742F15cA7707a
+	==>
+	pjt_dir> node src/myLibDeploy.js
+	Deploying the contract from 0x9357f478d86D9222f4413bFd91C8adb0F4c728b7
+	hash: 0x100335e84a7dafb3c5b31253b1e775e694aa9301ce987cc6e71e3afb04f269cf
+	---> The contract deployed to: 0x19307aB5C14062A109C8cb91B2e742F15cA7707a
+
+502 밑3:
+	컴파일할 때 solc에 --libraries "file.sol:Math:0x1234567890123456789012345678901234567890
+	==> 삭제
+
+503 줄3~4 (줄8~9도 동일하게).
+	abi,
+	bin > src/LibraryTestPublicLink.json
+	==줄 붙임(abi,bin과 같이 공백 없이)=>
+	abi,bin > src/LibraryTestPublicLink.json
+
+503 줄16: 줄 바꿈.
+
+	173__19307ab5c14062a109c8cb91b2e742f15ca7707a__6350785a..."
+	pjt_dir> type src\LibraryTestPublicLink.json{"contracts":
+	{"src/LibraryTestPublic.sol:LibrayTestPublic":{"abi":[{"inputs":
+	==>
+	173__19307ab5c14062a109c8cb91b2e742f15ca7707a__6350785a..."
+
+	내용을 출력해서 확인하자.
+	pjt_dir> type src\LibraryTestPublicLink.json
+	{"contracts":{"src/LibraryTestPublic.sol:LibrayTestPublic":{"abi":[{"inputs":
+
+505 밑12 ~ 507 줄8: 아래같이 줄바꿈 넣어서 해주세요.
+
+[파일명: src/LibraryTestPublicUse.js]
+var Web3 = require('web3');
+var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8345"));
+var fs = require('fs');
+//var _str = fs.readFileSync("src/LibraryTestPublicLink__.json");
+var _str = fs.readFileSync("src/LibraryTestPublicLink.json");
+var _json = JSON.parse(_str)
+//var _abiArray = JSON.parse(_json.contracts.sHello2.abi);
+//var _abiArray = JSON.parse(_json.contracts["src/LibraryTestPublic.sol:LibrayTestPublic"].abi);
+var _abiArray = _json.contracts["src/LibraryTestPublic.sol:LibrayTestPublic"].abi;
+
+async function doIt() {
+    var lib = new web3.eth.Contract(_abiArray, "0x27B4E66C995AB06bF7cB20F26AfCacA654C3914B");
+    const accounts = await web3.eth.getAccounts();
+    console.log("Account: " + accounts[0]);
+    lib.methods.multiply7By(5).estimateGas(function(err,gas) {
+        if(!err) console.log(">> gas: "+ gas);
+    });
+    lib.methods.multiply7By(5).call().then(console.log);
+}
+
+doIt()
+
+실행하면 7 x 5 = 35 연산이 출력되고 있다. 그리고 비동기적 특성으로 인해, 앞선 코드의 gas 소요량이 뒤에 출력되고 있다.
+
+pjt_dir> node src/LibraryTestPublicUse.js
+
+Account: 0x9357f478d86D9222f4413bFd91C8adb0F4c728b7
+35
+>> gas: 25832
+
+
+508 밑11~12:
+zeppelin-solidity 경로를 node_modules/openzeppelin-solidity로 재지정하는 예이다.
+==> 이 부분을 본문 흰색으로 (회색이 아니라)
+
+
+509 줄12: 
+	함수들을 제공한다. https://github
+	==줄바꿈=> 
+	함수들을 제공한다.
+	https://github
+
+510 줄1: 아래 스타일로 변경해 주세요.
+
+[파일명: src/TestSafeMathZeppelin.sol]
+//SPDX-License-Identifier: GPL-3.0-or-later
+pragma solidity ^0.8.0;
+//pragma solidity ^0.6.0;
+
+import "../node_modules/@openzeppelin/contracts/utils/math/SafeMath.sol";
+//import "github.com/OpenZeppelin/openzeppelin-contracts/contracts/math/SafeMath.sol";
+
+contract TestSafeMath {   
+    using SafeMath for uint256;
+    function add(uint256 x, uint256 y) public pure returns (uint256) {
+        uint256 z = x.add(y);
+        return z;
+    }
+}
+
+510 줄15: 줄바꿈 넣어야 합니다. 문장의 위치를 변경하였어요.
+
+SafeMath 경로로 import문에 사용되었던 경로 node_modules/@openzeppelin/contracts/math/
+SafeMath.sol:SafeMath가 쓰이고 있다는 것을 발견할 수 있다.
+pjt_dir> solc-windows.exe src/TestSafeMathZeppelin.sol --allow-paths . 
+--combined-json abi,bin > src/TestSafeMathZeppelin.json
+pjt_dir> type src\TestSafeMathZeppelin.json{"contracts":{"node_modules
+
+==>
+
+pjt_dir> solc-windows.exe src/TestSafeMathZeppelin.sol --allow-paths . 
+--combined-json abi,bin > src/TestSafeMathZeppelin.json
+
+파일을 화면출력해보면, SafeMath 경로로 import문에 사용되었던 경로 node_modules/@openzeppelin/contracts/math/
+SafeMath.sol:SafeMath가 쓰이고 있다는 것을 발견할 수 있다.
+
+pjt_dir> type src\TestSafeMathZeppelin.json
+{"contracts":{"node_modules
+
+511 줄9 ~ 512까지: 아래 스타일로 변경해 주세요.
+
+[파일명: src/TestSafeMathZeppelinDeploy.js]
+var Web3 = require('web3');
+var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8345"));
+var fs = require('fs');
+var _str = fs.readFileSync("src/TestSafeMathZeppelin.json");
+var _json = JSON.parse(_str)
+//var _abiArray = JSON.parse(_json.contracts.sHello2.abi);
+//var _abiArray = JSON.parse(_json.contracts["src/TestSafeMathZeppelin.sol:TestSafeMath"].abi);
+var _abiArray = _json.contracts["src/TestSafeMathZeppelin.sol:TestSafeMath"].abi;
+//var _bin = _json.contracts.sHello2.bin;
+var _bin = "0x" + _json.contracts["src/TestSafeMathZeppelin.sol:TestSafeMath"].bin;
+
+async function deploy() {
+    const accounts = await web3.eth.getAccounts();
+    console.log("Deploying the contract from " + accounts[0]);
+    var deployed = await new web3.eth.Contract(_abiArray)
+        .deploy({data: _bin})
+        .send({from: accounts[0], gas: 1000000}, function(err, transactionHash) {
+                if(!err) console.log("hash: " + transactionHash); 
+        })
+    console.log("---> The contract deployed to: " + deployed.options.address)
+}
+
+deploy()
+실행하고 나면, 배포된 주소를 출력하고 있다.
+
+pjt_dir> node src/TestSafeMathZeppelinDeploy.js
+
+Deploying the contract from 0x9357f478d86D9222f4413bFd91C8adb0F4c728b7
+hash: 0x3c212353dc911c8a84d0f053f6f64d4cb04f34c64c5ebab78944b6919be07d51
+---> The contract deployed to: 0x235C5eb4C4ec5A0FB30e4CdAA8AA28f9812fF67D
+
+단계 4: 사용
+[파일명: src/TestSafeMathZeppelinUse.js]
+var Web3 = require('web3');
+var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8345"));
+var fs = require('fs');
+var _str = fs.readFileSync("src/TestSafeMathZeppelin.json");
+var _json = JSON.parse(_str)
+//var _abiArray = JSON.parse(_json.contracts.sHello2.abi);
+//var _abiArray = JSON.parse(_json.contracts["src/TestSafeMathZeppelin.sol:TestSafeMath"].abi);
+var _abiArray = _json.contracts["src/TestSafeMathZeppelin.sol:TestSafeMath"].abi;
+
+async function doIt() {
+    var lib = new web3.eth.Contract(_abiArray, "0x235C5eb4C4ec5A0FB30e4CdAA8AA28f9812fF67D");
+    const accounts = await web3.eth.getAccounts();
+    console.log("Account: " + accounts[0]);
+    lib.methods.add(11,20).estimateGas(function(err,gas) {
+        if(!err) console.log(">> gas: "+ gas);
+    });
+    lib.methods.add(11,20).call().then(console.log);
+}
+
+doIt()
+라이브러리의 .add() 함수 호출이 성공적으로 실행되어 31이라는 결과가 출력되고 있다.
+
+pjt_dir> node src/TestSafeMathZeppelinUse.js
+
+Account: 0x9357f478d86D9222f4413bFd91C8adb0F4c728b7
+31
+>> gas: 22367
+
+513 줄4: 들여쓰기 해주세요.
+abstract contract Hello {
+    function sayHello() public virtual returns (bytes32);
+}
+
+---------12장
+
+518 줄8: 같은 모두 중앙의 ==> 같은 중앙의
+518 줄13: 지급이 허위가 ==>  거래가 허위가
+518 밑6: 인터넷으로 연결만 될 수 있으면  ==> 인터넷에 연결되면
+519 줄4: 몇 가지 ERC를 예를 들면, ==> 몇 가지 예를 들면,
+519 밑11: 화폐를 만들 수 있다는 건가? ==> 화폐를 만들 수 있을까?
+521 밑4: 2015년 처음 Fabian ==>  2015년 Fabian
+522 줄6: (uint) account: 주소의 잔고를 ==> (uint): 계정의 잔고를
+522 줄9: (bool) spender에게 ==> (bool): spender에게 
+522 줄12: transferFrom으로 ==> 곧 설명하게 될 transferFrom()으로
+522 줄13: (uint) owner ==>  (uint): owner
+522 밑6: (bool) recipient ==> (bool): recipient
+522 밑2: returns: (bool) ==>  returns(bool): 
+524 줄1: ERC20은 표준을 준수하는 스마트 계약을 직접 작성해도 된다.
+안전하고 튼튼한 코드가 이미 존재한다면 이를 사용해도 좋다.
+==> 
+ERC20은 코인제작에 필요한 표준으로 이미 검증되어 안전하고 튼튼한 코드이다.
+
+524 밑3: • uint256 private - _totalSupply ==> • uint256 private _totalSupply
+
+529 줄10: ### 줄3 OpenZeppelin의 import
+==> 방법2의 하위헤딩으로서 굵게 (회색이 아니라) 표시해주세요. 아래 모두 마찬가지.
+
+533 줄8~9: 줄 바꿈 넣으세요.
+
+	MyToken.sol:MyToken
+	pjt_dir> node src/MyTokenTest.js
+	==>
+	MyToken.sol:MyToken
+	여기 본문흰색 줄바꿈
+	pjt_dir> node src/MyTokenTest.js
+
+534 줄13~21: 줄바꿈 넣으세요.
+	node> new Object().toString()
+	'[object Object]' --> Object를 생성해서 문자열로 출력한다.
+	> JSON.parse(new Object()) 문자열이 아니라 객체를 인자로 전달하고 있다. 오류가
+	발생하게 된다.
+	SyntaxError: Unexpected token o in JSON at position 1
+	--> Object를 파싱하면 첫 글자가 기대하는 토큰이 아니고 [object Object]라서 오류가
+	발생한다.
+	> JSON.parse(JSON.stringify(new Object()))
+	{} --> 문자열로 변환(stringify)해서 출력하면 오류가 없어진다.
+
+	==>
+
+	node> new Object().toString()
+	'[object Object]' --> Object를 생성해서 문자열로 출력한다.
+
+	> JSON.parse(new Object()) 문자열이 아니라 객체를 인자로 전달하고 있다. 오류가 발생하게 된다.
+	SyntaxError: Unexpected token o in JSON at position 1
+	--> Object를 파싱하면 첫 글자가 기대하는 토큰이 아니고 [object Object]라서 오류가 발생한다.
+
+	> JSON.parse(JSON.stringify(new Object()))
+	{} --> 문자열로 변환(stringify)해서 출력하면 오류가 없어진다.
+
+---------13장
+557 : 목차가 잘 못되었어요.
+	13-1 제어
+	13-2 데이터구조
+	13-3 예외
+	==>
+	13-1. NFT가 대체 무엇일까?
+	13-2. 제작하는 방법
+	13-3. IERC721
+	13-4. ERC721
+	13-5. IPFS
+	13-6. NFT 개발
+	13-7. NFT를 공중망에 배포해보자
+	13-8. 나의 NFT를 판매해 보자
+
+563 밑9~6: 아래처럼 콜론 넣어 주세요.
+	_owners:  token ID의
+	_balanes: 주소가
+	_tokenApprovals: token ID의
+	_operatorApprovals: 두 개의
+
+563 밑4: 불리언 ==> 불린
+
+564 밑 12~4: 아래처럼 콜론 넣어 주세요.
+	(uint256): IERC721-balanceOf를
+	(address): IERC721-ownerOf를
+	memory): _owners[tokenId
+
+568 줄7: 를 사용하는 것을 고려 ==> 를 고려
+
+577 줄17~18: 코드 사이 줄바꿈 (본문흰색 줄바꿈)
+	}
+	pjt_dir> solc-windows.exe @openzeppelin/="C:\\Users\\jsl\\
+	
+	==>
+	
+	}
+
+
+578 밑6~5: 줄바꿈으로 분리되지 않게 해주세요 ==> _owners
+
+588 줄3~4:
+
+	공중망에 배포하려면, 자신이 geth 단말에서 직접 연결해야 한다. 앞서 해보았던 것과
+	같이, geth --testnet으로 테스트망에 연결하여 배포하는 것이다.
+
+	==>
+
+	자신이 geth 단말에서, 앞서 해보았던 것과 같이, 공중망 (테스트망 포함)에 직접 연결하여 배포할 수 있다.
+
+---------14장
+
+601 밑6: 띄우기 위해서는 python -m http.server 명령 ==> 띄우려면 python -m http.server 명령
+601 밑4: 프로젝트 디렉토리 기준으로 ==> 그 기준으로
+604 밑9: <script src”...”></script> ==> <script src= 'web3.js' 파일></script>
+605 밑4:
+	Cloudflare에서 제공하는 아래 사이트를 사용할 수도 있으니, 편리한 것을 골라서 사용하면 된다. https://cdnjs.cloudflare.com/ajax/libs/web3/1.2.7/web3.min.js
+	==>
+	Cloudflare에서 제공하는 사이트를 사용할 수도 있으니, 편리한 것을 골라서 사용하면 된다 (예: https://cdnjs.cloudflare.com/ajax/libs/web3/1.2.7/web3.min.js).
+
+605 밑1: 시작 따옴표 "와 끝 따옴표 확인해주세요.
+
+609 줄2: 2^53는 위첨자로 표기해 주세요.
+	자바스크립트에서 wei를 표현하면서 문제가 발생할 수 있다.
+	==>
+	자바스크립트에서는 정수의 범위가 -2^53에서 2^53 - 1이므로, wei를 표현하면서 문제가 발생할 수 있다.
+
+609 줄9: 10의 20승 위첨자로 표기
+	1e+20 ===> 10^20 (20이 위첨자)
+
+609 밑5: 아래와 같이 수정하고, 줄번호도 일련번호로 변경해주세요.
+	줄06 <script type="text/javascript" src="https://cdnjs.cloudflare.com/
+	ajax/libs/bignumber.js/9.0.1/bignumber.min.js">줄01 줄07 </script>
+
+	==> 줄06 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bignumber.js/9.0.1/bignumber.min.js"></script>
+
+612 밑8: 시드(seed)로 이를 암호화하여 ==> 시드(seed)로서 암호화하여
+612 밑7: 이 구문은 키 복구 구문 ==> 또한 키 복구 구문
+613 그림14-1 ==> 그림14-1: Ganache 네트워크 추가
+614 그림14-2 ==> 그림14-2: MetaMask의 계정 가져오기와 Ganache 계정 화면
+614 그림14-3 ==> 그림14-3: REMIX에서 MetaMask에 연결하기
+
+622 줄2: 이벤트 프로그래밍을 해야 가능할 것이라고 판단할 수 있다. ==> 변화 이벤트를 포착해야 한다.
+622 줄8: 주어야 한다. ==> 준다.
+623 줄11~13:
+	구독한다. newBlockHeaders는 새로운 블록이 생성될 때마다 발생하는 이벤트이다.
+	새로운 블록의 헤더 정보를 포함하고 있으며, 블록의 높이, 해시, 시간 정보 등을 제공한다.
+	==>
+	구독하는데, 여기에는 새로운 블록이 생성될 때마다 블록의 높이, 해시, 시간 정보 등의 헤더정보가 씌여진다.
+
+630 밑5: 생성자 다음 한 칸 삭제하세요.
+
+631 줄9: 된다(shadow). ==> 된다.
+
+632 줄3:
+
+	type 명령어로 출력해 보는데, 그 명령어를 입력할 때 디렉토리 구분자에 주의한다.
+	운영체제에 따라 디렉토리 구분자가 서로 다르고 여기서는 ‘\’로 적었다.
+	==> 
+	윈도우의 type 명령어로 출력해 보는데, 운영체제에 따라 디렉토리 구분자가 서로 다르니 주의한다. 여기서는 ‘\’로 적고 있다.
+
+끝
